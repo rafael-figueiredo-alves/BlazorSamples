@@ -1,10 +1,35 @@
 ﻿@page "/"
+@inject ITarefas MyTasks
 
 <PageTitle>Simple To-DO App | Home</PageTitle>
 
-<h1>Minhas Tarefas</h1>
+<h2>Estas são as minhas Tarefas</h2>
 
-<button class="btn pmd-btn-fab pmd-ripple-effect btn-primary" type="button"><i class="material-icons pmd-sm">star</i></button>
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Tarefa</th>
+            <th scope="col">Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <th scope="col"><input class="form-check-input" type="checkbox" value="" id="flexCheckDefault"></th>
+            <td>Mark</td>
+            <td>Otto</td>
+        </tr>
+        <tr>
+            <th scope="col"><input class="form-check-input" type="checkbox" value="" id="flexCheckDefault"></th>
+            <td>Jacob</td>
+            <td>Thornton</td>
+        </tr>
+        <tr>
+            <th scope="col"><input class="form-check-input" type="checkbox" value="" id="flexCheckDefault"></th>
+            <td colspan="2">Larry the Bird</td>
+        </tr>
+    </tbody>
+</table>
 
 @code{
  

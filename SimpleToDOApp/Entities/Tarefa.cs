@@ -9,7 +9,7 @@
 
         public Tarefa(string _tarefa, string _desc) 
         {
-            Id = Guid.NewGuid();
+            id = Guid.NewGuid();
             tarefa = _tarefa;
             descricao = _desc;
             feito = false;
