@@ -1,7 +1,24 @@
 ﻿@page "/newtask"
+@inject ITarefas MyTasks
 
-<h3>NovaTarefa</h3>
+<h3>Nova Tarefa</h3>
+
+<Formulario TaskModel="@tarefa" OnValidSubmit="@InserirTarefa" />
+
 
 @code {
+    [Inject] private NavigationManager? nav { get; set; }
 
+    public Tarefa? tarefa;
+
+    protected override void OnParametersSet()
+    {
+        tarefa = new Tarefa();
+    }
+
+    protected void InserirTarefa()
+    {
+        MyTasks.AddTarefa(tarefa!);
+        nav!.NavigateTo("/");
+    }
 }

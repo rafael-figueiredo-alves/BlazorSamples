@@ -7,7 +7,10 @@ namespace SimpleToDOApp.Services
         private List<Tarefa> _tarefas;
         public Tarefas() 
         {
-            _tarefas = new List<Tarefa>();
+            _tarefas = new List<Tarefa>()
+            {
+                new Tarefa("Teste", "Testando...")
+            };
         }
         public void AddTarefa(Tarefa _tarefa)
         {

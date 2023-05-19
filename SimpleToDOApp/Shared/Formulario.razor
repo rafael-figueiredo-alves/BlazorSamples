@@ -1,0 +1,42 @@
+﻿<EditForm Model="@TaskModel" OnValidSubmit="@OnValidSubmit">
+    <DataAnnotationsValidator />
+
+    <div class="form-group">
+        <label form="Tarefa">Tarefa: </label>
+        <div>
+            <InputText @bind-Value="TaskModel!.tarefa" class="form-control" />
+            <ValidationMessage For="@(()=> TaskModel.tarefa)" />
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label form="Tarefa">Descrição: </label>
+        <div>
+            <InputTextArea @bind-Value="TaskModel.descricao" class="form-control" />
+            @*<small id="edescricaoHelp" class="form-text text-muted">@QtdCaracteres / 250 caracteres digitados.</small>*@
+            <ValidationMessage For="@(()=> TaskModel.descricao)" />
+        </div>
+    </div>
+
+    <br />
+    <button type="submit" class="btn btn-success">
+        Salvar
+    </button>
+    <button class="btn btn-danger"
+    @onclick="@(()=> nav!.NavigateTo("/"))">
+        Cancelar
+    </button>
+
+</EditForm>
+
+@code {
+    [Parameter]public Tarefa? TaskModel { get; set; }
+    [Parameter]public EventCallback OnValidSubmit{ get; set; }
+    [Inject]private NavigationManager? nav { get; set; }
+    @*protected int QtdCaracteres{ get; set; }
+
+    protected void Alterando(ChangeEventArgs e)
+    {
+        QtdCaracteres = e.Value.ToString().Length;
+    }*@
+}

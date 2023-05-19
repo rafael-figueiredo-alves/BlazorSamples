@@ -5,33 +5,51 @@
 
 <h2>Estas são as minhas Tarefas</h2>
 
-<table class="table table-hover">
-    <thead>
-        <tr>
-            <th scope="col">#</th>
-            <th scope="col">Tarefa</th>
-            <th scope="col">Ações</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <th scope="col"><input class="form-check-input" type="checkbox" value="" id="flexCheckDefault"></th>
-            <td>Mark</td>
-            <td>Otto</td>
-        </tr>
-        <tr>
-            <th scope="col"><input class="form-check-input" type="checkbox" value="" id="flexCheckDefault"></th>
-            <td>Jacob</td>
-            <td>Thornton</td>
-        </tr>
-        <tr>
-            <th scope="col"><input class="form-check-input" type="checkbox" value="" id="flexCheckDefault"></th>
-            <td colspan="2">Larry the Bird</td>
-        </tr>
-    </tbody>
-</table>
+@if(Lista == null)
+{
+    <p>Carregando tarefas...</p>
+}
+else
+if(!Lista.Any())
+{
+    <p>Sem tarefas</p>
+}
+else
+{
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Tarefa</th>
+                <th scope="col">Descrição</th>
+                <th scope="col">Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach(Tarefa item in Lista)
+        {
+                <tr>
+                    <th scope="col" class="col-1 align-middle"><input class="form-check-input" type="checkbox" @bind="item.feito" id="flexCheckDefault"></th>
+                    <td class="col-2 align-middle">@item.tarefa</td>
+                    <td class="col-8 align-middle">@item.descricao</td>
+                    <td>
+                        <div>
+                            <a class="btn btn-primary" href="edittask/@item.id"><span class="oi oi-pencil" /></a>
+                            <a class="btn btn-danger" @onclick="() => MyTasks.RemoveTarefa(item.id)"><span class="oi oi-trash" /></a>
+                        </div>
+                    </td>
+                </tr>
+        }
+        </tbody>
+    </table>
+}
 
 @code{
- 
+    public List<Tarefa>? Lista;
+
+    protected override void OnInitialized()
+    {
+        Lista = MyTasks.GetTarefas();
+    }
 }
 
