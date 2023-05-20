@@ -4,6 +4,7 @@
 <PageTitle>Simple To-DO App | Home</PageTitle>
 
 <h2>Estas são as minhas Tarefas</h2>
+<hr />
 
 @if(Lista == null)
 {
@@ -35,7 +36,7 @@ else
                     <td>
                         <div>
                             <a class="btn btn-primary" href="edittask/@item.id"><span class="oi oi-pencil" /></a>
-                            <a class="btn btn-danger" @onclick="() => MyTasks.RemoveTarefa(item.id)"><span class="oi oi-trash" /></a>
+                            <a class="btn btn-danger" @onclick="@(()=> RemoveTarefa(item.id))"><span class="oi oi-trash" /></a>
                         </div>
                     </td>
                 </tr>
@@ -44,12 +45,32 @@ else
     </table>
 }
 
+<Msg Titulo="Excluir tarefa?" @ref="msg" OnYesClick="ApagarTask">
+    <p>Deseja realmente apagar a tarefa selecionada?</p>
+</Msg>
+
 @code{
     public List<Tarefa>? Lista;
+
+    private Msg? msg;
+
+    private Guid id;
 
     protected override void OnInitialized()
     {
         Lista = MyTasks.GetTarefas();
+    }
+
+    protected void RemoveTarefa(Guid _id)
+    {
+        id = _id;
+        msg.Exibe();
+    }
+
+    protected void ApagarTask()
+    {
+        MyTasks.RemoveTarefa(id);
+        msg.Oculta();
     }
 }
 

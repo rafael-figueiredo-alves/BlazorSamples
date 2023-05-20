@@ -1,16 +1,44 @@
-﻿using SimpleToDOApp.Entities;
+﻿using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
+using SimpleToDOApp.Entities;
+using System.Text.Json;
 
 namespace SimpleToDOApp.Services
 {
     public class Tarefas : ITarefas
     {
+        [Inject]
+        IJSRuntime js { get; set; }
+
+        const string DBKey = "SimpleToDOAppBD";
         private List<Tarefa> _tarefas;
-        public Tarefas() 
+
+        async void LerBD()
         {
-            _tarefas = new List<Tarefa>()
+            var Dados = await js.InvokeAsync<string>("localStorage.getItem", DBKey);
+            if (Dados != null)
             {
-                new Tarefa("Teste", "Testando...")
-            };
+                _tarefas = JsonSerializer.Deserialize<List<Tarefa>>(Dados,
+                new JsonSerializerOptions()
+                {
+                    PropertyNameCaseInsensitive = true
+                })!;
+            }
+            else
+            _tarefas = new List<Tarefa>()
+                {
+                    new Tarefa("Teste", "Testando...")
+                };
+        }
+
+        public Tarefas(IJSRuntime js) 
+        {
+            this.js = js;
+            LerBD();
+            //_tarefas = new List<Tarefa>()
+            //    {
+            //        new Tarefa("Teste", "Testando...")
+            //    };
         }
         public void AddTarefa(Tarefa _tarefa)
         {
