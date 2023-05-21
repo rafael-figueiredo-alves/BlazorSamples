@@ -14,7 +14,7 @@ namespace SimpleToDOApp.Services
         private string? Dados { get; set; }
         private List<Tarefa>? _tarefas { get; set; }
 
-        private async string LerBD()
+        private async Task LerBD()
         {
            Dados = await (js.InvokeAsync<string>("localStorage.getItem", DBKey));
         }
@@ -54,9 +54,9 @@ namespace SimpleToDOApp.Services
             return _tarefas!.FirstOrDefault(_task => _task.id == _id)!;
         }
 
-        public List<Tarefa> GetTarefas()
+        public async Task<List<Tarefa>> GetTarefas()
         {
-            LerBD();
+            await LerBD();
             if (Dados == null)
             {
                 _tarefas = new List<Tarefa>() { };

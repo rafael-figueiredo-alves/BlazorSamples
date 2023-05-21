@@ -4,7 +4,7 @@ namespace SimpleToDOApp.Services
 {
     public interface ITarefas
     {
-        public List<Tarefa> GetTarefas();
+        public Task<List<Tarefa>> GetTarefas();
         public Tarefa GetTarefa(Guid _id);
         public void AddTarefa(Tarefa _tarefa);
         public bool RemoveTarefa(Guid _tarefaId);
