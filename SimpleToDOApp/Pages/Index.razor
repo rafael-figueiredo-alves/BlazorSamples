@@ -1,5 +1,5 @@
 ﻿@page "/"
-@inject ITarefas MyTasks
+@inherits IndexBase
 
 <PageTitle>Simple To-DO App | Home</PageTitle>
 
@@ -48,35 +48,4 @@ else
 <Msg Titulo="Excluir tarefa?" @ref="msg" OnYesClick="ApagarTask">
     <p>Deseja realmente apagar a tarefa selecionada?</p>
 </Msg>
-
-@code{
-    public List<Tarefa>? Lista { get; set; }
-
-    private Msg? msg;
-
-    private Guid id;
-
-    protected override async void OnInitialized()
-    {
-        Lista = await MyTasks.GetTarefas();
-        StateHasChanged();
-    }
-
-    protected void RemoveTarefa(Guid _id)
-    {
-        id = _id;
-        msg!.Exibe();
-    }
-
-    protected void ApagarTask()
-    {
-        MyTasks.RemoveTarefa(id);
-        msg!.Oculta();
-    }
-
-    protected void SetarTarefa(Guid id, bool feito)
-    {
-        MyTasks.SetTaskDone(id, feito);
-    }
-}
 

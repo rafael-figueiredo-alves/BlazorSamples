@@ -1,25 +1,6 @@
 ﻿@page "/edittask/{id:guid}"
-@inject ITarefas MyTasks
+@inherits EditTaskBase
 
 <h3>Editando Tarefa</h3>
 
 <Formulario TaskModel="@tarefa" OnValidSubmit="@EditarTarefa" />
-
-
-@code {
-    [Inject]private NavigationManager? nav { get; set; }
-    [Parameter] public Guid id { get; set; }
-
-    public Tarefa? tarefa;
-
-    protected override void OnParametersSet()
-    {
-        tarefa = MyTasks.GetTarefa(id);
-    }
-
-    protected void EditarTarefa()
-    {
-        MyTasks.UpdateTarefa(tarefa!);
-        nav!.NavigateTo("/");
-    }
-}

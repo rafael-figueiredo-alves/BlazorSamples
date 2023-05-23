@@ -1,5 +1,5 @@
 ﻿@page "/sobre"
-@inject NavigationManager nav
+@inherits SobreBase
 
 <PageTitle>Simple To-DO App | Sobre</PageTitle>
 
@@ -13,12 +13,3 @@
         <p class="text-end"><button class="btn btn-primary" @onclick="Voltar" style="width: 125px"><span class="oi oi-chevron-left" /> Voltar</button></p>
     </div>
 </div>
-
-@code{
-    protected int Ano = DateTime.Now.Year;
-
-    protected void Voltar()
-    {
-        nav.NavigateTo("/", false);
-    }
-}
