@@ -27,7 +27,7 @@ else
             </tr>
         </thead>
         <tbody>
-        @foreach(Tarefa item in Lista)
+        @foreach(Tarefa item in Lista!)
         {
                 <tr>
                     <th scope="col" class="col-1 align-middle"><input class="form-check-input" type="checkbox" @bind="item.feito" id="flexCheckDefault" @onclick="@(() => SetarTarefa(item.id, !item.feito))"></th>
@@ -48,4 +48,7 @@ else
 <Msg Titulo="Excluir tarefa?" @ref="msg" OnYesClick="ApagarTask">
     <p>Deseja realmente apagar a tarefa selecionada?</p>
 </Msg>
+
+@*<Paginacao QuantidadeTotalPaginas="QuantidadeTotalPaginas" paginaAtual="paginaAtual"
+           Raio="2" PaginaSelecionada="PaginaSelecionada" />*@
 
