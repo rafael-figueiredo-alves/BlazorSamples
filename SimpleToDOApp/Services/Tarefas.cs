@@ -10,6 +10,8 @@ namespace SimpleToDOApp.Services
         [Inject]
         IJSRuntime js { get; set; }
 
+        private readonly int QtdTarefasPorPagina = 5;
+
         const string DBKey = "SimpleToDOAppBD";
         private string? Dados { get; set; }
         private List<Tarefa>? _tarefas { get; set; }
@@ -27,21 +29,6 @@ namespace SimpleToDOApp.Services
         public Tarefas(IJSRuntime js) 
         {
             this.js = js;
-            //if (Dados == null)
-            //{
-            //    _tarefas = new List<Tarefa>() { };
-            //}
-            //else
-            //{
-            //    if (Dados.Length != 0)
-            //    {
-            //        _tarefas = JsonSerializer.Deserialize<List<Tarefa>>(Dados);
-            //    }
-            //    else
-            //    {
-            //        _tarefas = new List<Tarefa> { };
-            //    }
-            //}
         }
         public void AddTarefa(Tarefa _tarefa)
         {
@@ -84,14 +71,42 @@ namespace SimpleToDOApp.Services
 
         public void UpdateTarefa(Tarefa _tarefa)
         {
-            RemoveTarefa(_tarefa.id);
-            AddTarefa(_tarefa);
+            _tarefas!.FirstOrDefault(_task => _task.id == _tarefa.id)!.tarefa = _tarefa.tarefa;
+            _tarefas!.FirstOrDefault(_task => _task.id == _tarefa.id)!.descricao = _tarefa.descricao;
+            GravarBD();
         }
 
         public void SetTaskDone(Guid _id, bool Done)
         {
             _tarefas!.FirstOrDefault(_task => _task.id == _id)!.feito = Done;
             GravarBD();
+        }
+
+        public async Task<PaginaTarefas> GetTarefasPage(int pageIndex = 1)
+        {
+            await LerBD();
+            if (Dados == null)
+            {
+                _tarefas = new List<Tarefa>() { };
+            }
+            else
+            {
+                if (Dados.Length != 0)
+                {
+                    _tarefas = JsonSerializer.Deserialize<List<Tarefa>>(Dados);
+                }
+                else
+                {
+                    _tarefas = new List<Tarefa> { };
+                }
+            }
+
+            double TotalPaginas = Math.Ceiling((double)_tarefas!.Count / QtdTarefasPorPagina);
+            PaginaTarefas paginaTarefas = new PaginaTarefas();
+            paginaTarefas.tarefas = _tarefas.Skip((pageIndex - 1) * QtdTarefasPorPagina).Take(QtdTarefasPorPagina).ToList();
+            paginaTarefas.totalPaginas = Convert.ToInt16(TotalPaginas);
+
+            return paginaTarefas;
         }
     }
 }

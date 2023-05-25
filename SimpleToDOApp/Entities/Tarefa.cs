@@ -27,4 +27,10 @@ namespace SimpleToDOApp.Entities
             feito = false;
         }
     }
+
+    public class PaginaTarefas
+    {
+        public List<Tarefa> tarefas { get; set; }
+        public int totalPaginas { get; set; }
+    }
 }

@@ -9,30 +9,18 @@ namespace SimpleToDOApp.Pages
     {
         [Inject] private ITarefas? MyTasks { get; set; }
         public List<Tarefa>? Lista { get; set; }
-        //public List<Tarefa>? ListaPaginada { get; set; }
 
         protected Msg? msg;
 
-        //protected int QuantidadeTotalPaginas { get; set; }
-        //protected double TotalPaginas { get; set; }
-        //protected int QtdTarefasPorPagina { get; set; } = 5;
-        //protected int paginaAtual { get; set; } = 1;
+        protected int QuantidadeTotalPaginas { get; set; }
+        protected int paginaAtual { get; set; } = 1;
 
         private Guid id;
 
-        protected override async void OnInitialized()
+        protected override void OnInitialized()
         {
-            Lista = await MyTasks!.GetTarefas();
-            StateHasChanged();
-            //TotalPaginas = Math.Ceiling((double)(Lista!.Count / QtdTarefasPorPagina));
-            //QuantidadeTotalPaginas = Convert.ToInt32(TotalPaginas);
+            CarregarPagina();
         }
-
-        //protected override void OnAfterRender(bool firstRender)
-        //{
-        //    CarregarPagina();
-        //    StateHasChanged();
-        //}
 
         protected void RemoveTarefa(Guid _id)
         {
@@ -43,6 +31,7 @@ namespace SimpleToDOApp.Pages
         protected void ApagarTask()
         {
             MyTasks!.RemoveTarefa(id);
+            CarregarPagina();
             msg!.Oculta();
         }
 
@@ -51,19 +40,18 @@ namespace SimpleToDOApp.Pages
             MyTasks!.SetTaskDone(id, feito);
         }
 
-        //protected void PaginaSelecionada(int pagina)
-        //{
-        //    paginaAtual = pagina;
-        //    CarregarPagina(pagina);
-        //    StateHasChanged();
-        //}
+        protected void PaginaSelecionada(int pagina)
+        {
+            paginaAtual = pagina;
+            CarregarPagina(pagina);
+        }
 
-        //protected void CarregarPagina(int pagina = 1)
-        //{
-        //    ListaPaginada = Lista!
-        //        .Skip((pagina - 1) * QtdTarefasPorPagina)
-        //        .Take(QtdTarefasPorPagina).ToList();
-        //    StateHasChanged();
-        //}
+        protected async void CarregarPagina(int pagina = 1)
+        {
+            PaginaTarefas page = await MyTasks!.GetTarefasPage(pagina);
+            Lista = page.tarefas.ToList();
+            QuantidadeTotalPaginas = page.totalPaginas;
+            StateHasChanged();
+        }
     }
 }
