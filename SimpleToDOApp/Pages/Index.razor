@@ -3,7 +3,17 @@
 
 <PageTitle>Simple To-DO App | Home</PageTitle>
 
-<h2>Estas são as minhas Tarefas</h2>
+<div class="container-fluid">
+    <div class="row">
+        <div class="d-none d-md-table-cell col-8 align-middle">
+            <h3 class="d-none d-md-inline">Estas são as minhas Tarefas</h3>
+        </div>
+        <div class="col justify-content-end">
+            <SearchInput PesquisarTarefa="Pesquisar" Limpar="LimparPesquisa" />
+        </div>
+    </div>
+</div>
+
 <hr />
 
 @if(Lista == null)

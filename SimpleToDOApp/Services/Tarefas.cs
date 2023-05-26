@@ -82,7 +82,7 @@ namespace SimpleToDOApp.Services
             GravarBD();
         }
 
-        public async Task<PaginaTarefas> GetTarefasPage(int pageIndex = 1)
+        public async Task<PaginaTarefas> GetTarefasPage(int pageIndex = 1, string SearchTask = "")
         {
             await LerBD();
             if (Dados == null)
@@ -99,6 +99,11 @@ namespace SimpleToDOApp.Services
                 {
                     _tarefas = new List<Tarefa> { };
                 }
+            }
+
+            if(!string.IsNullOrEmpty(SearchTask))
+            {
+                _tarefas = _tarefas!.Where(_task => _task.tarefa.IndexOf(SearchTask, StringComparison.OrdinalIgnoreCase) >= 0 || _task.descricao.IndexOf(SearchTask, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
             }
 
             double TotalPaginas = Math.Ceiling((double)_tarefas!.Count / QtdTarefasPorPagina);

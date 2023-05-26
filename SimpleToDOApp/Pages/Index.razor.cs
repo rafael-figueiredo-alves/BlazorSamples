@@ -46,12 +46,27 @@ namespace SimpleToDOApp.Pages
             CarregarPagina(pagina);
         }
 
-        protected async void CarregarPagina(int pagina = 1)
+        protected async void CarregarPagina(int pagina = 1, string SearchTask = "")
         {
-            PaginaTarefas page = await MyTasks!.GetTarefasPage(pagina);
+            PaginaTarefas page = await MyTasks!.GetTarefasPage(pagina, SearchTask);
             Lista = page.tarefas.ToList();
             QuantidadeTotalPaginas = page.totalPaginas;
             StateHasChanged();
+        }
+
+        protected void Pesquisar(string Termo)
+        {
+            if (!string.IsNullOrEmpty(Termo))
+            {
+                paginaAtual = 1;
+                CarregarPagina(paginaAtual, Termo);
+            }
+        }
+
+        protected void LimparPesquisa()
+        {
+            paginaAtual = 1;
+            CarregarPagina();
         }
     }
 }
