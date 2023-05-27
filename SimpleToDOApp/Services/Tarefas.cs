@@ -84,6 +84,8 @@ namespace SimpleToDOApp.Services
 
         public async Task<PaginaTarefas> GetTarefasPage(int pageIndex = 1, string SearchTask = "")
         {
+            List<Tarefa>? _result;
+
             await LerBD();
             if (Dados == null)
             {
@@ -103,12 +105,16 @@ namespace SimpleToDOApp.Services
 
             if(!string.IsNullOrEmpty(SearchTask))
             {
-                _tarefas = _tarefas!.Where(_task => _task.tarefa.IndexOf(SearchTask, StringComparison.OrdinalIgnoreCase) >= 0 || _task.descricao.IndexOf(SearchTask, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
+                _result = _tarefas!.Where(_task => _task.tarefa.IndexOf(SearchTask, StringComparison.OrdinalIgnoreCase) >= 0 || _task.descricao.IndexOf(SearchTask, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
+            }
+            else
+            {
+                _result = _tarefas!.ToList();
             }
 
-            double TotalPaginas = Math.Ceiling((double)_tarefas!.Count / QtdTarefasPorPagina);
+            double TotalPaginas = Math.Ceiling((double)_result!.Count / QtdTarefasPorPagina);
             PaginaTarefas paginaTarefas = new PaginaTarefas();
-            paginaTarefas.tarefas = _tarefas.Skip((pageIndex - 1) * QtdTarefasPorPagina).Take(QtdTarefasPorPagina).ToList();
+            paginaTarefas.tarefas = _result.Skip((pageIndex - 1) * QtdTarefasPorPagina).Take(QtdTarefasPorPagina).ToList();
             paginaTarefas.totalPaginas = Convert.ToInt16(TotalPaginas);
 
             return paginaTarefas;

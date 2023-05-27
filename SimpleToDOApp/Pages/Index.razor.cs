@@ -31,7 +31,7 @@ namespace SimpleToDOApp.Pages
         protected void ApagarTask()
         {
             MyTasks!.RemoveTarefa(id);
-            CarregarPagina();
+            Lista!.RemoveAt(Lista.IndexOf(Lista!.Where(item => item.id == id).FirstOrDefault()!));
             msg!.Oculta();
         }
 
