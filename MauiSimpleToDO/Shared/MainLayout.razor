@@ -1,0 +1,25 @@
+﻿@inherits LayoutComponentBase
+
+<div class="page">
+    <main>
+        <nav class="navbar sticky-top bg-light ms-auto mb-2 mb-lg-0">
+            <div class="container-fluid m-1 shadow">
+                <a class="navbar-brand" href=""><span class="oi oi-task" /> Simple To-DO App</a>
+                <div class="d-flex justify-content-end">
+                    <div class="m-1">
+                        <a class="btn btn-success d-none d-sm-inline" href="newtask" style="width: 140px"><span class="oi oi-plus" />  Nova Tarefa</a>
+                        <a class="btn btn-success d-sm-none rounded-circle" href="newtask"><span class="oi oi-plus" /></a>
+                    </div>
+                    <div class="m-1">
+                        <a class="btn btn-primary d-none d-sm-inline" href="sobre" style="width: 140px"><span class="oi oi-question-mark" />  Sobre</a>
+                        <a class="btn btn-primary d-sm-none rounded-circle" href="sobre"><span class="oi oi-question-mark" /></a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <article class="content px-4">
+            @Body
+        </article>
+    </main>
+</div>

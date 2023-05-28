@@ -1,0 +1,14 @@
+﻿@inherits PaginacaoBase
+
+<nav aria-label="Paginacao">
+    <ul class="pagination justify-content-end">
+        @foreach (LinkModel link in links!)
+        {
+            <li @onclick="@(() => PaginaSelecionadaLink(link))"
+                style="cursor: pointer;"
+                class="page-item @(link.Enabled ? null : "disabled") @(link.Active ? "active" : null)">
+                <span class="page-link" href="#">@link.Text</span>
+            </li>
+        }
+    </ul>
+</nav>

@@ -1,0 +1,34 @@
+﻿@inherits FormularioBase
+
+<EditForm Model="@TaskModel" OnValidSubmit="@OnValidSubmit">
+    <DataAnnotationsValidator />
+
+    <div class="form-group">
+        <label form="Tarefa">Tarefa: </label>
+        <div>
+            <InputText @bind-Value="TaskModel!.tarefa" class="form-control" />
+            <ValidationMessage For="@(()=> TaskModel.tarefa)" />
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label form="Tarefa">Descrição: </label>
+        <div>
+            <InputTextArea @bind-Value="TaskModel.descricao" class="form-control" maxlength="250" @oninput="Alterando"/>
+            <small id="edescricaoHelp" class="form-text text-muted">@QtdCaracteres / 250 caracteres digitados.</small>
+            <ValidationMessage For="@(()=> TaskModel.descricao)" />
+        </div>
+    </div>
+
+    <br />
+    <div class="text-end">
+        <button class="btn btn-danger" style="width: 100px"
+         @onclick="@(()=> nav!.NavigateTo("/"))">
+            Cancelar
+        </button>
+        <button type="submit" class="btn btn-success" style="width: 100px">
+            Salvar
+        </button>
+    </div>
+
+</EditForm>
