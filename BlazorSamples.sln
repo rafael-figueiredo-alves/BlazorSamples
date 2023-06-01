@@ -5,7 +5,7 @@ VisualStudioVersion = 17.5.33627.172
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleToDOApp", "SimpleToDOApp\SimpleToDOApp.csproj", "{A415CD12-6CB1-4496-A87B-FB7EB142B888}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MauiSimpleToDO", "MauiSimpleToDO\MauiSimpleToDO.csproj", "{04B877DE-6F22-4F67-AEE1-3C08D6BBF03F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MauiSimpleToDO", "MauiSimpleToDO\MauiSimpleToDO.csproj", "{04B877DE-6F22-4F67-AEE1-3C08D6BBF03F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
