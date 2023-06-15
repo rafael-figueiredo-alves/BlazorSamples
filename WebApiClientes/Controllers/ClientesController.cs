@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using WebApiClientes.Entities;
 using WebApiClientes.Services;
 
@@ -12,9 +11,26 @@ namespace WebApiClientes.Controllers
         private readonly IClientes fclientes = new ClientesBD();
 
         [HttpGet]
-        public ActionResult<List<Clientes>> Get()
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<List<Clientes>>> Get()
         {
-            return Ok(fclientes.GetClientes());
+            var clientes = await fclientes.GetClientes();
+            try
+            {
+                if (clientes != null)
+                {
+                    return Ok(clientes);
+                }
+                else
+                {
+                    return StatusCode(500, "Problemas com o servidor");
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
     }
 }
