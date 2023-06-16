@@ -2,13 +2,12 @@
 {
     public class Erro
     {
-        public int statuscode;
-        public string? message;
-
-        public Erro(int _code, string _msg)
+        public string? Mensagem { get; set; }
+        public string? Info { get; set; }
+        public Erro(string? _msg, string? _info)
         {
-            statuscode = _code;
-            message = _msg;
+            Mensagem = _msg;
+            Info = _info;
         }
     }
 }
