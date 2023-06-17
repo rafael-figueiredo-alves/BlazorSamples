@@ -6,7 +6,7 @@ namespace WebApiClientes.Services
     {
         public Task<List<Clientes>> GetClientes();
         public Task<Clientes> GetCliente(int id);
-        public Task<Clientes> PostCliente(Clientes cliente);
+        public Task<Clientes> PostCliente(ClienteDTO cliente);
         public Task<Clientes> PutCliente(Clientes cliente);
         public bool DeleteCliente(int id);
     }
