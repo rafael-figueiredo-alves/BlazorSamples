@@ -122,7 +122,7 @@ namespace WebApiClientes.Services
         /// <param name="cliente"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public async Task<Clientes> PostCliente(ClienteDTO cliente)
+        public async Task<Clientes> PostCliente(Clientes cliente)
         {
             MySqlConnection? conn = null;
             try

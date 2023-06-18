@@ -10,33 +10,34 @@ namespace WebApiClientes.Entities
         /// <summary>
         /// Campo Id do tipo numérico e auto-incrementável
         /// </summary>
-        public int Id { get; set; }
+        public int Id { get; }
         /// <summary>
         /// Campo nome
         /// </summary>
         [Required]
-        [StringLength(75)]
+        [StringLength(75, ErrorMessage = "Campo Nome aceita apenas 75 digitos. Verifique se colocou algum espaço ou caracter a mais")]
         public string? Nome { get; set; }
         /// <summary>
         /// Campo Endereço
         /// </summary>
         [Required]
-        [StringLength(120)]
+        [StringLength(120, ErrorMessage = "Campo Endereco aceita apenas 120 digitos. Verifique se colocou algum espaço ou caracter a mais")]
         public string? Endereco { get; set;}
         /// <summary>
         /// Campo Telefone
         /// </summary>
-        [StringLength(15)]
+        [StringLength(15, ErrorMessage ="Campo Telefone aceita apenas 15 digitos. Verifique se colocou algum espaço ou caracter a mais")]
         public string? Telefone { get; set; }
         /// <summary>
         /// Campo Celular
         /// </summary>
-        [StringLength(15)]
+        [StringLength(15, ErrorMessage = "Campo Celular aceita apenas 15 digitos. Verifique se colocou algum espaço ou caracter a mais")]
         public string? Celular { get; set;}
         /// <summary>
         /// Campo e-mail
         /// </summary>
-        [StringLength(150)]
+        [EmailAddress]
+        [StringLength(150, ErrorMessage = "Campo Email aceita apenas 150 digitos. Verifique se colocou algum espaço ou caracter a mais")]
         public string? Email { get; set;}
 
         /// <summary>

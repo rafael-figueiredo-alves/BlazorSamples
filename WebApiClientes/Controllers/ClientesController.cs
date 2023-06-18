@@ -117,15 +117,17 @@ namespace WebApiClientes.Controllers
         [Consumes(MediaTypeNames.Application.Json)]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesErrorResponseType(typeof(Clientes))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<Clientes>> PostCliente([FromBody]ClienteDTO cliente)
+        public async Task<ActionResult<Clientes>> PostCliente([FromBody]Clientes cliente)
         {
-            var clientes = fclientes.PostCliente(cliente);
+            var clientes = await fclientes.PostCliente(cliente);
             try
             {
                 if (clientes != null)
                 {
-                    return Ok(clientes);
+                    return Created($"/v1/Clientes/{clientes.Id}", clientes);
                 }
                 else
                 {

@@ -1,5 +1,8 @@
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
+using WebApiClientes.Entities;
 using WebApiClientes.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -34,6 +37,16 @@ builder.Services.AddSwaggerGen(options =>
     var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
 });
+
+builder.Services.AddMvc()
+                  .ConfigureApiBehaviorOptions(options =>
+                  {
+                    options.InvalidModelStateResponseFactory = context =>
+                    {
+                        var problemDetails = new ErroValidacao(context);
+                        return new BadRequestObjectResult(problemDetails);
+                    };
+                  });
 
 
 var app = builder.Build();
