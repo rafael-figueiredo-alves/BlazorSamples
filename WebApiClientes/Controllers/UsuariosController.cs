@@ -52,7 +52,7 @@ namespace WebApiClientes.Controllers
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             //Adiciona 2 horas para expirar o token
-            var Expiration = DateTime.UtcNow.AddSeconds(30);
+            var Expiration = DateTime.UtcNow.AddHours(2);
 
             JwtSecurityToken token = new JwtSecurityToken(
                 issuer: null,
