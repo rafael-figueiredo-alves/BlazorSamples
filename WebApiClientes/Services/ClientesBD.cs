@@ -11,6 +11,7 @@ namespace WebApiClientes.Services
     public class ClientesBD : IClientes
     {
         private readonly string? Conn;
+        
         /// <summary>
         /// Classe construtora
         /// </summary>
@@ -19,6 +20,7 @@ namespace WebApiClientes.Services
             IConfiguration configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
             Conn = configuration.GetConnectionString("Default");
         }
+        
         /// <summary>
         /// Método para apagar clientes
         /// </summary>

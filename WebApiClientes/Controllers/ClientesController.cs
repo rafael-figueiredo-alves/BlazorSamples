@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Mime;
 using WebApiClientes.Entities;
@@ -6,10 +7,12 @@ using WebApiClientes.Services;
 
 namespace WebApiClientes.Controllers
 {
+    //Os comengtários com /// são usados no swagger
     /// <summary>
     /// Endpoint Cliente
     /// </summary>
     [Route("v1/[controller]")]
+    [Authorize(AuthenticationSchemes = "Bearer")] //Usado para adicionar autenticação e autorização
     [ApiController]
     public class ClientesController : ControllerBase
     {
@@ -26,8 +29,8 @@ namespace WebApiClientes.Controllers
         /// <response code="404">Não foram encontrados clientes</response>
         /// <response code="500">Ocorreu um erro interno no servidor</response>
         [HttpGet]
-        [Produces(MediaTypeNames.Application.Json)]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [Produces(MediaTypeNames.Application.Json)] //Informa qual formato de retorno
+        [ProducesResponseType(StatusCodes.Status200OK)] //Informa status codes retornáveis
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<List<Clientes>>> Get()
@@ -39,6 +42,7 @@ namespace WebApiClientes.Controllers
                 {
                     if (clientes.Any())
                     {
+                        //Os dois comandos abaixo adicionam Headers personalizados
                         Response.Headers.Add("AppName", "Web Api Clientes");
                         Response.Headers.Add("Version", "1.0.0");
                         return Ok(clientes);
@@ -117,7 +121,7 @@ namespace WebApiClientes.Controllers
         /// <response code="400">Ocorreu algum problema com so dados informados, violando alguma regra de validação</response>
         /// <response code="500">Ocorreu um erro interno no servidor</response>
         [HttpPost]
-        [Consumes(MediaTypeNames.Application.Json)]
+        [Consumes(MediaTypeNames.Application.Json)] //Mostra qual formatyo será consumido
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesErrorResponseType(typeof(Erro))]
