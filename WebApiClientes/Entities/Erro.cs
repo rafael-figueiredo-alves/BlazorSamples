@@ -9,10 +9,12 @@
         /// Campo destinado a mensagem de erro a exibir
         /// </summary>
         public string? Mensagem { get; set; }
+        
         /// <summary>
         /// Informações detalhadas sobre o erro e o que fazer a respeito
         /// </summary>
         public string? Info { get; set; }
+        
         /// <summary>
         /// Método Construtor da classe erro
         /// </summary>

@@ -25,9 +25,29 @@ namespace WebApiClientes.Services
         /// <param name="id"></param>
         /// <returns>Nenhum conteúdo</returns>
         /// <exception cref="NotImplementedException"></exception>
-        public bool DeleteCliente(int id)
+        public async Task<bool> DeleteCliente(int id)
         {
-            throw new NotImplementedException();
+            MySqlConnection? conn = null;
+            try
+            {
+                conn = new MySqlConnection(Conn);
+                conn.Open();
+                string sql = "delete from clientes where idClientes = @id";
+                var cmd = new MySqlCommand(sql, conn);
+                cmd.Parameters.Add(new MySqlParameter("id", id));
+                var ResultSet = await cmd.ExecuteNonQueryAsync();
+                conn.Close();
+
+                return (!ResultSet.Equals(0));
+            }
+            catch
+            {
+                return false;
+            }
+            finally
+            {
+                conn?.Close();
+            }
         }
 
         /// <summary>
@@ -176,11 +196,58 @@ namespace WebApiClientes.Services
         /// Altera dados de cliente
         /// </summary>
         /// <param name="cliente"></param>
+        /// <param name="ID"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public Task<Clientes> PutCliente(Clientes cliente)
+        public async Task<Clientes> PutCliente(Clientes cliente, int ID)
         {
-            throw new NotImplementedException();
+            MySqlConnection? conn = null;
+            try
+            {
+                conn = new MySqlConnection(Conn);
+                conn.Open();
+                string sql = "update clientes set Nome = @nome, Endereco = @endereco, Telefone = @telefone, Celular = @celular, Email = @email where idClientes = @id";
+                var cmd = new MySqlCommand(sql, conn);
+                cmd.Parameters.Add(new MySqlParameter("id", ID));
+                cmd.Parameters.Add(new MySqlParameter("nome", cliente.Nome));
+                cmd.Parameters.Add(new MySqlParameter("endereco", cliente.Endereco));
+                cmd.Parameters.Add(new MySqlParameter("telefone", cliente.Telefone));
+                cmd.Parameters.Add(new MySqlParameter("celular", cliente.Celular));
+                cmd.Parameters.Add(new MySqlParameter("email", cliente.Email));
+                await cmd.ExecuteNonQueryAsync();
+                sql = "select * from Clientes where idClientes = @id";
+                cmd.CommandText = sql;
+                var reader = await cmd.ExecuteReaderAsync();
+                if (reader != null)
+                {
+                    if (reader.HasRows)
+                    {
+                        await reader.ReadAsync();
+                        return new Clientes(Convert.ToInt32(reader["idClientes"].ToString()),
+                                              reader["Nome"].ToString()!,
+                                              reader["Endereco"].ToString()!,
+                                              reader["Telefone"].ToString()!,
+                                              reader["Celular"].ToString()!,
+                                              reader["Email"].ToString()!);
+                    }
+                    else
+                    {
+                        return null!;
+                    }
+                }
+                else
+                {
+                    return null!;
+                }
+            }
+            catch
+            {
+                return null!;
+            }
+            finally
+            {
+                conn?.Close();
+            }
         }
     }
 }

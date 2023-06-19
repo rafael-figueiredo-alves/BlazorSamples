@@ -39,6 +39,8 @@ namespace WebApiClientes.Controllers
                 {
                     if (clientes.Any())
                     {
+                        Response.Headers.Add("AppName", "Web Api Clientes");
+                        Response.Headers.Add("Version", "1.0.0");
                         return Ok(clientes);
                     }
                     else
@@ -112,12 +114,13 @@ namespace WebApiClientes.Controllers
         /// <param name="cliente"></param>
         /// <returns>Dados do cliente recém criado</returns>
         /// <response code="201">Cliente adicionado com sucesso</response>
+        /// <response code="400">Ocorreu algum problema com so dados informados, violando alguma regra de validação</response>
         /// <response code="500">Ocorreu um erro interno no servidor</response>
         [HttpPost]
         [Consumes(MediaTypeNames.Application.Json)]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesErrorResponseType(typeof(Clientes))]
+        [ProducesErrorResponseType(typeof(Erro))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<Clientes>> PostCliente([FromBody]Clientes cliente)
@@ -139,7 +142,78 @@ namespace WebApiClientes.Controllers
             {
                 return StatusCode(500, ex.Message);
             }
+        }
 
+        /// <summary>
+        /// Este método é utilizado para atualizar o registro do cliente informado.
+        /// </summary>
+        /// <param name="id">Id do cliente</param>
+        /// <param name="cliente">Dados do cliente</param>
+        /// <returns>Dados do cliente atualizado</returns>
+        /// <response code="200">Dados atualizados com sucesso</response>
+        /// <response code="400">Ocorreu um erro com os dados informados que não são válidos</response>
+        /// <response code="500">Ocorreu um erro inesperado no servidor</response>
+        [HttpPut("{id}")]
+        [Consumes(MediaTypeNames.Application.Json)]
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesErrorResponseType(typeof(Erro))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<Clientes>> PutCliente(int id, [FromBody]Clientes cliente)
+        {
+            var clientes = await fclientes.PutCliente(cliente, id);
+            try
+            {
+                if (clientes != null)
+                {
+                    return Ok(clientes);
+                }
+                else
+                {
+                    return StatusCode(500, new Erro("Houve um erro interno com o servidor",
+                                                    "Ocorreu um problema inesperado em nosso servidor, tente acessar nossa API mais tarde."));
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Utilize este método para apagar um cliente
+        /// </summary>
+        /// <param name="id">ID do cliente</param>
+        /// <returns>Não retorna conteúdo, apenas status code = 204</returns>
+        /// <response code="204">Cliente apagado com sucesso</response>
+        /// <response code="400">Ocorreu um erro com os dados informados que não são válidos</response>
+        /// <response code="500">Ocorreu um erro inesperado no servidor</response>
+        [HttpDelete("{id}")]
+        [Consumes(MediaTypeNames.Application.Json)]
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesErrorResponseType(typeof(Erro))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult> DeleteCliente(int id)
+        {
+            bool Apagou = await fclientes.DeleteCliente(id);
+            try
+            {
+                if (Apagou)
+                {
+                    return NoContent();
+                }
+                else
+                {
+                    return BadRequest(new Erro("Não foi possível apagar cliente", "O id informado é inválido e por isso não foi possível apagar o cliente informado"));
+                }
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
         }
     }
 }

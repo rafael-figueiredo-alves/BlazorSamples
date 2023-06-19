@@ -18,6 +18,8 @@ namespace WebApiClientes.Entities
             Detail = "Um ou mais campos enviados violaram alguma regra de validação. Verifique, corrija e tente novamente.";
             Status = 400;
             ConstructErrorMessages(actionContext);
+            Type = "Erro de Validação";
+            Instance = "Verifique os erros";
         }
 
         /// <summary>
@@ -56,7 +58,7 @@ namespace WebApiClientes.Entities
         /// </summary>
         /// <param name="error">Erro</param>
         /// <returns>Erros</returns>
-        private string GetErrorMessage(ModelError error)
+        private static string GetErrorMessage(ModelError error)
         {
             return string.IsNullOrEmpty(error.ErrorMessage) ? "A entrada não é válida." : error.ErrorMessage;
         }
