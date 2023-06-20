@@ -17,6 +17,7 @@ builder.Services.AddEndpointsApiExplorer();
 
 //Adicionando serviços que criei
 builder.Services.AddScoped<IClientes, ClientesBD>();
+builder.Services.AddScoped<IUsuarios, UsuariosBD>();
 
 //Adicionando COPRS para acesso cross-platform
 builder.Services.AddCors(options =>
