@@ -29,7 +29,20 @@ namespace WebApiClientes.Controllers
             _configuration = configuration;
         }
 
+        /// <summary>
+        /// Método responsável por realizar o login do usuário e obter o Token de acesso
+        /// </summary>
+        /// <param name="user">Dados necessários para o login</param>
+        /// <returns>O Token de acesso</returns>
+        /// <response code="200">Login efetuado com sucesso</response>
+        /// <response code="404">Não foi possível encontrar o usuário informado</response>
+        /// <response code="500">Ocorreu um erro interno no servidor</response>
         [HttpPost]
+        [Consumes("application/json")]
+        [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<UserToken>> Login(LoginUser user)
         {
             if (user != null)
@@ -64,7 +77,20 @@ namespace WebApiClientes.Controllers
             };
         }
 
+        /// <summary>
+        /// Método para registrar um novo usuário no sistema
+        /// </summary>
+        /// <param name="usuario">Dados do Usuário a ser registrado</param>
+        /// <returns>O Token de acesso</returns>
+        /// <response code="201">Usuário registrado com sucesso</response>
+        /// <response code="400">Ocorreu algum problema com os dados informados, violando alguma regra de validação, ou usuário já existente</response>
+        /// <response code="500">Ocorreu um erro interno no servidor</response>
         [HttpPost("register")]
+        [Consumes("application/json")]
+        [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<UserToken>> CreateUser(usuarios usuario)
         {
             if (usuario != null)
@@ -78,14 +104,14 @@ namespace WebApiClientes.Controllers
                     }
                     else
                     {
-                        return Ok(buildToken(user));
+                        return Created($"{user.ID!}", buildToken(user));
                     }
                 }
                 catch (Exception ex)
                 {
                     if (ex.Message == "USER EXISTS")
                     {
-                        return NotFound(new Erro("E-mail informado já em uso", "Já há um usuário usando o e-amil informado. Não é possível criar outro usuário usando o mesmo e-mail. Tente fazer o login."));
+                        return BadRequest(new Erro("E-mail informado já em uso", "Já há um usuário usando o e-amil informado. Não é possível criar outro usuário usando o mesmo e-mail. Tente fazer o login."));
                     }
                     else
                     {

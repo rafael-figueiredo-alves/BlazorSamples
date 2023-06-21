@@ -7,7 +7,7 @@ using WebApiClientes.Services;
 
 namespace WebApiClientes.Controllers
 {
-    //Os comengtários com /// são usados no swagger
+    //Os comentários com /// são usados no swagger
     /// <summary>
     /// Endpoint Cliente
     /// </summary>
