@@ -18,7 +18,7 @@ namespace SimpleToDOApp.Services
 
         private async Task LerBD()
         {
-           Dados = await (js.InvokeAsync<string>("localStorage.getItem", DBKey));
+           Dados = await js.InvokeAsync<string>("localStorage.getItem", DBKey);
         }
 
         async void GravarBD()
