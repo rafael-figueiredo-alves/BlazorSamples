@@ -7,6 +7,11 @@ namespace BlazorClientes.Services
     {
         [Inject]
         public IJSRuntime? JS { get;set; }
+
+        public LocalStorage(IJSRuntime jsservice) 
+        {
+            JS = jsservice;
+        }
         public async Task DeleteValue(string key)
         {
             await JS!.InvokeVoidAsync("localStorage.removeItem", key);

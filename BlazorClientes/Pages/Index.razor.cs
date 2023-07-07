@@ -9,15 +9,27 @@ namespace BlazorClientes.Pages
         [Inject]
         public ILocalStorage? fStorage { get; set; }
 
-        public string? Nome;
+        public string? Name { get; set; } = "Lopes";
         protected override void OnInitialized()
         {
             CarregarValores();
         }
 
-        protected async void CarregarValores();
+        public async void PegarNome()
+        {
+            Name = await fStorage!.GetValue("Teste");
+            StateHasChanged();
+        }
+
+        public async void LimparJson()
+        {
+            await fStorage!.DeleteValue("Teste");
+        }
+
+        protected async void CarregarValores()
         { 
-            Task t = await fStorage.SetValue("Teste", "Rafael Alves"); 
+            await fStorage!.SetValue("Teste", "Rafael Alves");
+            PegarNome();
         }
     }
 }
