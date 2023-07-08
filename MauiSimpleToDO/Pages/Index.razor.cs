@@ -2,6 +2,7 @@
 using MauiSimpleToDO.Entities;
 using MauiSimpleToDO.Services;
 using MauiSimpleToDO.Shared;
+using Blazored.Toast.Services;
 
 namespace MauiSimpleToDO.Pages
 {
@@ -9,6 +10,7 @@ namespace MauiSimpleToDO.Pages
     {
         [Inject] private ITarefas MyTasks { get; set; }
         public List<Tarefa> Lista { get; set; }
+        [Inject] private IToastService toastService { get; set; }
 
         protected Msg msg;
 
@@ -33,11 +35,20 @@ namespace MauiSimpleToDO.Pages
             MyTasks!.RemoveTarefa(id);
             Lista!.RemoveAt(Lista.IndexOf(Lista!.Where(item => item.id == id).FirstOrDefault()!));
             msg!.Oculta();
+            toastService.ShowSuccess("Tarefa removida com sucesso!");
         }
 
         protected void SetarTarefa(Guid id, bool feito)
         {
             MyTasks!.SetTaskDone(id, feito);
+            if (feito)
+            {
+                toastService.ShowSuccess("Tarefa concluída com sucesso!");
+            }
+            else
+            {
+                toastService.ShowInfo("Esta tarefa precisa ser concluída! Atenção!!!");
+            }
         }
 
         protected void PaginaSelecionada(int pagina)
@@ -52,6 +63,13 @@ namespace MauiSimpleToDO.Pages
             Lista = page.tarefas.ToList();
             QuantidadeTotalPaginas = page.totalPaginas;
             StateHasChanged();
+            if (!string.IsNullOrEmpty(SearchTask))
+            {
+                if (!Lista!.Any())
+                {
+                    toastService.ShowWarning("Não há tarefas para o termo buscado.");
+                }
+            }
         }
 
         protected void Pesquisar(string Termo)

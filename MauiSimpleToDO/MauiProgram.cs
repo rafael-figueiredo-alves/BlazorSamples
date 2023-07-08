@@ -1,4 +1,5 @@
-﻿using MauiSimpleToDO.Services;
+﻿using Blazored.Toast;
+using MauiSimpleToDO.Services;
 using Microsoft.Extensions.Logging;
 
 namespace MauiSimpleToDO
@@ -22,6 +23,8 @@ namespace MauiSimpleToDO
 		builder.Logging.AddDebug();
 #endif
             builder.Services.AddScoped<ITarefas, Tarefas>();
+
+            builder.Services.AddBlazoredToast();
 
             return builder.Build();
         }

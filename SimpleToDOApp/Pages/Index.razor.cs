@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using Blazored.Toast.Services;
+using Microsoft.AspNetCore.Components;
 using SimpleToDOApp.Entities;
 using SimpleToDOApp.Services;
 using SimpleToDOApp.Shared;
@@ -8,6 +9,7 @@ namespace SimpleToDOApp.Pages
     public class IndexBase : ComponentBase
     {
         [Inject] private ITarefas? MyTasks { get; set; }
+        [Inject] private IToastService toastService { get; set; }
         public List<Tarefa>? Lista { get; set; }
 
         protected Msg? msg;
@@ -33,11 +35,20 @@ namespace SimpleToDOApp.Pages
             MyTasks!.RemoveTarefa(id);
             Lista!.RemoveAt(Lista.IndexOf(Lista!.Where(item => item.id == id).FirstOrDefault()!));
             msg!.Oculta();
+            toastService.ShowSuccess("Tarefa removida com sucesso!");
         }
 
         protected void SetarTarefa(Guid id, bool feito)
         {
             MyTasks!.SetTaskDone(id, feito);
+            if (feito)
+            {
+                toastService.ShowSuccess("Tarefa concluída com sucesso!");
+            }
+            else
+            {
+                toastService.ShowInfo("Esta tarefa precisa ser concluída! Atenção!!!");
+            }
         }
 
         protected void PaginaSelecionada(int pagina)
@@ -52,6 +63,13 @@ namespace SimpleToDOApp.Pages
             Lista = page.tarefas.ToList();
             QuantidadeTotalPaginas = page.totalPaginas;
             StateHasChanged();
+            if (!string.IsNullOrEmpty(SearchTask))
+            {
+                if (!Lista!.Any())
+                {
+                    toastService.ShowWarning("Não há tarefas para o termo buscado.");
+                }
+            }
         }
 
         protected void Pesquisar(string Termo)

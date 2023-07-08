@@ -21,9 +21,10 @@ namespace BlazorClientes.Pages
             StateHasChanged();
         }
 
-        public async void LimparJson()
+        public void LimparJson()
         {
-            await fStorage!.DeleteValue("Teste");
+            //await fStorage!.DeleteValue("Teste");
+            throw new NotImplementedException("Teste");
         }
 
         protected async void CarregarValores()

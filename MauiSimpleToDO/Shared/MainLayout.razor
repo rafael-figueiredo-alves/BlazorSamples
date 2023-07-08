@@ -1,4 +1,12 @@
 ﻿@inherits LayoutComponentBase
+@using Blazored.Toast.Configuration
+
+        <BlazoredToasts Position="ToastPosition.BottomRight"
+                        Timeout="5"
+                        SuccessClass="success-toast-override"
+                        IconType="IconType.FontAwesome"
+                        SuccessIcon="fa fa-thumbs-up"
+                        ShowProgressBar="true" />
 
 <div class="page">
     <main>

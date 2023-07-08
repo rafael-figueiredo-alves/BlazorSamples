@@ -15,7 +15,7 @@
             var _Window = base.CreateWindow(activationState);
             if (DeviceInfo.Current.Platform == DevicePlatform.WinUI)
             {
-                _Window.Title = "Simple To-do app version 1.0.0";
+                _Window.Title = "Simple To-do app version 1.1";
             }
 
             return _Window;

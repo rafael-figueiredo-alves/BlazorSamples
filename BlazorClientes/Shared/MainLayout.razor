@@ -11,7 +11,10 @@
         </div>
 
         <article class="content px-4">
-            @Body
+            <ErrorBoundary>
+                <ChildContent>@Body</ChildContent>
+                <ErrorContent><h1>Ocorreu um imprevisto...</h1></ErrorContent>
+            </ErrorBoundary>
         </article>
     </main>
 </div>

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using MauiSimpleToDO.Entities;
 using MauiSimpleToDO.Services;
+using Blazored.Toast.Services;
 
 namespace MauiSimpleToDO.Pages
 {
@@ -8,6 +9,7 @@ namespace MauiSimpleToDO.Pages
     {
         [Inject] private NavigationManager nav { get; set; }
         [Inject] private ITarefas MyTasks { get; set; }
+        [Inject] private IToastService toastService { get; set; }
         [Parameter] public Guid id { get; set; }
 
         public Tarefa tarefa;
@@ -20,6 +22,7 @@ namespace MauiSimpleToDO.Pages
         protected void EditarTarefa()
         {
             MyTasks!.UpdateTarefa(tarefa!);
+            toastService!.ShowSuccess("Tarefa atualizada com sucesso!");
             nav!.NavigateTo("/");
         }
     }

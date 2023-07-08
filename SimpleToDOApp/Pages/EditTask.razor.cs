@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using Blazored.Toast.Services;
+using Microsoft.AspNetCore.Components;
 using SimpleToDOApp.Entities;
 using SimpleToDOApp.Services;
 
@@ -8,6 +9,7 @@ namespace SimpleToDOApp.Pages
     {
         [Inject] private NavigationManager? nav { get; set; }
         [Inject] private ITarefas? MyTasks { get; set; }
+        [Inject] private IToastService? toastService { get; set; }
         [Parameter] public Guid id { get; set; }
 
         public Tarefa? tarefa;
@@ -20,6 +22,7 @@ namespace SimpleToDOApp.Pages
         protected void EditarTarefa()
         {
             MyTasks!.UpdateTarefa(tarefa!);
+            toastService!.ShowSuccess("Tarefa atualizada com sucesso!");
             nav!.NavigateTo("/");
         }
     }
