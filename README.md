@@ -35,7 +35,7 @@ Utilizando praticamente o mesmo código, o primeiro aplicativo fruto dos experim
 - [X] NavigationManager
 - [X] Validação de formulários
 - [ ] Modo Claro e Escuro (a implementar)
-- [ ] Mensagens Toast
+- [X] Mensagens Toast
 
 
 ## Imagem da tela principal do projeto Simple To-do App (aplicativo para gerenciamento de tarefas):
