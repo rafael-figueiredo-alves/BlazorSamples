@@ -3,22 +3,25 @@
 @inherits LoginBase
 
 <div class="body">
-<div class="text-center">
     <div class="form-signin">
-        <img class="mb-4" src="/icon-192.png" alt="" width="72" height="72">
-        <h1 class="h3 mb-3 font-weight-normal">Faça login</h1>
-        <label for="inputEmail" class="sr-only">Endereço de email</label>
-        <input type="email" id="inputEmail" class="form-control" placeholder="Seu email" required autofocus>
-        <label for="inputPassword" class="sr-only">Senha</label>
-        <input type="password" id="inputPassword" class="form-control" placeholder="Senha" required>
-        <div class="checkbox mb-3">
-            <label>
-                <input type="checkbox" value="remember-me"> Lembrar de mim
-            </label>
+        <div class="text-center">
+            <img class="mb-4 text-center" src="/icon-192.png" alt="" width="192" height="192">
+            <h1 class="h1 mb-3 font-weight-normal">BlazorClientes</h1>
         </div>
-        <button class="btn btn-lg btn-primary btn-block" type="submit">Login</button>
-        <p class="mt-5 mb-3 text-muted">&copy; 2017-2018</p>
+        <EditForm Model="_loginUser" OnValidSubmit="@OnValidate">
+            <DataAnnotationsValidator />
+            <label for="inputEmail" class="sr-only">Endereço de email</label>
+            <input type="email" id="inputEmail" @bind-value="_loginUser.Email" class="form-control" placeholder="Informe seu email" required autofocus>
+            <ValidationMessage For="@(() => _loginUser.Email)" />
+            <label for="inputPassword" class="sr-only">Senha</label>
+            <input type="password" id="inputPassword" @bind-value="_loginUser.Senha" class="form-control" placeholder="Informe sua senha" required>
+            <ValidationMessage For="@(() => _loginUser.Senha)" />
+            <div class="text-end">
+                <button class="btn btn-lg btn-primary btn-block" type="submit">Entrar</button>
+            </div>
+        </EditForm>
+        <a href="register">Criar nova conta</a>
+        <p class="mt-5 mb-3 text-muted">&copy; @anoCopyright by <a href="https://github.com/rafael-figueiredo-alves">Rafael de Figueiredo Alves</a></p>
     </div>
-</div>
 </div>
 
