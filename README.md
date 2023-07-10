@@ -41,3 +41,11 @@ Utilizando praticamente o mesmo código, o primeiro aplicativo fruto dos experim
 ## Imagem da tela principal do projeto Simple To-do App (aplicativo para gerenciamento de tarefas):
 
  ![Simple To-do App](https://github.com/rafael-figueiredo-alves/BlazorSamples/blob/main/images/Tela_Inicial_SimpleToDoApp.jpeg)
+
+ # WebApi - Clientes
+
+ Criei uma webapi usando o C# e Asp.Net Core, usando MySQL com direito a autenticação, autorização e endpoints para CRUD de dados simples de Clientes que é usado no BlazorClientes.
+
+ # BlazorClientes
+
+ Exemplo de sistema com login, logout, criação de contas, e CRUD de clientes.
