@@ -14,16 +14,19 @@ namespace BlazorClientes.Entities
         /// <summary>
         /// Nome de display do usuário
         /// </summary>
+        [Required(ErrorMessage = "Não é possível criar uma conta sem informar o seu nome.")]
         public string? Nome { get; set; }
         /// <summary>
         /// Campo de e-mail do usuário
         /// </summary>
-        [Required]
+        [Required(ErrorMessage = "Não é possível criar uma conta sem informar o seu e-mail.")]
         [EmailAddress]
         public string? Email { get; set; }
         /// <summary>
         /// Campo de senha do usuário
         /// </summary>
+        [Required(ErrorMessage = "Não é possível criar uma conta sem informar uma senha de no mínimo 6 dígitos.")]
+        [MinLength(6, ErrorMessage = "Não é possível criar uma conta sem informar uma senha de no mínimo 6 dígitos.")]
         public string? Senha { get; set; }
         /// <summary>
         /// Campo tipo de senha do usuário
@@ -45,6 +48,10 @@ namespace BlazorClientes.Entities
             Email = email;
             Senha = senha;
             TipoConta = tipoConta;
+        }
+
+        public Usuarios() 
+        {
         }
     }
 

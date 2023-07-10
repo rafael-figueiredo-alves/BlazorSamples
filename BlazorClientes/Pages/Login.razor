@@ -2,6 +2,8 @@
 @page "/login"
 @inherits LoginBase
 
+<PageTitle>Bem vindo ao BlazorClientes</PageTitle>
+
 <div class="body">
     <div class="form-signin">
         <div class="text-center">
@@ -13,6 +15,7 @@
             <label for="inputEmail" class="sr-only">Endereço de email</label>
             <input type="email" id="inputEmail" @bind-value="_loginUser.Email" class="form-control" placeholder="Informe seu email" required autofocus>
             <ValidationMessage For="@(() => _loginUser.Email)" />
+            <br />
             <label for="inputPassword" class="sr-only">Senha</label>
             <input type="password" id="inputPassword" @bind-value="_loginUser.Senha" class="form-control" placeholder="Informe sua senha" required>
             <ValidationMessage For="@(() => _loginUser.Senha)" />

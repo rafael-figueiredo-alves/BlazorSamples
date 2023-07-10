@@ -11,10 +11,15 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
+builder.Services.AddScoped<IAuthServices, AuthServices>();
+
 builder.Services.AddAuthorizationCore();
 
 builder.Services.AddScoped<TokenAuthenticationProvider>();
 
+builder.Services.AddScoped<IAuthToken, TokenAuthenticationProvider>(
+    provider => provider.GetRequiredService<TokenAuthenticationProvider>()
+    );
 
 builder.Services.AddScoped<AuthenticationStateProvider, TokenAuthenticationProvider>(
   provider => provider.GetRequiredService<TokenAuthenticationProvider>());
