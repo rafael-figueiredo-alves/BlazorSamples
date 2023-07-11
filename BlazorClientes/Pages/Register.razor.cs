@@ -25,7 +25,7 @@ namespace BlazorClientes.Pages
         {
             try
             {
-                Auth!.Logout();
+                Auth!.SignUp(_NewUser);
             }
             catch
             {

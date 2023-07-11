@@ -20,7 +20,14 @@ namespace BlazorClientes.Pages
 
         public void OnValidate()
         {
-     
+            try
+            {
+                Auth!.SignIn(_loginUser);
+            }
+            catch
+            {
+                Console.WriteLine("Ocorreu um erro no servidor");
+            }
         }
     }
 }

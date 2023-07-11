@@ -123,7 +123,12 @@ if (app.Environment.IsDevelopment())
     });
 }
 
-app.UseCors();
+app.UseCors(option =>
+           {
+               option.AllowAnyOrigin();
+               option.AllowAnyMethod();
+               option.AllowAnyHeader();
+           });
 
 app.UseHttpsRedirection();
 
