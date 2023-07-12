@@ -8,7 +8,6 @@ namespace BlazorClientes.Services
 {
     public class AuthServices : IAuthServices
     {
-        private string API_Address = "https://localhost:7235/";
         public static readonly string tokenKey = "BlazorClientesToken";
         
         private readonly HttpClient? http;
@@ -59,17 +58,20 @@ namespace BlazorClientes.Services
                 }
                 else
                 {
-                    throw new Exception("Não foi possível acessar o servidor!");
+                    var ResponseString = await httpResponse.Content.ReadAsStringAsync();
+                    var jsonResult = JsonSerializer.Deserialize<ErroRetorno>(ResponseString, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                    throw new Exception(jsonResult!.Info);
                 }
             }
             catch
             {
-                throw;
+                throw new Exception("Ocorreu um erro inesperado! Tente novamente.");
             }
         }
 
         public async Task SignUp(Usuarios usuario)
         {
+            var msgErro = string.Empty;
             try
             {
                 var JSONBody = JsonSerializer.Serialize(usuario);
@@ -88,12 +90,19 @@ namespace BlazorClientes.Services
                 }
                 else
                 {
-                    throw new Exception("Não foi possível acessar o servidor!");
+                    var ResponseString = await httpResponse.Content.ReadAsStringAsync();
+                    ErroRetorno? jsonResult = JsonSerializer.Deserialize<ErroRetorno>(ResponseString);
+                    msgErro = ResponseString; //jsonResult!.info;
+                    throw new Exception(msgErro);
                 }
             }
             catch
             {
-                throw;
+                if(string.IsNullOrEmpty(msgErro))
+                {
+                    msgErro = "Ocorreu um erro inesperado! Tente novamente.";
+                }
+                throw new Exception(msgErro);
             }
         }
     }

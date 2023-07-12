@@ -7,6 +7,8 @@ namespace BlazorClientes.Pages
 {
     public class RegisterBase : ComponentBase
     {
+        public bool ExibirAviso = false;
+        public string Mensagem = string.Empty;
         [Inject] public IAuthServices? Auth { get; set; }
 
         public Usuarios _NewUser = new Usuarios();
@@ -21,16 +23,37 @@ namespace BlazorClientes.Pages
         {
             await Auth!.IsLogged();   
         }
-        public void OnValidate()
+        public async void OnValidate()
         {
+            if(!AcceptTerms) 
+            {
+                Mensagem = "Para criar conta, é necessário marcar \"Aceitar\" os termos.";
+                ExibirAviso = true;
+                return;
+            }
+
+            if(_NewUser.Senha != ConfirmaSenha) 
+            {
+                Mensagem = "Senha e confirmação de senha não correspondem! Verifique.";
+                ExibirAviso = true;
+                return;
+            }
+
             try
             {
-                Auth!.SignUp(_NewUser);
+                await Auth!.SignUp(_NewUser);
             }
-            catch
+            catch (Exception ex)
             {
-                Console.WriteLine("Erro");
+                Mensagem = ex.Message;
+                ExibirAviso = true;
+                StateHasChanged();
             }
+        }
+
+        public void FecharAviso()
+        {
+            ExibirAviso = false;
         }
     }
 }

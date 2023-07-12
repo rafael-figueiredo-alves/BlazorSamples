@@ -1,0 +1,6 @@
+﻿@inherits AlertaBase
+
+<div class="@TipoAlerta" role="alert">
+    @ChildContent
+    <button @onclick="OnClose" type="button" class="btn-close" />
+</div>
