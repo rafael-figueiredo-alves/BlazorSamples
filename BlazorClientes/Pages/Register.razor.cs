@@ -1,5 +1,6 @@
 ﻿using BlazorClientes.Entities;
 using BlazorClientes.Services;
+using Blazored.Toast.Services;
 using Microsoft.AspNetCore.Components;
 using System.ComponentModel.DataAnnotations;
 
@@ -10,7 +11,6 @@ namespace BlazorClientes.Pages
         public bool ExibirAviso = false;
         public string Mensagem = string.Empty;
         [Inject] public IAuthServices? Auth { get; set; }
-
         public Usuarios _NewUser = new();
 
         [Required(ErrorMessage = "É necessário repetir sua senha para confirmar a mesma.")]

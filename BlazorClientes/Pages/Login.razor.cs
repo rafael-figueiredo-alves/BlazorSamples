@@ -1,5 +1,6 @@
 ﻿using BlazorClientes.Entities;
 using BlazorClientes.Services;
+using Blazored.Toast.Services;
 using Microsoft.AspNetCore.Components;
 
 namespace BlazorClientes.Pages
@@ -15,9 +16,9 @@ namespace BlazorClientes.Pages
 
         protected async override void OnInitialized()
         {
-            await Auth!.IsLogged();
-
             AnoCopyright = DateTime.Now.Year;
+
+            await Auth!.IsLogged();
         }
 
         public async void OnValidate()

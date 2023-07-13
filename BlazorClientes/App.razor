@@ -1,5 +1,6 @@
 ﻿@inject NavigationManager Nv
 @using Microsoft.AspNetCore.Components.Authorization
+@using Blazored.Toast.Configuration
 
 <CascadingAuthenticationState>
 <Router AppAssembly="@typeof(App).Assembly">
@@ -24,3 +25,10 @@
     </NotFound>
 </Router>
 </CascadingAuthenticationState>
+
+<BlazoredToasts Position="ToastPosition.BottomRight"
+                Timeout="5"
+                SuccessClass="success-toast-override"
+                IconType="IconType.FontAwesome"
+                SuccessIcon="fa fa-thumbs-up"
+                ShowProgressBar="true" />

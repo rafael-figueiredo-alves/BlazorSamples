@@ -1,5 +1,6 @@
 ﻿using BlazorClientes.Auth;
 using BlazorClientes.Entities;
+using Blazored.Toast.Services;
 using Microsoft.AspNetCore.Components;
 using System.Text;
 using System.Text.Json;
@@ -14,13 +15,15 @@ namespace BlazorClientes.Services
         private readonly ILocalStorage? Ls;
         private readonly NavigationManager Nav;
         private readonly TokenAuthenticationProvider? authToken;
+        private readonly IToastService Toast;
 
-        public AuthServices(HttpClient? _http, ILocalStorage _Ls, NavigationManager _Nav, TokenAuthenticationProvider TokenProvider) 
+        public AuthServices(HttpClient? _http, ILocalStorage _Ls, NavigationManager _Nav, TokenAuthenticationProvider TokenProvider, IToastService _Toast) 
         {
             http = _http;
             Ls = _Ls;
             Nav = _Nav;
             authToken = TokenProvider;
+            Toast = _Toast;
         }
         public async Task IsLogged()
         {
@@ -55,6 +58,8 @@ namespace BlazorClientes.Services
 
                     await authToken!.Login(jsonResult!.Token!);
 
+                    Toast.ShowSuccess("Login efetuado com sucesso!");
+
                     Nav!.NavigateTo("/");
                 }
                 else
@@ -87,6 +92,8 @@ namespace BlazorClientes.Services
                     var jsonResult = JsonSerializer.Deserialize<UserToken>(ResponseString, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
                     await authToken!.Login(jsonResult!.Token!);
+
+                    Toast.ShowSuccess("Conta criada com sucesso!");
 
                     Nav!.NavigateTo("/");
                 }
