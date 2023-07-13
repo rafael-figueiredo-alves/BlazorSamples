@@ -29,5 +29,9 @@ namespace BlazorClientes.Entities
             Mensagem = _msg;
             Info = _info;
         }
+
+        public ErroRetorno() 
+        {
+        }
     }
 }

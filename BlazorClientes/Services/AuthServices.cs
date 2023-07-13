@@ -92,13 +92,13 @@ namespace BlazorClientes.Services
                 {
                     var ResponseString = await httpResponse.Content.ReadAsStringAsync();
                     ErroRetorno? jsonResult = JsonSerializer.Deserialize<ErroRetorno>(ResponseString);
-                    msgErro = ResponseString; //jsonResult!.info;
+                    msgErro = jsonResult!.Info;
                     throw new Exception(msgErro);
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                if(string.IsNullOrEmpty(msgErro))
+                if (string.IsNullOrEmpty(msgErro))
                 {
                     msgErro = "Ocorreu um erro inesperado! Tente novamente.";
                 }
