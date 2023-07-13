@@ -28,37 +28,37 @@
                   <DataAnnotationsValidator />
 
                   <div class="d-flex flex-row align-items-center mb-4">
-                    <i class="fas fa-user fa-lg me-3 fa-fw"></i>
+                    <i class="fa fa-user fa-lg me-3 fa-fw"></i>
                     <div class="form-outline flex-fill mb-0">
-                      <label class="form-label" for="form3Example1c">Informe seu nome</label>
-                      <input type="text" @bind-value="_NewUser.Nome" id="form3Example1c" class="form-control" required autofocus />
+                      @*<label class="form-label" for="form3Example1c">Informe seu nome</label>*@
+                                            <input type="text" @bind-value="_NewUser.Nome" id="form3Example1c" class="form-control" placeholder="Informe seu nome" required autofocus />
                       <ValidationMessage For="@(() => _NewUser.Nome)" />
                     </div>
                   </div>
 
                   <div class="d-flex flex-row align-items-center mb-4">
-                    <i class="fas fa-envelope fa-lg me-3 fa-fw"></i>
+                    <i class="fa fa-envelope fa-lg me-3 fa-fw"></i>
                     <div class="form-outline flex-fill mb-0">
-                        <label class="form-label" for="form3Example3c">Informe seu e-mail</label>                      
-                        <input type="email" @bind-value="_NewUser.Email" id="form3Example3c" class="form-control" required />
+                        @*<label class="form-label" for="form3Example3c">Informe seu e-mail</label> *@
+                                            <input type="email" @bind-value="_NewUser.Email" id="form3Example3c" class="form-control" placeholder="Informe seu e-mail" required />
                         <ValidationMessage For="@(() => _NewUser.Email)" />
                     </div>
                   </div>
 
                   <div class="d-flex flex-row align-items-center mb-4">
-                    <i class="fas fa-lock fa-lg me-3 fa-fw"></i>
+                    <i class="fa fa-lock fa-lg me-3 fa-fw"></i>
                     <div class="form-outline flex-fill mb-0">
-                      <label class="form-label" for="form3Example4c">Informe uma senha</label>
-                      <input type="password" @bind-value="_NewUser.Senha" id="form3Example4c" class="form-control" required />
+                      @*<label class="form-label" for="form3Example4c">Informe uma senha</label>*@
+                      <input type="password" @bind-value="_NewUser.Senha" id="form3Example4c" class="form-control" placeholder="Informe sua senha" required />
                       <ValidationMessage For="@(() => _NewUser.Senha)" />
                     </div>
                   </div>
 
                   <div class="d-flex flex-row align-items-center mb-4">
-                    <i class="fas fa-key fa-lg me-3 fa-fw"></i>
+                    <i class="fa fa-key fa-lg me-3 fa-fw"></i>
                     <div class="form-outline flex-fill mb-0">
-                      <label class="form-label" for="form3Example4cd">Repita a senha</label>
-                      <input type="password" @bind-value="ConfirmaSenha" id="form3Example4cd" class="form-control" required />
+                      @*<label class="form-label" for="form3Example4cd">Repita a senha</label>*@
+                                            <input type="password" @bind-value="ConfirmaSenha" id="form3Example4cd" class="form-control" placeholder="Confirme sua senha" required />
                       <ValidationMessage For="@(() => ConfirmaSenha)" />
                     </div>
                   </div>

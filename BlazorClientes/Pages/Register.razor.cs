@@ -11,7 +11,7 @@ namespace BlazorClientes.Pages
         public string Mensagem = string.Empty;
         [Inject] public IAuthServices? Auth { get; set; }
 
-        public Usuarios _NewUser = new Usuarios();
+        public Usuarios _NewUser = new();
 
         [Required(ErrorMessage = "É necessário repetir sua senha para confirmar a mesma.")]
         public string? ConfirmaSenha { get; set; }

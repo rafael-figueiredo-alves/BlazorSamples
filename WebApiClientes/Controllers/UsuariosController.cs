@@ -56,14 +56,14 @@ namespace WebApiClientes.Controllers
                     }
                     else
                     {
-                        return Ok(buildToken(usuario));
+                        return Ok(BuildToken(usuario));
                     }
                 }
                 catch (Exception ex)
                 {
                     if(ex.Message == "NO USER")
                     {
-                        return NotFound(new Erro("Usuário não encontrado", "Usuário informado não pode ser encontrado em nossa base de dados."));
+                        return NotFound(new Erro("Usuário não encontrado", "Usuário informado não pôde ser encontrado em nossa base de dados."));
                     }
                     else
                     {
@@ -104,14 +104,14 @@ namespace WebApiClientes.Controllers
                     }
                     else
                     {
-                        return Created($"{user.ID!}", buildToken(user));
+                        return Created($"{user.ID!}", BuildToken(user));
                     }
                 }
                 catch (Exception ex)
                 {
                     if (ex.Message == "USER EXISTS")
                     {
-                        return BadRequest(new Erro("E-mail informado já em uso", "Já há um usuário usando o e-amil informado. Não é possível criar outro usuário usando o mesmo e-mail. Tente fazer o login."));
+                        return BadRequest(new Erro("E-mail informado já em uso", "Já há um usuário usando o e-mail informado. Não é possível criar outro usuário usando o mesmo e-mail. Tente fazer o login ao invés de criar outra conta."));
                     }
                     else
                     {
@@ -129,7 +129,7 @@ namespace WebApiClientes.Controllers
         /// Método Construtor de Token de autorização
         /// </summary>
         /// <returns></returns>
-        private UserToken buildToken(usuarios usuario)
+        private UserToken BuildToken(usuarios usuario)
         {
             var claims = new[]
             {
@@ -147,7 +147,7 @@ namespace WebApiClientes.Controllers
             //Adiciona 2 horas para expirar o token
             var Expiration = DateTime.UtcNow.AddHours(2);
 
-            JwtSecurityToken token = new JwtSecurityToken(
+            JwtSecurityToken token = new(
                 issuer: null,
                 audience: null,
                 claims: claims,

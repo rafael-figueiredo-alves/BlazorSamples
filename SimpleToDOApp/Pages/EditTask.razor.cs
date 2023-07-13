@@ -7,23 +7,23 @@ namespace SimpleToDOApp.Pages
 {
     public class EditTaskBase : ComponentBase
     {
-        [Inject] private NavigationManager? nav { get; set; }
+        [Inject] private NavigationManager? Nav { get; set; }
         [Inject] private ITarefas? MyTasks { get; set; }
-        [Inject] private IToastService? toastService { get; set; }
-        [Parameter] public Guid id { get; set; }
+        [Inject] private IToastService? ToastService { get; set; }
+        [Parameter] public Guid Id { get; set; }
 
         public Tarefa? tarefa;
 
         protected override void OnParametersSet()
         {
-            tarefa = MyTasks!.GetTarefa(id);
+            tarefa = MyTasks!.GetTarefa(Id);
         }
 
         protected void EditarTarefa()
         {
             MyTasks!.UpdateTarefa(tarefa!);
-            toastService!.ShowSuccess("Tarefa atualizada com sucesso!");
-            nav!.NavigateTo("/");
+            ToastService!.ShowSuccess("Tarefa atualizada com sucesso!");
+            Nav!.NavigateTo("/");
         }
     }
 }

@@ -54,6 +54,7 @@ namespace BlazorClientes.Services
                     var jsonResult = JsonSerializer.Deserialize<UserToken>(ResponseString, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
                     await authToken!.Login(jsonResult!.Token!);
+
                     Nav!.NavigateTo("/");
                 }
                 else
@@ -86,6 +87,7 @@ namespace BlazorClientes.Services
                     var jsonResult = JsonSerializer.Deserialize<UserToken>(ResponseString, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
                     await authToken!.Login(jsonResult!.Token!);
+
                     Nav!.NavigateTo("/");
                 }
                 else
@@ -96,7 +98,7 @@ namespace BlazorClientes.Services
                     throw new Exception(msgErro);
                 }
             }
-            catch (Exception ex)
+            catch
             {
                 if (string.IsNullOrEmpty(msgErro))
                 {

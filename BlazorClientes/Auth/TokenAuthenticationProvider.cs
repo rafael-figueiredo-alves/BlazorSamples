@@ -11,7 +11,7 @@ namespace BlazorClientes.Auth
         public static readonly string tokenKey = "BlazorClientesToken";
         private readonly HttpClient http;
         private readonly ILocalStorage Ls;
-        private AuthenticationState notAuthenticate => new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
+        private static AuthenticationState NotAuthenticate => new(new ClaimsPrincipal(new ClaimsIdentity()));
         //---------------------------------------------------------------------------------
         public TokenAuthenticationProvider(HttpClient _http, ILocalStorage _Ls)
         {
@@ -26,7 +26,7 @@ namespace BlazorClientes.Auth
         /// </summary>
         /// <param name="jwt"></param>
         /// <returns></returns>
-        private IEnumerable<Claim> ParseClaimsFromJwt(string jwt)
+        private static IEnumerable<Claim> ParseClaimsFromJwt(string jwt)
         {
             var claims = new List<Claim>();
             var payload = jwt.Split('.')[1];
@@ -63,7 +63,7 @@ namespace BlazorClientes.Auth
         /// </summary>
         /// <param name="base64"></param>
         /// <returns></returns>
-        private byte[] ParseBase64WithoutPadding(string base64)
+        private static byte[] ParseBase64WithoutPadding(string base64)
         {
             switch (base64.Length % 4)
             {
@@ -83,7 +83,7 @@ namespace BlazorClientes.Auth
             
             if (string.IsNullOrEmpty(token))
             {
-                return notAuthenticate;
+                return NotAuthenticate;
             }
 
             return CreateAuthenticationState(token);
@@ -125,7 +125,7 @@ namespace BlazorClientes.Auth
             {
                 await Ls.DeleteValue(tokenKey);
                 http.DefaultRequestHeaders.Authorization = null;
-                NotifyAuthenticationStateChanged(Task.FromResult(notAuthenticate));
+                NotifyAuthenticationStateChanged(Task.FromResult(NotAuthenticate));
             }
             catch (Exception ex) 
             {
