@@ -1,29 +1,15 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="">BlazorClientes</a>
-        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-    </div>
-</div>
-
-<div class="@NavMenuCssClass nav-scrollable" @onclick="ToggleNavMenu">
-    <nav class="flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="oi oi-home" aria-hidden="true"></span> Home
-            </NavLink>
+﻿<nav class="navbar sticky-top bg-light ms-auto mb-2 mb-lg-0">
+    <div class="container-fluid m-1 shadow">
+        <a class="navbar-brand" href=""><span class="oi oi-task" /> BlazorClientes</a>
+        <div class="d-flex justify-content-end">
+            <div class="m-1">
+                <a class="btn btn-success d-none d-sm-inline" href="newtask" style="width: 140px"><span class="oi oi-plus" />  Nova Tarefa</a>
+                <a class="btn btn-success d-sm-none rounded-circle" href="newtask"><span class="oi oi-plus" /></a>
+            </div>
+            <div class="m-1">
+                <a class="btn btn-primary d-none d-sm-inline" href="sobre" style="width: 140px"><span class="oi oi-question-mark" />  Sobre</a>
+                <a class="btn btn-primary d-sm-none rounded-circle" href="sobre"><span class="oi oi-question-mark" /></a>
+            </div>
         </div>
-    </nav>
-</div>
-
-@code {
-    private bool collapseNavMenu = true;
-
-    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
-
-    private void ToggleNavMenu()
-    {
-        collapseNavMenu = !collapseNavMenu;
-    }
-}
+    </div>
+</nav>
