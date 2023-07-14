@@ -31,7 +31,7 @@
                     <i class="fa fa-user fa-lg me-3 fa-fw"></i>
                     <div class="form-outline flex-fill mb-0">
                       @*<label class="form-label" for="form3Example1c">Informe seu nome</label>*@
-                                            <input type="text" @bind-value="_NewUser.Nome" id="form3Example1c" class="form-control" placeholder="Informe seu nome" required autofocus />
+                                            <input type="text" @bind-value="_NewUser.Nome" id="form3Example1c" class="form-control" placeholder="Informe seu nome" required />
                       <ValidationMessage For="@(() => _NewUser.Nome)" />
                     </div>
                   </div>
@@ -66,7 +66,7 @@
                   <div class="form-check d-flex justify-content-center mb-5">
                     <input class="form-check-input me-2" type="checkbox" @bind-value="@AcceptTerms" id="form2Example3c" checked />
                     <label class="form-check-label" for="form2Example3">
-                      Eu concordo com os <a href="#!">Termos de Serviço</a>.
+                      Eu concordo com os <a class="btn btn-link" @onclick="LerTermos">Termos de Serviço</a>.
                     </label>
                   </div>
 
@@ -87,6 +87,12 @@
           </div>
         </div>
       </div>
+            <p class="text-center">&copy; @AnoCopyright by <a href="https://github.com/rafael-figueiredo-alves">Rafael de Figueiredo Alves</a></p>
     </div>
   </div>
 </section>
+
+
+<TermsDlg Titulo="Termos de Serviço" @ref="TermsOfServiceDlg">
+    <TermsOfService />
+</TermsDlg>

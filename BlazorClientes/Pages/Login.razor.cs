@@ -1,7 +1,8 @@
 ﻿using BlazorClientes.Entities;
 using BlazorClientes.Services;
-using Blazored.Toast.Services;
 using Microsoft.AspNetCore.Components;
+using BlazorClientes.Shared.Components;
+using Blazored.Toast.Services;
 
 namespace BlazorClientes.Pages
 {
@@ -11,6 +12,7 @@ namespace BlazorClientes.Pages
         public string Mensagem = string.Empty;
         [Inject] public IAuthServices? Auth { get; set; }
         [Inject] public NavigationManager? Nav { get; set; }
+
         public LoginUser _loginUser = new();
         public int AnoCopyright { get; set; }
 

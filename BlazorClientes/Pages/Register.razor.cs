@@ -1,5 +1,6 @@
 ﻿using BlazorClientes.Entities;
 using BlazorClientes.Services;
+using BlazorClientes.Shared.Components;
 using Blazored.Toast.Services;
 using Microsoft.AspNetCore.Components;
 using System.ComponentModel.DataAnnotations;
@@ -11,6 +12,10 @@ namespace BlazorClientes.Pages
         public bool ExibirAviso = false;
         public string Mensagem = string.Empty;
         [Inject] public IAuthServices? Auth { get; set; }
+
+        public TermsDlg? TermsOfServiceDlg;
+        public int AnoCopyright { get; set; }
+
         public Usuarios _NewUser = new();
 
         [Required(ErrorMessage = "É necessário repetir sua senha para confirmar a mesma.")]
@@ -21,6 +26,8 @@ namespace BlazorClientes.Pages
 
         protected async override void OnInitialized()
         {
+            AnoCopyright = DateTime.Now.Year;
+
             await Auth!.IsLogged();   
         }
         public async void OnValidate()
@@ -54,6 +61,11 @@ namespace BlazorClientes.Pages
         public void FecharAviso()
         {
             ExibirAviso = false;
+        }
+
+        public void LerTermos()
+        {
+            TermsOfServiceDlg!.Exibe();
         }
     }
 }
