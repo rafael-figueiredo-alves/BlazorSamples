@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 
-namespace BlazorClientes.Shared
+namespace BlazorClientes.Shared.Components
 {
     public class AlertaBase : ComponentBase
     {

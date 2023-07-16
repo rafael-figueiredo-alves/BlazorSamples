@@ -1,4 +1,27 @@
-﻿<nav class="navbar sticky-top bg-light ms-auto mb-2 mb-lg-0">
+﻿<nav class="navbar sticky-top shadow" style="background: RoyalBlue" data-bs-theme="dark">
+    <div class="container-fluid m-1">
+        <a class="navbar-brand" href="#">
+            <span class="oi oi-menu" href="#offcanvasExample" data-bs-toggle="offcanvas" role="button" />
+            BlazorClientes
+        </a>
+        <div class="collapse navbar-collapse" id="navbarNavDarkDropdown">
+            <ul class="navbar-nav">
+                <li class="nav-item dropdown">
+                    <button class="btn btn-dark dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                        Dropdown
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-dark">
+                        <li><a class="dropdown-item" href="#">Action</a></li>
+                        <li><a class="dropdown-item" href="#">Another action</a></li>
+                        <li><a class="dropdown-item" href="#">Something else here</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+@*<nav class="navbar sticky-top bg-light ms-auto mb-2 mb-lg-0">
     <div class="container-fluid m-1 shadow">
         <a class="navbar-brand" href="#offcanvasExample" data-bs-toggle="offcanvas" role="button"><span class="oi oi-task" /> BlazorClientes</a>
         <div class="d-flex justify-content-end">
@@ -12,6 +35,6 @@
             </div>
         </div>
     </div>
-</nav>
+</nav>*@
 
 <Offcanvas />
