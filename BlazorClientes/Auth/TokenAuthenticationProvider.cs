@@ -132,5 +132,23 @@ namespace BlazorClientes.Auth
                 throw new Exception(ex.Message);
             }
         }
+
+        public async Task<string> GetUsername()
+        {
+            var fUser = (await GetAuthenticationStateAsync()).User;
+            return fUser.FindFirst(c => c.Type.Contains("Username"))?.Value ?? "Unknown";
+        }
+
+        public async Task<string> GetEmail()
+        {
+            var fUser = (await GetAuthenticationStateAsync()).User;
+            return fUser.FindFirst(c => c.Type.Contains("Email"))?.Value ?? "Unknown";
+        }
+
+        public async Task<string> GetUserID()
+        {
+            var fUser = (await GetAuthenticationStateAsync()).User;
+            return fUser.FindFirst(c => c.Type.Contains("uID"))?.Value ?? "Unknown";
+        }
     }
 }

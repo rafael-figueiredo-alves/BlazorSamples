@@ -134,7 +134,9 @@ namespace WebApiClientes.Controllers
             var claims = new[]
             {
                 new Claim(JwtRegisteredClaimNames.UniqueName, usuario.Email!),
-                new Claim(usuario.Nome!, usuario.Email!),
+                new Claim("Username", usuario.Nome!),
+                new Claim("uID", usuario.ID!.ToString()),
+                new Claim("Email", usuario.Email!),
                 new Claim(JwtRegisteredClaimNames.Aud, _configuration["Jwt:Audience"]!),
                 new Claim(JwtRegisteredClaimNames.Iss, _configuration["Jwt:Issuer"]!),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),

@@ -8,5 +8,8 @@ namespace BlazorClientes.Services
         Task SignIn(LoginUser loginUser);
         Task SignUp(Usuarios usuario);
         Task Logout();
+        Task<string> GetUserName();
+        Task<string> GetEmail();
+        Task<string> GetUserID();
     }
 }

@@ -25,6 +25,22 @@ namespace BlazorClientes.Services
             authToken = TokenProvider;
             Toast = _Toast;
         }
+
+        public Task<string> GetUserName()
+        {
+            return authToken!.GetUsername();
+        }
+
+        public Task<string> GetEmail()
+        {
+            return authToken!.GetEmail();
+        }
+
+        public Task<string> GetUserID()
+        {
+            return authToken!.GetUserID();
+        }
+
         public async Task IsLogged()
         {
             var Token = await Ls!.GetValue("BlazorClientesToken");
