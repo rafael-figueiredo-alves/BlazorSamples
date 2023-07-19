@@ -6,8 +6,10 @@
     </a>
     <ul class="dropdown-menu dropdown-menu-end bg-light" data-bs-theme="light">
         <li><h6 class="dropdown-header">@EmailUsuario</h6></li>
-        <li><a class="dropdown-item" href="#">Another action</a></li>
         <li><hr class="dropdown-divider"></li>
-        <li><a class="dropdown-item" href="#" @onclick="EfetuarLogout">Sair</a></li>
+        <li><a class="dropdown-item" href="#" @onclick="VerPerfil"><span class="oi oi-person me-2" />Ver perfil</a></li>
+        <li><a class="dropdown-item" href="#" @onclick="TrocarSenha"><span class="oi oi-key me-2" />Trocar senha</a></li>
+        <li><hr class="dropdown-divider"></li>
+        <li><a class="dropdown-item" href="#" @onclick="EfetuarLogout"><span class="oi oi-account-logout me-2" />Sair</a></li>
     </ul>
 </div>

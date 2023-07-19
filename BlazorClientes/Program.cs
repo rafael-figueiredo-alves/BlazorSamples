@@ -29,4 +29,8 @@ builder.Services.AddScoped<ILocalStorage, LocalStorage>();
 
 builder.Services.AddBlazoredToast();
 
+builder.Services.AddScoped<IParamService, ParamService>();
+
+builder.Services.AddScoped<ITheming,  Theming>();
+
 await builder.Build().RunAsync();

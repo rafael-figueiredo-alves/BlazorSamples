@@ -11,17 +11,29 @@ namespace BlazorClientes.Shared.Components
         protected string? UsuarioLogado { get; set; } = "Desconhecido";
         protected string? EmailUsuario { get; set; } = "example@example.com";
 
+        protected int uID { get; set; } = 0;
+
         protected async override void OnInitialized()
         {
             UsuarioLogado = await auth!.GetUserName();
-            EmailUsuario = await auth!.GetEmail();
+            EmailUsuario  = await auth!.GetEmail();
+            uID           = Convert.ToInt16(await auth!.GetUserID()); 
             StateHasChanged();
         }
 
         protected async void EfetuarLogout()
         {
             await auth!.Logout();
-            //StateHasChanged();
+        }
+
+        protected void VerPerfil()
+        {
+            //Implementar endpoint para exibir informações do usuário
+        }
+
+        protected void TrocarSenha()
+        {
+            //Implementar endpoint para troca de senha
         }
     }
 }
