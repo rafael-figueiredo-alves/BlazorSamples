@@ -19,5 +19,28 @@ namespace WebApiClientes.Services
         /// <param name="user">Dados do usuário</param>
         /// <returns>Dados do usuário</returns>
         public Task<usuarios> CreateUser(usuarios user);
+
+        /// <summary>
+        /// Método para exibir o perfil do usuário
+        /// </summary>
+        /// <param name="id">ID do usuário a exibir dados</param>
+        /// <returns>Retorna os dados do usuário (perfil)</returns>
+        public Task<usuarios> UserProfile(int id);
+
+        /// <summary>
+        /// Método para Trocar a senha do usuário
+        /// </summary>
+        /// <param name="id">ID do usuário</param>
+        /// <param name="password">nova senha</param>
+        /// <returns>Verdadeiro se operação de troca fopi bem sucedida</returns>
+        public Task<bool> ChangePassword(int id, string password);
+
+        /// <summary>
+        /// Método para trocar tipo de conta
+        /// </summary>
+        /// <param name="id">Id do usuário</param>
+        /// <param name="accountType">Tipo de conta</param>
+        /// <returns>Verdadeiro se operação foi bem sucedida</returns>
+        public Task<bool> ChangeAccountType(int id, string accountType);
     }
 }

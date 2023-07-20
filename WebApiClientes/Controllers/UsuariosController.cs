@@ -1,7 +1,10 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using MySqlX.XDevAPI;
 using System.IdentityModel.Tokens.Jwt;
+using System.Reflection.Metadata.Ecma335;
 using System.Security.Claims;
 using System.Text;
 using WebApiClientes.Entities;
@@ -13,6 +16,7 @@ namespace WebApiClientes.Controllers
     /// Endpoint dos usuários
     /// </summary>
     [Route("v1/[controller]")]
+    [Authorize(AuthenticationSchemes = "Bearer")]
     [ApiController]
     public class UsuariosController : ControllerBase
     {
@@ -38,6 +42,7 @@ namespace WebApiClientes.Controllers
         /// <response code="404">Não foi possível encontrar o usuário informado</response>
         /// <response code="500">Ocorreu um erro interno no servidor</response>
         [HttpPost]
+        [AllowAnonymous]
         [Consumes("application/json")]
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -86,6 +91,7 @@ namespace WebApiClientes.Controllers
         /// <response code="400">Ocorreu algum problema com os dados informados, violando alguma regra de validação, ou usuário já existente</response>
         /// <response code="500">Ocorreu um erro interno no servidor</response>
         [HttpPost("register")]
+        [AllowAnonymous]
         [Consumes("application/json")]
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -124,6 +130,110 @@ namespace WebApiClientes.Controllers
                 return BadRequest(new Erro("Solicitação inválida", "Não foi possível executar requisição por falta dos dados de usuário para efetuar Login."));
             };
         }
+
+        /// <summary>
+        /// Endpoint para retornar o perfil do usuário
+        /// </summary>
+        /// <param name="id">ID do usuário</param>
+        /// <returns>Dados do usuário</returns>
+        [HttpGet("{id}")]
+        [Consumes("application/json")]
+        [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<usuarios>> GetProfile(int id)
+        {
+            var Usuario = await fuser.UserProfile(id);
+            try
+            {
+                if (Usuario != null)
+                {
+                    if ((Usuario.Nome != null) && (Usuario.Email != null))
+                    {
+                        return Ok(Usuario);
+                    }
+                    else
+                    {
+                        return NotFound(new Erro("Nenhum usuário encontrado", "O ID informado não retornou usuário algum. Tente um outro ID."));
+                    }
+                }
+                else
+                {
+                    return StatusCode(500, new Erro("Houve um erro interno com o servidor",
+                                                    "Ocorreu um problema inesperado em nosso servidor, tente acessar nossa API mais tarde."));
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Endpoint para trocar senha do usuário
+        /// </summary>
+        /// <param name="id">ID do usuário</param>
+        /// <param name="senha">Nova senha</param>
+        /// <returns>Status 204</returns>
+        [HttpPut("password")]
+        [Consumes("application/json")]
+        [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult> ChangePassword([FromQuery] int id, [FromQuery] string senha)
+        {
+            bool TrocouSenha = await fuser.ChangePassword(id, senha);
+            if (TrocouSenha) 
+            {
+                return NoContent();
+            }
+            else
+            {
+                return StatusCode(500, new Erro("Houve um erro interno com o servidor",
+                                                "Ocorreu um problema inesperado em nosso servidor, tente acessar nossa API mais tarde."));
+            }
+        }
+
+        /// <summary>
+        /// Endpoint para trocar tipo de conta
+        /// </summary>
+        /// <param name="id">ID do usuário</param>
+        /// <param name="tipo">Tipo de conta</param>
+        /// <returns>Status 204</returns>
+        [HttpPut("account")]
+        [Consumes("application/json")]
+        [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult> ChangeAccountType([FromQuery] int id, [FromQuery] string tipo)
+        {
+            if(tipo == null)
+            {
+                return BadRequest(new Erro("Faltou especificar tipo", "Tipo de conta não foi informado e é necessário para prosseguir."));
+            }
+
+            if (tipo != "Admin")
+            {
+                if (tipo != "User")
+                {
+                    return BadRequest(new Erro("Tipo de conta não válido", "O tipo de conta informado não é válido. Tente novamente. Valores válidos: Admin ou User."));
+                }
+            }
+
+            bool TrocouTipoConta = await fuser.ChangeAccountType(id, tipo);
+            if (TrocouTipoConta)
+            {
+                return NoContent();
+            }
+            else
+            {
+                return StatusCode(500, new Erro("Houve um erro interno com o servidor",
+                                                "Ocorreu um problema inesperado em nosso servidor, tente acessar nossa API mais tarde."));
+            }
+        }
+
 
         /// <summary>
         /// Método Construtor de Token de autorização

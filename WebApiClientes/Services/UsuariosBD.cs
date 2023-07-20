@@ -37,7 +37,7 @@ namespace WebApiClientes.Services
             try
             {
                 string password = CriptografaSenhaComHash(user.Senha!);
-                string TipoConta = "Admin";
+                string TipoConta = user.TipoConta!;
 
                 conn = new MySqlConnection(Conn);
                 conn.Open();
@@ -181,6 +181,129 @@ namespace WebApiClientes.Services
             catch (Exception)
             {
                 return null!; // Caso encontre erro retorna nulo
+            }
+        }
+
+        /// <summary>
+        /// Método para pegar perfil do usuário
+        /// </summary>
+        /// <param name="id">ID do usuário</param>
+        /// <returns>Dados do usuário</returns>
+        public async Task<usuarios> UserProfile(int id)
+        {
+            MySqlConnection? conn = null;
+            try
+            {
+                usuarios usuario;
+
+                conn = new MySqlConnection(Conn);
+                conn.Open();
+                string sql = "select * from usuarios where (id = @id)";
+                var cmd = new MySqlCommand(sql, conn);
+                cmd.Parameters.Add(new MySqlParameter("id", id));
+                var reader = await cmd.ExecuteReaderAsync();
+                if (!reader.HasRows)
+                {
+                    throw new Exception("NO USER");
+                }
+                else
+                {
+                    await reader.ReadAsync();
+                    usuario = new usuarios(Convert.ToInt32(reader["id"].ToString()),
+                                            reader["Nome"].ToString()!,
+                                            reader["Email"].ToString()!,
+                                            reader["Senha"].ToString()!,
+                                            reader["TipoConta"].ToString()!);
+                }
+                conn.Close();
+
+                return usuario;
+            }
+            catch
+            {
+                throw;
+            }
+            finally
+            {
+                conn?.Close();
+            }
+        }
+
+        /// <summary>
+        /// Método de troca de senha
+        /// </summary>
+        /// <param name="id">ID do usuário</param>
+        /// <param name="password">Nova senha</param>
+        /// <returns>Verdadeiro se operação foi bem sucedida</returns>
+        public async Task<bool> ChangePassword(int id, string password)
+        {
+            MySqlConnection? conn = null;
+            try
+            {
+                string _password = CriptografaSenhaComHash(password);
+
+                conn = new MySqlConnection(Conn);
+                conn.Open();
+                string sql = "update usuarios set Senha = @senha where id = @id";
+                var cmd = new MySqlCommand(sql, conn);
+                cmd.Parameters.Add(new MySqlParameter("senha", _password));
+                cmd.Parameters.Add(new MySqlParameter("id", id));
+                try
+                {
+                    await cmd.ExecuteNonQueryAsync();
+                    return true;
+                }
+                catch
+                { 
+                    return false; 
+                }
+            }
+            catch
+            {
+                return false;
+            }
+            finally
+            {
+                conn?.Close();
+            }
+        }
+
+        /// <summary>
+        /// Método para trocar tipo de conta do usuário
+        /// </summary>
+        /// <param name="id">ID do usuário</param>
+        /// <param name="accountType">Tipo de conta</param>
+        /// <returns>Verdadeiro se operação foi bem sucedida</returns>
+        public async Task<bool> ChangeAccountType(int id, string accountType)
+        {
+            MySqlConnection? conn = null;
+            try
+            {
+                string _accountType = accountType;
+
+                conn = new MySqlConnection(Conn);
+                conn.Open();
+                string sql = "update usuarios set TipoConta = @tipo where id = @id";
+                var cmd = new MySqlCommand(sql, conn);
+                cmd.Parameters.Add(new MySqlParameter("tipo", _accountType));
+                cmd.Parameters.Add(new MySqlParameter("id", id));
+                try
+                {
+                    await cmd.ExecuteNonQueryAsync();
+                    return true;
+                }
+                catch
+                {
+                    return false;
+                }
+            }
+            catch
+            {
+                return false;
+            }
+            finally
+            {
+                conn?.Close();
             }
         }
     }
