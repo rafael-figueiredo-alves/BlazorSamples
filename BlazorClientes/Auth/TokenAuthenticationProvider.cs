@@ -148,7 +148,7 @@ namespace BlazorClientes.Auth
         public async Task<string> GetUserID()
         {
             var fUser = (await GetAuthenticationStateAsync()).User;
-            return fUser.FindFirst(c => c.Type.Contains("uID"))?.Value ?? "Unknown";
+            return fUser.FindFirst(c => c.Type.Contains("uID"))?.Value ?? "-1";
         }
     }
 }

@@ -1,15 +1,27 @@
 ﻿@inherits LayoutComponentBase
 @inject ITheming theme
 
-<div class="page " style="">
-    <main>
-        <NavMenu />
+<CascadingValue Value="@tema">
+    <div class="page @tema.ClasseCor" style="">
+        <main>
+            <NavMenu Teste="Teste" />
 
-        <article class="content px-4">
-            <ErrorBoundary>
-                <ChildContent>@Body</ChildContent>
-                <ErrorContent><h1>Ocorreu um imprevisto... ;(</h1></ErrorContent>
-            </ErrorBoundary>
-        </article>
-    </main>
-</div>
+            <article class="content px-4">
+                <button @onclick="Teste">Teste</button>
+                <ErrorBoundary>
+                    <ChildContent>@Body</ChildContent>
+                    <ErrorContent><h1>Ocorreu um imprevisto... ;(</h1></ErrorContent>
+                </ErrorBoundary>
+            </article>
+        </main>
+    </div>
+</CascadingValue>
+
+@code{
+    private UITheming tema = new() { ClasseCor = "bg-dark" };
+
+    public void Teste()
+    {
+        tema = new() { ClasseCor = "bg-light" };
+    }
+}

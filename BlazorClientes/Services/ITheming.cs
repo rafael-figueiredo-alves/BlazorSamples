@@ -1,11 +1,7 @@
-﻿using Microsoft.AspNetCore.Components;
-using System.ComponentModel;
-
-namespace BlazorClientes.Services
+﻿namespace BlazorClientes.Services
 {
     public interface ITheming
     {
-        string GetTheme();
-        void isDark(bool dark);
+        UITheming Theme { get; set; }
     }
 }

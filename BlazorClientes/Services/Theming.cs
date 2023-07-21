@@ -1,22 +1,9 @@
-﻿using Microsoft.AspNetCore.Components;
-using System.ComponentModel;
+﻿using System.Reflection.Metadata.Ecma335;
 
 namespace BlazorClientes.Services
 {
     public class Theming : ITheming
     {
-        private bool _isDark { get; set; } = false;
-        public string GetTheme()
-        {
-            if (_isDark)
-                return "bg-dark";
-            else
-                return "bg-light";
-        }
-
-        public void isDark(bool dark)
-        {
-            _isDark = dark;
-        }
+        public UITheming Theme { get; set; } = new() { ClasseCor = "bg-light" };
     }
 }

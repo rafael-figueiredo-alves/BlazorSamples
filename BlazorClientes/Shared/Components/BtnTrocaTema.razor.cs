@@ -7,13 +7,23 @@ namespace BlazorClientes.Shared.Components
     {
         [Inject] protected ITheming? theme { get; set; }
         [Parameter] public string ExtraClass { get; set; } = string.Empty;
+
+        [Parameter] public EventCallback Teste { get; set; }
         protected string Icone { get; set; } = "oi oi-moon";
         private bool isDark { get; set; } = false;
 
         protected void TrocarTema()
         {
             isDark = !isDark;
-            theme!.isDark(isDark);
+            if (isDark)
+            {
+                theme!.Theme = new() { ClasseCor = "bg-dark" };
+            }
+            else
+            {
+                theme!.Theme = new() { ClasseCor = "bg-light" };
+            }
+            _ = Teste.InvokeAsync();
             StateHasChanged();
             TrocarIcone();
         }

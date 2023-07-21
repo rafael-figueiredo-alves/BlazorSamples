@@ -15,10 +15,13 @@ namespace BlazorClientes.Shared.Components
 
         protected async override void OnInitialized()
         {
-            UsuarioLogado = await auth!.GetUserName();
-            EmailUsuario  = await auth!.GetEmail();
-            uID           = Convert.ToInt16(await auth!.GetUserID()); 
-            StateHasChanged();
+            if (auth != null)
+            {
+                UsuarioLogado = await auth!.GetUserName();
+                EmailUsuario = await auth!.GetEmail();
+                uID = Convert.ToInt16(await auth!.GetUserID());
+                StateHasChanged();
+            }
         }
 
         protected async void EfetuarLogout()

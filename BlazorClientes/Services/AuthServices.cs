@@ -93,6 +93,7 @@ namespace BlazorClientes.Services
 
         public async Task SignUp(Usuarios usuario)
         {
+            usuario.TipoConta = "User";
             var msgErro = string.Empty;
             try
             {
