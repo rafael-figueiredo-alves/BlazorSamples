@@ -1,6 +1,8 @@
 ﻿@page "/edittask/{Id:guid}"
 @inherits EditTaskBase
 
+<PageTitle>Simple To-DO App | Editando tarefa</PageTitle>
+
 <h3>Editando Tarefa</h3>
 
 <Formulario TaskModel="@tarefa" OnValidSubmit="@EditarTarefa" />

@@ -8,6 +8,8 @@ namespace SimpleToDOApp.Pages
 {
     public class IndexBase : ComponentBase
     {
+        [CascadingParameter]
+        protected UITheming? Theme { get; set; }
         [Inject] private ITarefas? MyTasks { get; set; }
         [Inject] private IToastService toastService { get; set; }
         public List<Tarefa>? Lista { get; set; }

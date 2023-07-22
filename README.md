@@ -34,8 +34,10 @@ Utilizando praticamente o mesmo código, o primeiro aplicativo fruto dos experim
 - [X] Formulários
 - [X] NavigationManager
 - [X] Validação de formulários
-- [ ] Modo Claro e Escuro (a implementar)
+- [X] Modo Claro e Escuro
+- [X] Implementado gravação e leitura do tema diretamente do LocalStorage
 - [X] Mensagens Toast
+- [ ] Aplicar alterações de Modo Claro/Escuro ao Maui Simple to-do app
 
 
 ## Imagem da tela principal do projeto Simple To-do App (aplicativo para gerenciamento de tarefas):

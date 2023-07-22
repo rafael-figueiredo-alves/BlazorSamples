@@ -1,9 +1,12 @@
 ﻿using Microsoft.AspNetCore.Components;
+using SimpleToDOApp.Entities;
 
 namespace SimpleToDOApp.Shared
 {
     public class PaginacaoBase : ComponentBase
     {
+        [CascadingParameter]
+        protected UITheming? Theme { get; set; }
         [Parameter] public int paginaAtual { get; set; } = 1;
         [Parameter] public int QuantidadeTotalPaginas { get; set; }
         [Parameter] public int Raio { get; set; } = 3;
