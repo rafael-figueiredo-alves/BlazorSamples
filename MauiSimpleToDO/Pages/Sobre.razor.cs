@@ -1,15 +1,18 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using MauiSimpleToDO.Entities;
+using Microsoft.AspNetCore.Components;
 
 namespace MauiSimpleToDO.Pages
 {
     public class SobreBase : ComponentBase
     {
-        [Inject] private NavigationManager nav { get; set; }
+        [CascadingParameter]
+        protected UITheming? Theme { get; set; }
+        [Inject] private NavigationManager? nav { get; set; }
 
         protected int Ano = DateTime.Now.Year;
         protected void Voltar()
         {
-            nav.NavigateTo("/", false);
+            nav!.NavigateTo("/", false);
         }
     }
 }

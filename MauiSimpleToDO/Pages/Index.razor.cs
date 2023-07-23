@@ -8,11 +8,13 @@ namespace MauiSimpleToDO.Pages
 {
     public class IndexBase : ComponentBase
     {
-        [Inject] private ITarefas MyTasks { get; set; }
-        public List<Tarefa> Lista { get; set; }
+        [CascadingParameter]
+        protected UITheming? Theme { get; set; }
+        [Inject] private ITarefas? MyTasks { get; set; }
         [Inject] private IToastService toastService { get; set; }
+        public List<Tarefa>? Lista { get; set; }
 
-        protected Msg msg;
+        protected Msg? msg;
 
         protected int QuantidadeTotalPaginas { get; set; }
         protected int paginaAtual { get; set; } = 1;

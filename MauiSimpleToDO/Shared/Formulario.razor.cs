@@ -5,9 +5,11 @@ namespace MauiSimpleToDO.Shared
 {
     public class FormularioBase : ComponentBase
     {
-        [Parameter] public Tarefa TaskModel { get; set; }
+        [CascadingParameter]
+        protected UITheming? Theme { get; set; }
+        [Parameter] public Tarefa? TaskModel { get; set; }
         [Parameter] public EventCallback OnValidSubmit { get; set; }
-        [Inject] protected NavigationManager nav { get; set; }
+        [Inject] protected NavigationManager? nav { get; set; }
         protected int QtdCaracteres { get; set; }
 
         protected override void OnInitialized()

@@ -1,12 +1,19 @@
 ﻿@inherits FormularioBase
 
-<EditForm Model="@TaskModel" OnValidSubmit="@OnValidSubmit">
+<EditForm Model="@TaskModel" OnValidSubmit="@OnValidSubmit" class="@Theme!.ColorClass" data-bs-theme="@Theme!.DataBsTheme">
     <DataAnnotationsValidator />
 
     <div class="form-group">
         <label form="Tarefa">Tarefa: </label>
         <div>
-            <InputText @bind-Value="TaskModel!.tarefa" class="form-control" />
+            @if (Theme.DataBsTheme == "dark")
+            {
+                <InputText @bind-Value="TaskModel!.tarefa" class="form-control bg-dark" style="color: white" />
+            }
+            else
+            {
+                <InputText @bind-Value="TaskModel!.tarefa" class="form-control" />
+            }
             <ValidationMessage For="@(()=> TaskModel.tarefa)" />
         </div>
     </div>
@@ -14,8 +21,15 @@
     <div class="form-group">
         <label form="Tarefa">Descrição: </label>
         <div>
-            <InputTextArea @bind-Value="TaskModel.descricao" class="form-control" maxlength="250" @oninput="Alterando"/>
-            <small id="edescricaoHelp" class="form-text text-muted">@QtdCaracteres / 250 caracteres digitados.</small>
+            @if (Theme.DataBsTheme == "dark")
+            {
+                <InputTextArea @bind-Value="TaskModel.descricao" class="form-control bg-dark" style="color: white" maxlength="250" @oninput="Alterando" data-bs-theme="@Theme!.DataBsTheme" />
+            }
+            else
+            {
+                <InputTextArea @bind-Value="TaskModel.descricao" class="form-control" maxlength="250" @oninput="Alterando" data-bs-theme="@Theme!.DataBsTheme" />
+            }
+            <small id="edescricaoHelp" class="form-text text-muted" style="color: @Theme.ColorFontStyle">@QtdCaracteres / 250 caracteres digitados.</small>
             <ValidationMessage For="@(()=> TaskModel.descricao)" />
         </div>
     </div>
@@ -23,7 +37,7 @@
     <br />
     <div class="text-end">
         <button class="btn btn-danger" style="width: 100px"
-         @onclick="@(()=> nav!.NavigateTo("/"))">
+        @onclick="@(()=> nav!.NavigateTo("/"))">
             Cancelar
         </button>
         <button type="submit" class="btn btn-success" style="width: 100px">

@@ -37,17 +37,21 @@ Utilizando praticamente o mesmo código, o primeiro aplicativo fruto dos experim
 - [X] Modo Claro e Escuro
 - [X] Implementado gravação e leitura do tema diretamente do LocalStorage
 - [X] Mensagens Toast
-- [ ] Aplicar alterações de Modo Claro/Escuro ao Maui Simple to-do app
+- [X] Aplicar alterações de Modo Claro/Escuro ao Maui Simple to-do app
 
 
 ## Imagem da tela principal do projeto Simple To-do App (aplicativo para gerenciamento de tarefas):
 
  ![Simple To-do App](https://github.com/rafael-figueiredo-alves/BlazorSamples/blob/main/images/Tela_Inicial_SimpleToDoApp.jpeg)
+ ![Maui Simple To-do App - Windows - light mode](https://github.com/rafael-figueiredo-alves/BlazorSamples/blob/main/images/Windows-light.png)
+ ![Maui Simple To-do App - Windows - dark mode](https://github.com/rafael-figueiredo-alves/BlazorSamples/blob/main/images/Windows-dark.png)
+ ![Maui Simple To-do App - Android - light mode](https://github.com/rafael-figueiredo-alves/BlazorSamples/blob/main/images/Mobile-light.png)
+ ![Maui Simple To-do App - Android - dark mode](https://github.com/rafael-figueiredo-alves/BlazorSamples/blob/main/images/Mobile-dark.png)
 
  # WebApi - Clientes
 
- Criei uma webapi usando o C# e Asp.Net Core, usando MySQL com direito a autenticação, autorização e endpoints para CRUD de dados simples de Clientes que é usado no BlazorClientes.
+ Criei uma webapi usando o C# e Asp.Net Core, usando MySQL com direito a autenticação, autorização e endpoints para CRUD de dados simples de Clientes que é usado no BlazorClientes. Em construção...
 
  # BlazorClientes
 
- Exemplo de sistema com login, logout, criação de contas, e CRUD de clientes.
+ Exemplo de sistema com login, logout, criação de contas, e CRUD de clientes. Em construção...
