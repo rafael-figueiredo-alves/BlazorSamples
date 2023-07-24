@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using BlazorClientes.Entities;
+using Microsoft.AspNetCore.Components;
 
 namespace BlazorClientes.Shared.Components
 {
@@ -8,6 +9,7 @@ namespace BlazorClientes.Shared.Components
         [Parameter] public string? Titulo { get; set; }
         [Parameter] public RenderFragment? ChildContent { get; set; }
         [Parameter] public EventCallback OnYesClick { get; set; }
+        [CascadingParameter] public UITheming? Theme { get; set; }
 
         public void Exibe()
         {

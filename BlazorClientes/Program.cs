@@ -31,6 +31,4 @@ builder.Services.AddBlazoredToast();
 
 builder.Services.AddScoped<IParamService, ParamService>();
 
-builder.Services.AddSingleton<ITheming, Theming>();
-
 await builder.Build().RunAsync();

@@ -1,10 +1,10 @@
-﻿<nav class="navbar sticky-top @tema.ClasseCor shadow w-100" style="background: RoyalBlue" data-bs-theme="dark">
+﻿<nav class="navbar sticky-top @Theme shadow w-100" style="background: RoyalBlue" data-bs-theme="dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="#">
             <span class="oi oi-menu" href="#offcanvasExample" data-bs-toggle="offcanvas" role="button" />
             BlazorClientes
         </a>
-        <BtnTrocaTema ExtraClass="ms-auto" Teste="Teste" />
+        <BtnTrocaTema ExtraClass="ms-auto" IsDark="IsDark" ChangeTheme="ChangeTheme" />
         <UserMenu />
     </div>
 </nav>
@@ -27,8 +27,9 @@
 
 <Offcanvas />
 @code{
-    [Parameter] public EventCallback Teste { get; set; }
+    [Parameter] public EventCallback ChangeTheme { get; set; }
+    [Parameter] public bool IsDark { get; set; }
 
     [CascadingParameter]
-    protected UITheming? tema { get; set; }
+    protected UITheming? Theme { get; set; }
 }

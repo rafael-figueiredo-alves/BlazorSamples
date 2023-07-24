@@ -1,13 +1,11 @@
 ﻿@inherits LayoutComponentBase
-@inject ITheming theme
 
-<CascadingValue Value="@tema">
-    <div class="page @tema.ClasseCor" style="">
+<CascadingValue Value="@Theme">
+    <div class="page @Theme.ColorClass" style="height: 100vh;color: @Theme.ColorFontStyle" data-bs-theme="@Theme.DataBsTheme">
         <main>
-            <NavMenu Teste="Teste" />
+            <NavMenu IsDark="isDark" ChangeTheme="ChangeTheme" />
 
             <article class="content px-4">
-                <button @onclick="Teste">Teste</button>
                 <ErrorBoundary>
                     <ChildContent>@Body</ChildContent>
                     <ErrorContent><h1>Ocorreu um imprevisto... ;(</h1></ErrorContent>
@@ -18,10 +16,25 @@
 </CascadingValue>
 
 @code{
-    private UITheming tema = new() { ClasseCor = "bg-dark" };
+    private UITheming Theme = new();
+    private bool isDark = false;
 
-    public void Teste()
+    public void ChangeTheme()
     {
-        tema = new() { ClasseCor = "bg-light" };
+        isDark = !isDark;
+        if (isDark)
+        {
+            Theme = new()
+                {
+                    ColorFontStyle = "white",
+                    ColorClass = "bg-dark",
+                    DataBsTheme = "dark",
+                    IsDark = true
+                };
+        }
+        else
+        {
+            Theme = new();
+        }
     }
 }
