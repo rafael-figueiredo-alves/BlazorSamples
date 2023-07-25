@@ -4,7 +4,7 @@
     <a class="nav-link dropdown-toggle me-3" style="color: white" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
         @UsuarioLogado
     </a>
-    <ul class="dropdown-menu dropdown-menu-end bg-light" data-bs-theme="light">
+    <ul class="dropdown-menu dropdown-menu-end @Theme!.ColorClass" data-bs-theme="@Theme!.DataBsTheme">
         <li><h6 class="dropdown-header">@EmailUsuario</h6></li>
         <li><hr class="dropdown-divider"></li>
         <li><a class="dropdown-item" href="#" @onclick="VerPerfil"><span class="oi oi-person me-2" />Ver perfil</a></li>

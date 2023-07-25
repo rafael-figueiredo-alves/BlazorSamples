@@ -1,4 +1,5 @@
 ﻿using BlazorClientes.Auth;
+using BlazorClientes.Entities;
 using BlazorClientes.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -7,6 +8,7 @@ namespace BlazorClientes.Shared.Components
 {
     public class UserMenuBase : ComponentBase
     {
+        [CascadingParameter] protected UITheming? Theme { get; set; }
         [Inject] protected IAuthServices? auth { get; set; }
         protected string? UsuarioLogado { get; set; } = "Desconhecido";
         protected string? EmailUsuario { get; set; } = "example@example.com";

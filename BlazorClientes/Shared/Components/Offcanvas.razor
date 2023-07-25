@@ -1,25 +1,33 @@
 ﻿@inherits OffcanvasBase
 
 <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasExample" data-bs-backdrop="true" aria-labelledby="offcanvasExampleLabel" data-bs-theme="light">
-    <div class="offcanvas-header">
-        <h5 class="offcanvas-title" id="offcanvasExampleLabel">BlazorClientes <small>versão 1.0</small></h5>
+    <div class="offcanvas-header" style="background: RoyalBlue">
+        <div class="offcanvas-title" style="color: white" id="offcanvasExampleLabel">
+            <div class="row">
+                <div class="col-2">
+                    <img src="/icon-192.png" height="40" width="40" />
+                </div>
+                <div class="col-8 text-center">
+                    <h3>BlazorClientes</h3>
+                </div>
+                <div class="col-2">
+                    <span class="badge bg-secondary">1.0</span>
+                </div>
+            </div>
+        </div>
         <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
-    <div class="offcanvas-body">
-        <div>
-            Some text as placeholder. In real life you can have the elements you have chosen. Like, text, images,
-            lists, etc.
-        </div>
-        <div class="dropdown mt-3">
-            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
-                    data-bs-toggle="dropdown">
-                Dropdown button
-            </button>
-            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <li><a class="dropdown-item" href="#">Action</a></li>
-                <li><a class="dropdown-item" href="#">Another action</a></li>
-                <li><a class="dropdown-item" href="#">Something else here</a></li>
-            </ul>
-        </div>
+    <div class="offcanvas-body @Theme!.ColorClass" style="color: @Theme!.ColorFontStyle">
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="/">Inicial</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Clientes</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Teste</a>
+            </li>
+        </ul>
     </div>
 </div>
