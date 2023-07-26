@@ -1,4 +1,5 @@
 ﻿@inherits LayoutComponentBase
+@inject ILocalStorage LStorage
 
 <CascadingValue Value="@Theme">
     <div class="page @Theme.ColorClass" style="height: 100vh;color: @Theme.ColorFontStyle" data-bs-theme="@Theme.DataBsTheme">
@@ -16,25 +17,25 @@
 </CascadingValue>
 
 @code{
-    private UITheming Theme = new();
+    private UITheming Theme = UITheming.SetDarkMode();
+    private string ThemeKey = "BlazorClientes_Theme";
     private bool isDark = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        isDark = Convert.ToBoolean(await LStorage.GetValue(ThemeKey));
+        SetTheme();
+    }
 
     public void ChangeTheme()
     {
         isDark = !isDark;
-        if (isDark)
-        {
-            Theme = new()
-                {
-                    ColorFontStyle = "white",
-                    ColorClass = "bg-dark",
-                    DataBsTheme = "dark",
-                    IsDark = true
-                };
-        }
-        else
-        {
-            Theme = new();
-        }
+        SetTheme();
+    }
+
+    public async void SetTheme()
+    {
+        Theme = UITheming.SetDarkMode(isDark);
+        await LStorage.SetValue(ThemeKey, isDark.ToString());
     }
 }
