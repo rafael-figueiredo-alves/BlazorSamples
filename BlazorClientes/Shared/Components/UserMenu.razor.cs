@@ -19,10 +19,19 @@ namespace BlazorClientes.Shared.Components
         {
             if (auth != null)
             {
-                UsuarioLogado = await auth!.GetUserName();
-                EmailUsuario = await auth!.GetEmail();
-                uID = Convert.ToInt16(await auth!.GetUserID());
-                StateHasChanged();
+                bool logado = await auth!.IsLoggedIn();
+                if (logado)
+                {
+                    DateTime ExpiraEm = await auth!.GetExpiration();
+                    UsuarioLogado = await auth!.GetUserName();
+                    EmailUsuario = await auth!.GetEmail();
+                    uID = Convert.ToInt16(await auth!.GetUserID());
+                    StateHasChanged();
+                    if (ExpiraEm < DateTime.Now)
+                    {
+                        await auth!.Logout();
+                    }
+                }
             }
         }
 

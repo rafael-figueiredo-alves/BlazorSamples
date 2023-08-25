@@ -7,5 +7,6 @@
         Task<string> GetUsername();
         Task<string> GetUserID();
         Task<string> GetEmail();
+        Task<DateTime> GetExpiration();
     }
 }

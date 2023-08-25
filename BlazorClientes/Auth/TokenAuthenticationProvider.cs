@@ -150,5 +150,11 @@ namespace BlazorClientes.Auth
             var fUser = (await GetAuthenticationStateAsync()).User;
             return fUser.FindFirst(c => c.Type.Contains("uID"))?.Value ?? "-1";
         }
+
+        public async Task<DateTime> GetExpiration()
+        {
+            var fUser = (await GetAuthenticationStateAsync()).User;
+            return DateTimeOffset.FromUnixTimeSeconds(long.Parse(fUser.FindFirst(x => x.Type == "exp")!.Value)).UtcDateTime;
+        }
     }
 }

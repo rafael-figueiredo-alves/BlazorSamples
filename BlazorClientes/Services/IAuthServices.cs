@@ -11,5 +11,7 @@ namespace BlazorClientes.Services
         Task<string> GetUserName();
         Task<string> GetEmail();
         Task<string> GetUserID();
+        Task<DateTime> GetExpiration();
+        Task<bool> IsLoggedIn();
     }
 }

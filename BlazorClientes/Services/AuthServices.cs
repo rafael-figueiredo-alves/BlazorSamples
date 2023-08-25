@@ -131,5 +131,17 @@ namespace BlazorClientes.Services
                 throw new Exception(msgErro);
             }
         }
+
+        public Task<DateTime> GetExpiration()
+        {
+            return authToken!.GetExpiration();
+        }
+
+        public async Task<bool> IsLoggedIn()
+        {
+            var Token = await Ls!.GetValue("BlazorClientesToken");
+
+            return !string.IsNullOrEmpty(Token);
+        }
     }
 }
