@@ -6,7 +6,7 @@
         <main>
             <NavMenu IsDark="isDark" ChangeTheme="ChangeTheme" />
 
-            <article class="content px-4">
+            <article class="content px-4 @Theme.ColorClass" data-bs-theme="@Theme.DataBsTheme">
                 <ErrorBoundary>
                     <ChildContent>@Body</ChildContent>
                     <ErrorContent><h1>Ocorreu um imprevisto... ;(</h1></ErrorContent>
