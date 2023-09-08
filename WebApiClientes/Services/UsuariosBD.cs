@@ -189,12 +189,12 @@ namespace WebApiClientes.Services
         /// </summary>
         /// <param name="id">ID do usuário</param>
         /// <returns>Dados do usuário</returns>
-        public async Task<usuarios> UserProfile(int id)
+        public async Task<UserProfile> UserProfile(int id)
         {
             MySqlConnection? conn = null;
             try
             {
-                usuarios usuario;
+                UserProfile usuario;
 
                 conn = new MySqlConnection(Conn);
                 conn.Open();
@@ -209,11 +209,22 @@ namespace WebApiClientes.Services
                 else
                 {
                     await reader.ReadAsync();
-                    usuario = new usuarios(Convert.ToInt32(reader["id"].ToString()),
-                                            reader["Nome"].ToString()!,
-                                            reader["Email"].ToString()!,
-                                            reader["Senha"].ToString()!,
-                                            reader["TipoConta"].ToString()!);
+                    usuario = new UserProfile()
+                    {
+                        ID = Convert.ToInt32(reader["ID"].ToString()),
+                        Nome = reader["Nome"].ToString(),
+                        PrimeiroNome = reader["PrimeiroNome"].ToString(),
+                        UltimoNome = reader["UltimoNome"].ToString(),
+                        Celular = reader["Celular"].ToString(),
+                        Endereco = reader["Endereco"].ToString(),
+                        Complemento = reader["Complemento"].ToString(),
+                        Bairro = reader["Bairro"].ToString(),
+                        Cidade = reader["Cidade"].ToString(),
+                        CEP = reader["CEP"].ToString(),
+                        Email = reader["Email"].ToString(),
+                        Estado = reader["Estado"].ToString(),
+                        Pais = reader["Pais"].ToString()
+                    };
                 }
                 conn.Close();
 
@@ -300,6 +311,95 @@ namespace WebApiClientes.Services
             catch
             {
                 return false;
+            }
+            finally
+            {
+                conn?.Close();
+            }
+        }
+
+        /// <summary>
+        /// Salva Perfil do Usuário
+        /// </summary>
+        /// <param name="profile">Perfil do Usuário</param>
+        /// <returns>Perfil do Usuário</returns>
+        public async Task<UserProfile> SaveUserProfile(UserProfile profile)
+        {
+            if (!string.IsNullOrEmpty(profile.PrimeiroNome))
+            {
+                profile.Nome = profile.PrimeiroNome + " " + profile.UltimoNome;
+                profile.Nome = profile.Nome.TrimEnd();
+            }
+            MySqlConnection? conn = null;
+            try
+            {
+                conn = new MySqlConnection(Conn);
+                conn.Open();
+                string sql = " UPDATE usuarios " +
+                             " SET Nome = @Nome, " +
+                             " SET PrimeiroNome = @PrimeiroNome, " +
+                             " SET UltimoNome = @UltimoNome, " +
+                             " SET Celular = @Celular, " +
+                             " SET Endereco = @Endereco, " +
+                             " SET Complemento = @Complemento, " +
+                             " SET CEP = @CEP, " +
+                             " SET Bairro = @Bairro, " +
+                             " SET Cidade = @Cidade, " +
+                             " SET Pais = @Pais, " +
+                             " SET Estado = @Estado " +
+                             " WHERE ID = @id ";
+                var cmd = new MySqlCommand(sql, conn);
+                cmd.Parameters.Add(new MySqlParameter("Nome", profile.Nome));
+                cmd.Parameters.Add(new MySqlParameter("PrimeiroNome", profile.PrimeiroNome));
+                cmd.Parameters.Add(new MySqlParameter("UltimoNome", profile.UltimoNome));
+                cmd.Parameters.Add(new MySqlParameter("Celular", profile.Celular));
+                cmd.Parameters.Add(new MySqlParameter("Endereco", profile.Endereco));
+                cmd.Parameters.Add(new MySqlParameter("Complemento", profile.Complemento));
+                cmd.Parameters.Add(new MySqlParameter("Bairro", profile.Bairro));
+                cmd.Parameters.Add(new MySqlParameter("CEP", profile.CEP));
+                cmd.Parameters.Add(new MySqlParameter("Cidade", profile.Cidade));
+                cmd.Parameters.Add(new MySqlParameter("Estado", profile.Estado));
+                cmd.Parameters.Add(new MySqlParameter("Pais", profile.Pais));
+                cmd.Parameters.Add(new MySqlParameter("id", profile.ID));
+                await cmd.ExecuteNonQueryAsync();
+                sql = "select * from usuarios where (id = @id)";
+                cmd.CommandText = sql;
+                var reader = await cmd.ExecuteReaderAsync();
+                if (reader != null)
+                {
+                    if (reader.HasRows)
+                    {
+                        await reader.ReadAsync();
+                        return new UserProfile()
+                        {
+                            ID = Convert.ToInt32(reader["ID"].ToString()),
+                            Nome = reader["Nome"].ToString(),
+                            PrimeiroNome = reader["PrimeiroNome"].ToString(),
+                            UltimoNome = reader["UltimoNome"].ToString(),
+                            Celular = reader["Celular"].ToString(),
+                            Endereco = reader["Endereco"].ToString(),
+                            Complemento = reader["Complemento"].ToString(),
+                            Bairro = reader["Bairro"].ToString(),
+                            Cidade = reader["Cidade"].ToString(),
+                            CEP = reader["CEP"].ToString(),
+                            Email = reader["Email"].ToString(),
+                            Estado = reader["Estado"].ToString(),
+                            Pais = reader["Pais"].ToString()
+                        };
+                    }
+                    else
+                    {
+                        return null!;
+                    }
+                }
+                else
+                {
+                    return null!;
+                }
+            }
+            catch
+            {
+                throw;
             }
             finally
             {

@@ -13,5 +13,7 @@ namespace BlazorClientes.Services
         Task<string> GetUserID();
         Task<DateTime> GetExpiration();
         Task<bool> IsLoggedIn();
+        Task<UserProfile> SaveProfile(UserProfile _UserProfile);
+        Task GetProfile(int ID);
     }
 }

@@ -40,9 +40,9 @@ namespace BlazorClientes.Shared.Components
             await auth!.Logout();
         }
 
-        protected void VerPerfil()
+        protected async void VerPerfil()
         {
-            //Implementar endpoint para exibir informações do usuário
+            await auth!.GetProfile(uID);
         }
 
         protected void TrocarSenha()

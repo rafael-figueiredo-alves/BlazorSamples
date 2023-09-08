@@ -141,7 +141,7 @@ namespace WebApiClientes.Controllers
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<usuarios>> GetProfile(int id)
+        public async Task<ActionResult<UserProfile>> GetProfile(int id)
         {
             var Usuario = await fuser.UserProfile(id);
             try
@@ -232,6 +232,55 @@ namespace WebApiClientes.Controllers
                 return StatusCode(500, new Erro("Houve um erro interno com o servidor",
                                                 "Ocorreu um problema inesperado em nosso servidor, tente acessar nossa API mais tarde."));
             }
+        }
+
+        /// <summary>
+        /// Método para salvar o perfil de usuário no sistema
+        /// </summary>
+        /// <param name="usuario">Dados do Perfil de Usuário a ser salvo</param>
+        /// <returns>O Perfil atualizado</returns>
+        /// <response code="200">Perfil de Usuário salvo com sucesso</response>
+        /// <response code="400">Ocorreu algum problema com os dados informados, violando alguma regra de validação, ou usuário já existente</response>
+        /// <response code="500">Ocorreu um erro interno no servidor</response>
+        [HttpPost("{id}")]
+        [AllowAnonymous]
+        [Consumes("application/json")]
+        [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<UserProfile>> SaveUserProfile(UserProfile usuario)
+        {
+            if (usuario != null)
+            {
+                try
+                {
+                    var user = await fuser.SaveUserProfile(usuario!);
+                    if (user == null)
+                    {
+                        return StatusCode(500, "Ocorreu um erro em nossos servidores e não pudemos atender sua requisição. Tente novamente mais tarde.");
+                    }
+                    else
+                    {
+                        return Ok(user);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    if (ex.Message == "USER EXISTS")
+                    {
+                        return BadRequest(new Erro("E-mail informado já em uso", "Já há um usuário usando o e-mail informado. Não é possível criar outro usuário usando o mesmo e-mail. Tente fazer o login ao invés de criar outra conta."));
+                    }
+                    else
+                    {
+                        return StatusCode(500, new Erro("Erro desconhecido", ex.Message));
+                    }
+                }
+            }
+            else
+            {
+                return BadRequest(new Erro("Solicitação inválida", "Não foi possível executar requisição por falta dos dados de usuário para efetuar Login."));
+            };
         }
 
 

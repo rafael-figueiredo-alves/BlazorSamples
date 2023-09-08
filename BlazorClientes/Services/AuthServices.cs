@@ -16,14 +16,16 @@ namespace BlazorClientes.Services
         private readonly NavigationManager Nav;
         private readonly TokenAuthenticationProvider? authToken;
         private readonly IToastService Toast;
+        private readonly IParamService paramService;
 
-        public AuthServices(HttpClient? _http, ILocalStorage _Ls, NavigationManager _Nav, TokenAuthenticationProvider TokenProvider, IToastService _Toast) 
+        public AuthServices(HttpClient? _http, ILocalStorage _Ls, NavigationManager _Nav, TokenAuthenticationProvider TokenProvider, IToastService _Toast, IParamService _paramserv) 
         {
             http = _http;
             Ls = _Ls;
             Nav = _Nav;
             authToken = TokenProvider;
             Toast = _Toast;
+            paramService = _paramserv;
         }
 
         public Task<string> GetUserName()
@@ -142,6 +144,67 @@ namespace BlazorClientes.Services
             var Token = await Ls!.GetValue("BlazorClientesToken");
 
             return !string.IsNullOrEmpty(Token);
+        }
+
+        public async Task<UserProfile> SaveProfile(UserProfile _UserProfile)
+        {
+            try
+            {
+                var JSONBody = JsonSerializer.Serialize(_UserProfile);
+
+                var httpResponse = await http!.PostAsync("v1/Usuarios/" + _UserProfile.ID.ToString(),
+                                                        new StringContent(JSONBody, Encoding.UTF8, "application/json"));
+
+                if (httpResponse.IsSuccessStatusCode)
+                {
+                    var ResponseString = await httpResponse.Content.ReadAsStringAsync();
+
+                    var jsonResult = JsonSerializer.Deserialize<UserProfile>(ResponseString, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+                    Toast.ShowSuccess("Perfil atualizado com sucesso!");
+
+                    return jsonResult!;
+                }
+                else
+                {
+                    var ResponseString = await httpResponse.Content.ReadAsStringAsync();
+                    var jsonResult = JsonSerializer.Deserialize<ErroRetorno>(ResponseString, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                    throw new Exception(jsonResult!.Info);
+                }
+            }
+            catch
+            {
+                throw new Exception("Ocorreu um erro inesperado! Tente novamente.");
+            }
+        }
+
+        public async Task GetProfile(int ID)
+        {
+            try
+            {
+                var httpResponse = await http!.GetAsync("v1/Usuarios/" + ID.ToString());
+
+                if (httpResponse.IsSuccessStatusCode)
+                {
+                    var ResponseString = await httpResponse.Content.ReadAsStringAsync();
+
+                    var jsonResult = JsonSerializer.Deserialize<UserProfile>(ResponseString, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+                    paramService!.setParam(jsonResult);
+
+                    Nav!.NavigateTo("/profile");
+                }
+                else
+                {
+                    var ResponseString = await httpResponse.Content.ReadAsStringAsync();
+                    var jsonResult = JsonSerializer.Deserialize<ErroRetorno>(ResponseString, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                    throw new Exception(jsonResult!.Info);
+                }
+            }
+            catch
+            {
+                throw new Exception("Ocorreu um erro inesperado! Tente novamente.");
+            }
         }
     }
 }

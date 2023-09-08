@@ -25,7 +25,14 @@ namespace WebApiClientes.Services
         /// </summary>
         /// <param name="id">ID do usuário a exibir dados</param>
         /// <returns>Retorna os dados do usuário (perfil)</returns>
-        public Task<usuarios> UserProfile(int id);
+        public Task<UserProfile> UserProfile(int id);
+
+        /// <summary>
+        /// Salva alterações no perfil de usuário
+        /// </summary>
+        /// <param name="profile">Perfil do usuário</param>
+        /// <returns>Perfil do Usuário</returns>
+        public Task<UserProfile> SaveUserProfile(UserProfile profile);
 
         /// <summary>
         /// Método para Trocar a senha do usuário

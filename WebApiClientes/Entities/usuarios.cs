@@ -5,7 +5,9 @@ namespace WebApiClientes.Entities
     /// <summary>
     /// Classe entidade Usuários
     /// </summary>
+#pragma warning disable CS8981 // O nome do tipo contém apenas caracteres ascii em caixa baixa. Esses nomes podem ficar reservados para o idioma.
     public class usuarios
+#pragma warning restore CS8981 // O nome do tipo contém apenas caracteres ascii em caixa baixa. Esses nomes podem ficar reservados para o idioma.
     {
         /// <summary>
         /// Campo de identificação única
