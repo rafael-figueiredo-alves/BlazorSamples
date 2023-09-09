@@ -337,16 +337,16 @@ namespace WebApiClientes.Services
                 conn.Open();
                 string sql = " UPDATE usuarios " +
                              " SET Nome = @Nome, " +
-                             " SET PrimeiroNome = @PrimeiroNome, " +
-                             " SET UltimoNome = @UltimoNome, " +
-                             " SET Celular = @Celular, " +
-                             " SET Endereco = @Endereco, " +
-                             " SET Complemento = @Complemento, " +
-                             " SET CEP = @CEP, " +
-                             " SET Bairro = @Bairro, " +
-                             " SET Cidade = @Cidade, " +
-                             " SET Pais = @Pais, " +
-                             " SET Estado = @Estado " +
+                             " PrimeiroNome = @PrimeiroNome, " +
+                             " UltimoNome = @UltimoNome, " +
+                             " Celular = @Celular, " +
+                             " Endereco = @Endereco, " +
+                             " Complemento = @Complemento, " +
+                             " CEP = @CEP, " +
+                             " Bairro = @Bairro, " +
+                             " Cidade = @Cidade, " +
+                             " Pais = @Pais, " +
+                             " Estado = @Estado " +
                              " WHERE ID = @id ";
                 var cmd = new MySqlCommand(sql, conn);
                 cmd.Parameters.Add(new MySqlParameter("Nome", profile.Nome));

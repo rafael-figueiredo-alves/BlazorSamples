@@ -169,12 +169,16 @@ namespace BlazorClientes.Services
                 {
                     var ResponseString = await httpResponse.Content.ReadAsStringAsync();
                     var jsonResult = JsonSerializer.Deserialize<ErroRetorno>(ResponseString, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-                    throw new Exception(jsonResult!.Info);
+                    
+                    Toast.ShowError(jsonResult!.Info!);
+
+                    return _UserProfile;
                 }
             }
             catch
             {
-                throw new Exception("Ocorreu um erro inesperado! Tente novamente.");
+                Toast.ShowError("Ocorreu um erro inesperado! Tente novamente.");
+                return _UserProfile;
             }
         }
 
