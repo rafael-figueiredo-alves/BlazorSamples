@@ -6,13 +6,13 @@ namespace MauiSimpleToDO.Shared
     public class PaginacaoBase : ComponentBase
     {
         [CascadingParameter]
-        protected UITheming? Theme { get; set; }
-        [Parameter] public int paginaAtual { get; set; } = 1;
+        protected UITheming Theme { get; set; }
+        [Parameter] public int PaginaAtual { get; set; } = 1;
         [Parameter] public int QuantidadeTotalPaginas { get; set; }
         [Parameter] public int Raio { get; set; } = 3;
         [Parameter] public EventCallback<int> PaginaSelecionada { get; set; }
 
-        protected List<LinkModel> links { get; set; }
+        protected List<LinkModel> Links { get; set; }
 
         protected class LinkModel
         {
@@ -37,7 +37,7 @@ namespace MauiSimpleToDO.Shared
 
         protected async Task PaginaSelecionadaLink(LinkModel link)
         {
-            if (link.Page == paginaAtual)
+            if (link.Page == PaginaAtual)
             {
                 return;
             }
@@ -47,7 +47,7 @@ namespace MauiSimpleToDO.Shared
                 return;
             }
 
-            paginaAtual = link.Page;
+            PaginaAtual = link.Page;
 
             await PaginaSelecionada.InvokeAsync(link.Page);
         }
@@ -59,28 +59,28 @@ namespace MauiSimpleToDO.Shared
 
         private void CarregaPaginas()
         {
-            links = new List<LinkModel>();
+            Links = new List<LinkModel>();
 
-            var isLinkPaginaAnteriorHabilitado = paginaAtual != 1;
-            var paginaAnterior = paginaAtual - 1;
+            var isLinkPaginaAnteriorHabilitado = PaginaAtual != 1;
+            var paginaAnterior = PaginaAtual - 1;
 
-            links.Add(new LinkModel(paginaAnterior, isLinkPaginaAnteriorHabilitado, "Anterior"));
+            Links.Add(new LinkModel(paginaAnterior, isLinkPaginaAnteriorHabilitado, "Anterior"));
 
             for (int i = 1; i <= QuantidadeTotalPaginas; i++)
             {
-                if (i >= paginaAtual - Raio && i <= paginaAtual + Raio)
+                if (i >= PaginaAtual - Raio && i <= PaginaAtual + Raio)
                 {
-                    links.Add(new LinkModel(i)
+                    Links.Add(new LinkModel(i)
                     {
-                        Active = paginaAtual == i
+                        Active = PaginaAtual == i
                     });
                 }
             }
 
-            var isLinkProximaPaginaHabilitado = paginaAtual != QuantidadeTotalPaginas;
-            var proximaPagina = paginaAtual + 1;
+            var isLinkProximaPaginaHabilitado = PaginaAtual != QuantidadeTotalPaginas;
+            var proximaPagina = PaginaAtual + 1;
 
-            links.Add(new LinkModel(proximaPagina, isLinkProximaPaginaHabilitado, "Próximo"));
+            Links.Add(new LinkModel(proximaPagina, isLinkProximaPaginaHabilitado, "Próximo"));
         }
     }
 }

@@ -9,15 +9,15 @@ namespace MauiSimpleToDO.Pages
     public class IndexBase : ComponentBase
     {
         [CascadingParameter]
-        protected UITheming? Theme { get; set; }
-        [Inject] private ITarefas? MyTasks { get; set; }
-        [Inject] private IToastService toastService { get; set; }
-        public List<Tarefa>? Lista { get; set; }
+        protected UITheming Theme { get; set; }
+        [Inject] private ITarefas MyTasks { get; set; }
+        [Inject] private IToastService ToastService { get; set; }
+        public List<Tarefa> Lista { get; set; }
 
-        protected Msg? msg;
+        protected Msg msg;
 
         protected int QuantidadeTotalPaginas { get; set; }
-        protected int paginaAtual { get; set; } = 1;
+        protected int PaginaAtual { get; set; } = 1;
 
         private Guid id;
 
@@ -37,7 +37,7 @@ namespace MauiSimpleToDO.Pages
             MyTasks!.RemoveTarefa(id);
             Lista!.RemoveAt(Lista.IndexOf(Lista!.Where(item => item.id == id).FirstOrDefault()!));
             msg!.Oculta();
-            toastService.ShowSuccess("Tarefa removida com sucesso!");
+            ToastService.ShowSuccess("Tarefa removida com sucesso!");
         }
 
         protected void SetarTarefa(Guid id, bool feito)
@@ -45,17 +45,17 @@ namespace MauiSimpleToDO.Pages
             MyTasks!.SetTaskDone(id, feito);
             if (feito)
             {
-                toastService.ShowSuccess("Tarefa concluída com sucesso!");
+                ToastService.ShowSuccess("Tarefa concluída com sucesso!");
             }
             else
             {
-                toastService.ShowInfo("Esta tarefa precisa ser concluída! Atenção!!!");
+                ToastService.ShowInfo("Esta tarefa precisa ser concluída! Atenção!!!");
             }
         }
 
         protected void PaginaSelecionada(int pagina)
         {
-            paginaAtual = pagina;
+            PaginaAtual = pagina;
             CarregarPagina(pagina);
         }
 
@@ -69,7 +69,7 @@ namespace MauiSimpleToDO.Pages
             {
                 if (!Lista!.Any())
                 {
-                    toastService.ShowWarning("Não há tarefas para o termo buscado.");
+                    ToastService.ShowWarning("Não há tarefas para o termo buscado.");
                 }
             }
         }
@@ -78,14 +78,14 @@ namespace MauiSimpleToDO.Pages
         {
             if (!string.IsNullOrEmpty(Termo))
             {
-                paginaAtual = 1;
-                CarregarPagina(paginaAtual, Termo);
+                PaginaAtual = 1;
+                CarregarPagina(PaginaAtual, Termo);
             }
         }
 
         protected void LimparPesquisa()
         {
-            paginaAtual = 1;
+            PaginaAtual = 1;
             CarregarPagina();
         }
     }

@@ -9,17 +9,17 @@ namespace BlazorClientes.Pages
     public class ChangePasswordBase : ComponentBase
     {
         [CascadingParameter] public UITheming? Theme { get; set; }
-        [Inject] protected IAuthServices? auth { get; set; }
-        [Inject] protected IParamService? param { get; set; }
+        [Inject] protected IAuthServices? Auth { get; set; }
+        [Inject] protected IParamService? Param { get; set; }
 
         public bool ExibirAviso = false;
         public string Mensagem = string.Empty;
         public PasswordChange TrocaSenha = new();
-        public int? uID { get; set; }
+        public int? UID { get; set; }
 
         protected override void OnInitialized()
         {
-            uID = (int)param!.GetParam()!;
+            UID = (int)Param!.GetParam()!;
         }
         public async void OnValidate()
         {
@@ -32,7 +32,7 @@ namespace BlazorClientes.Pages
 
             try
             {
-                await auth!.SaveNewPassword((int)uID!, TrocaSenha.NewPassword!);
+                await Auth!.SaveNewPassword((int)UID!, TrocaSenha.NewPassword!);
             }
             catch (Exception ex)
             {
