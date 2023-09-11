@@ -47,7 +47,7 @@ namespace BlazorClientes.Shared.Components
 
         protected void TrocarSenha()
         {
-            //Implementar endpoint para troca de senha
+            auth!.ChangePassword(uID);
         }
     }
 }

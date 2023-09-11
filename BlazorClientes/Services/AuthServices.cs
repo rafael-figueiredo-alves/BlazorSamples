@@ -210,5 +210,37 @@ namespace BlazorClientes.Services
                 throw new Exception("Ocorreu um erro inesperado! Tente novamente.");
             }
         }
+
+        public void ChangePassword(int ID)
+        {
+            paramService!.setParam(ID);
+
+            Nav!.NavigateTo("/changepassword");
+        }
+
+        public async Task SaveNewPassword(int ID, string NewPassword)
+        {
+            try
+            {
+                var httpResponse = await http!.PutAsync("v1/Usuarios/password?id=" + ID.ToString() + "&senha=" + NewPassword, null);
+
+                if (httpResponse.StatusCode == System.Net.HttpStatusCode.NoContent)
+                {
+                    Toast.ShowSuccess("Senha trocada com sucesso!");
+
+                    Nav!.NavigateTo("/");
+                }
+                else
+                {
+                    var ResponseString = await httpResponse.Content.ReadAsStringAsync();
+                    var jsonResult = JsonSerializer.Deserialize<ErroRetorno>(ResponseString, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                    Toast.ShowError(jsonResult!.Info!);
+                }
+            }
+            catch
+            {
+                Toast.ShowError("Ocorreu um erro inesperado! Tente novamente.");
+            }
+        }
     }
 }

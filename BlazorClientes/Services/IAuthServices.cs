@@ -15,5 +15,7 @@ namespace BlazorClientes.Services
         Task<bool> IsLoggedIn();
         Task<UserProfile> SaveProfile(UserProfile _UserProfile);
         Task GetProfile(int ID);
+        void ChangePassword(int ID);
+        Task SaveNewPassword(int ID, string NewPassword);
     }
 }
