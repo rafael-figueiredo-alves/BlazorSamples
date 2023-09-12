@@ -22,24 +22,35 @@
     <div class="offcanvas-body @Theme!.ColorClass" style="color: @Theme!.ColorFontStyle" data-bs-theme="@Theme.DataBsTheme">
         <ul class="list-unstyled ps-0">
             <li class="mb-1">
-                <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed" data-bs-toggle="collapse" data-bs-target="#home-collapse" aria-expanded="false">
+                <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed" data-bs-toggle="collapse" data-bs-target="#cadastros-collapse" aria-expanded="false">
                     Cadastros
                 </button>
-                <div class="collapse" id="home-collapse">
+                <div class="collapse" id="cadastros-collapse">
                     <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                        <li><a style="cursor: pointer" class="link-body-emphasis d-inline-flex text-decoration-none rounded mb-1 mt-1" data-bs-dismiss="offcanvas" @onclick="testar">Clientes</a></li>
-                        <li><a style="cursor: pointer" class="link-body-emphasis d-inline-flex text-decoration-none rounded mb-1 mt-1" data-bs-dismiss="offcanvas" @onclick="testar">Produtos</a></li>
+                        <li><a style="cursor: pointer" class="link-body-emphasis d-inline-flex text-decoration-none rounded mb-1 mt-1" data-bs-dismiss="offcanvas" @onclick="CadastrarClientes">Clientes</a></li>
+                        <li><a style="cursor: pointer" class="link-body-emphasis d-inline-flex text-decoration-none rounded mb-1 mt-1" data-bs-dismiss="offcanvas" @onclick="CadastrarProdutos">Produtos</a></li>
                     </ul>
                 </div>
             </li>
             <li class="mb-1">
-                <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed" data-bs-toggle="collapse" data-bs-target="#dashboard-collapse" aria-expanded="false">
+                <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed" data-bs-toggle="collapse" data-bs-target="#pedidos-collapse" aria-expanded="false">
                     Pedidos
                 </button>
-                <div class="collapse" id="dashboard-collapse">
+                <div class="collapse" id="pedidos-collapse">
                     <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                        <li><a style="cursor: pointer" class="link-body-emphasis d-inline-flex text-decoration-none rounded mb-1 mt-1" @onclick="testar">Novo Pedido</a></li>
-                        <li><a style="cursor: pointer" class="link-body-emphasis d-inline-flex text-decoration-none rounded mb-1 mt-1" @onclick="testar">Duplicar Pedido</a></li>
+                        <li><a style="cursor: pointer" class="link-body-emphasis d-inline-flex text-decoration-none rounded mb-1 mt-1" data-bs-dismiss="offcanvas" @onclick="CriarNovoPedido">Novo Pedido</a></li>
+                        <li><a style="cursor: pointer" class="link-body-emphasis d-inline-flex text-decoration-none rounded mb-1 mt-1" data-bs-dismiss="offcanvas" @onclick="VerificarPedidos">Verificar Pedidos</a></li>
+                    </ul>
+                </div>
+            </li>
+            <li class="mb-1">
+                <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed" data-bs-toggle="collapse" data-bs-target="#ajuda-collapse" aria-expanded="false">
+                    Ajuda
+                </button>
+                <div class="collapse" id="ajuda-collapse">
+                    <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                        <li><a style="cursor: pointer" class="link-body-emphasis d-inline-flex text-decoration-none rounded mb-1 mt-1" data-bs-dismiss="offcanvas" @onclick="ConsultarManual">Manual do Usuário</a></li>
+                        <li><a style="cursor: pointer" class="link-body-emphasis d-inline-flex text-decoration-none rounded mb-1 mt-1" data-bs-dismiss="offcanvas" @onclick="VerSobre">Sobre</a></li>
                     </ul>
                 </div>
             </li>

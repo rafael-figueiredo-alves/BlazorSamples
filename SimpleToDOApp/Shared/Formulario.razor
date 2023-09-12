@@ -21,14 +21,14 @@
         <div>
             @if (Theme.DataBsTheme == "dark")
             {
-                <InputTextArea @bind-Value="TaskModel.descricao" class="form-control bg-dark" style="color: white" maxlength="250" @oninput="Alterando" data-bs-theme="@Theme!.DataBsTheme" />
+                <InputTextArea @bind-Value="TaskModel.Descricao" class="form-control bg-dark" style="color: white" maxlength="250" @oninput="Alterando" data-bs-theme="@Theme!.DataBsTheme" />
             }
             else
             {
-                <InputTextArea @bind-Value="TaskModel.descricao" class="form-control" maxlength="250" @oninput="Alterando" data-bs-theme="@Theme!.DataBsTheme" />
+                <InputTextArea @bind-Value="TaskModel.Descricao" class="form-control" maxlength="250" @oninput="Alterando" data-bs-theme="@Theme!.DataBsTheme" />
             }
             <small id="edescricaoHelp" class="form-text text-muted" style="color: @Theme.ColorFontStyle">@QtdCaracteres / 250 caracteres digitados.</small>
-            <ValidationMessage For="@(()=> TaskModel.descricao)" />
+            <ValidationMessage For="@(()=> TaskModel.Descricao)" />
         </div>
     </div>
 
@@ -55,7 +55,7 @@
 
     protected override void OnInitialized()
     {
-        QtdCaracteres = TaskModel!.descricao.Length;
+        QtdCaracteres = TaskModel!.Descricao.Length;
     }
 
     protected void Alterando(ChangeEventArgs e)

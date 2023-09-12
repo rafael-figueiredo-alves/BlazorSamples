@@ -35,7 +35,7 @@ namespace SimpleToDOApp.Pages
         protected void ApagarTask()
         {
             MyTasks!.RemoveTarefa(id);
-            Lista!.RemoveAt(Lista.IndexOf(Lista!.Where(item => item.id == id).FirstOrDefault()!));
+            Lista!.RemoveAt(Lista.IndexOf(Lista!.Where(item => item.Id == id).FirstOrDefault()!));
             msg!.Oculta();
             toastService.ShowSuccess("Tarefa removida com sucesso!");
         }
@@ -62,8 +62,8 @@ namespace SimpleToDOApp.Pages
         protected async void CarregarPagina(int pagina = 1, string SearchTask = "")
         {
             PaginaTarefas page = await MyTasks!.GetTarefasPage(pagina, SearchTask);
-            Lista = page.tarefas.ToList();
-            QuantidadeTotalPaginas = page.totalPaginas;
+            Lista = page.Tarefas!.ToList();
+            QuantidadeTotalPaginas = page.TotalPaginas;
             StateHasChanged();
             if (!string.IsNullOrEmpty(SearchTask))
             {

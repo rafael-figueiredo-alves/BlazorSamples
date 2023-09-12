@@ -38,7 +38,7 @@ namespace SimpleToDOApp.Services
 
         public Tarefa GetTarefa(Guid _id)
         {
-            return _tarefas!.FirstOrDefault(_task => _task.id == _id)!;
+            return _tarefas!.FirstOrDefault(_task => _task.Id == _id)!;
         }
 
         public async Task<List<Tarefa>> GetTarefas()
@@ -71,14 +71,14 @@ namespace SimpleToDOApp.Services
 
         public void UpdateTarefa(Tarefa _tarefa)
         {
-            _tarefas!.FirstOrDefault(_task => _task.id == _tarefa.id)!.tarefa = _tarefa.tarefa;
-            _tarefas!.FirstOrDefault(_task => _task.id == _tarefa.id)!.descricao = _tarefa.descricao;
+            _tarefas!.FirstOrDefault(_task => _task.Id == _tarefa.Id)!.tarefa = _tarefa.tarefa;
+            _tarefas!.FirstOrDefault(_task => _task.Id == _tarefa.Id)!.Descricao = _tarefa.Descricao;
             GravarBD();
         }
 
         public void SetTaskDone(Guid _id, bool Done)
         {
-            _tarefas!.FirstOrDefault(_task => _task.id == _id)!.feito = Done;
+            _tarefas!.FirstOrDefault(_task => _task.Id == _id)!.Feito = Done;
             GravarBD();
         }
 
@@ -105,7 +105,7 @@ namespace SimpleToDOApp.Services
 
             if(!string.IsNullOrEmpty(SearchTask))
             {
-                _result = _tarefas!.Where(_task => _task.tarefa.IndexOf(SearchTask, StringComparison.OrdinalIgnoreCase) >= 0 || _task.descricao.IndexOf(SearchTask, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
+                _result = _tarefas!.Where(_task => _task.tarefa.IndexOf(SearchTask, StringComparison.OrdinalIgnoreCase) >= 0 || _task.Descricao.IndexOf(SearchTask, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
             }
             else
             {
@@ -114,8 +114,8 @@ namespace SimpleToDOApp.Services
 
             double TotalPaginas = Math.Ceiling((double)_result!.Count / QtdTarefasPorPagina);
             PaginaTarefas paginaTarefas = new PaginaTarefas();
-            paginaTarefas.tarefas = _result.Skip((pageIndex - 1) * QtdTarefasPorPagina).Take(QtdTarefasPorPagina).ToList();
-            paginaTarefas.totalPaginas = Convert.ToInt16(TotalPaginas);
+            paginaTarefas.Tarefas = _result.Skip((pageIndex - 1) * QtdTarefasPorPagina).Take(QtdTarefasPorPagina).ToList();
+            paginaTarefas.TotalPaginas = Convert.ToInt16(TotalPaginas);
 
             return paginaTarefas;
         }

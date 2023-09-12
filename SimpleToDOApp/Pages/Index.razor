@@ -42,18 +42,18 @@ else
                 <tr>
                     @if(Theme.DataBsTheme == "dark")
                     {
-                        <th scope="col" class="col-1 align-middle"><input class="form-check-input @Theme.ColorClass" type="checkbox" @bind="item.feito" style="border-color: white" id="flexCheckDefault" @onclick="@(() => SetarTarefa(item.id, !item.feito))" data-bs-theme="@Theme.DataBsTheme"></th>
+                        <th scope="col" class="col-1 align-middle"><input class="form-check-input @Theme.ColorClass" type="checkbox" @bind="item.Feito" style="border-color: white" id="flexCheckDefault" @onclick="@(() => SetarTarefa(item.Id, !item.Feito))" data-bs-theme="@Theme.DataBsTheme"></th>
                     }
                     else
                     {
-                        <th scope="col" class="col-1 align-middle"><input class="form-check-input @Theme.ColorClass" type="checkbox" @bind="item.feito" id="flexCheckDefault" @onclick="@(() => SetarTarefa(item.id, !item.feito))" data-bs-theme="@Theme.DataBsTheme"></th>
+                        <th scope="col" class="col-1 align-middle"><input class="form-check-input @Theme.ColorClass" type="checkbox" @bind="item.Feito" id="flexCheckDefault" @onclick="@(() => SetarTarefa(item.Id, !item.Feito))" data-bs-theme="@Theme.DataBsTheme"></th>
                     }
                     <td class="col-3 align-middle" style="color: @Theme!.ColorFontStyle" data-bs-theme="@Theme.DataBsTheme">@item.tarefa</td>
-                    <td class="d-none d-md-table-cell col-6 align-middle" style="color: @Theme!.ColorFontStyle" data-bs-theme="@Theme.DataBsTheme">@item.descricao</td>
+                    <td class="d-none d-md-table-cell col-6 align-middle" style="color: @Theme!.ColorFontStyle" data-bs-theme="@Theme.DataBsTheme">@item.Descricao</td>
                     <td class="col-2">
                         <div class="d-inline align-content-end">
-                            <a class="btn btn-primary" href="edittask/@item.id"><span class="oi oi-pencil" /></a>
-                            <a class="btn btn-danger" @onclick="@(()=> RemoveTarefa(item.id))"><span class="oi oi-trash" /></a>
+                            <a class="btn btn-primary" href="edittask/@item.Id"><span class="oi oi-pencil" /></a>
+                            <a class="btn btn-danger" @onclick="@(()=> RemoveTarefa(item.Id))"><span class="oi oi-trash" /></a>
                         </div>
                     </td>
                 </tr>
