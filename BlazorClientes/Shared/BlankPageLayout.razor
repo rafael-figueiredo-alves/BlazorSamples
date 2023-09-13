@@ -1,3 +1,30 @@
 ﻿@inherits LayoutComponentBase
+@inject ILocalStorage LStorage
 
+<CascadingValue Value="@Theme">
 @Body
+</CascadingValue>
+
+@code{
+    private UITheming Theme = UITheming.SetDarkMode();
+    private string ThemeKey = "BlazorClientes_Theme";
+    private bool isDark = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        isDark = Convert.ToBoolean(await LStorage.GetValue(ThemeKey));
+        SetTheme();
+    }
+
+    public void ChangeTheme()
+    {
+        isDark = !isDark;
+        SetTheme();
+    }
+
+    public async void SetTheme()
+    {
+        Theme = UITheming.SetDarkMode(isDark);
+        await LStorage.SetValue(ThemeKey, isDark.ToString());
+    }
+}

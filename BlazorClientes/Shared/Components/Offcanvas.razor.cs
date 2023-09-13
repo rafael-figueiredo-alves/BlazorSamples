@@ -45,5 +45,11 @@ namespace BlazorClientes.Shared.Components
             NavManager!.NavigateTo("about");
             await Js!.InvokeVoidAsync("FecharItemMenu", "#ajuda-collapse");
         }
+
+        public async void VerPagina404()
+        {
+            NavManager!.NavigateTo("pagina404");
+            await Js!.InvokeVoidAsync("FecharItemMenu", "#ajuda-collapse");
+        }
     }
 }
