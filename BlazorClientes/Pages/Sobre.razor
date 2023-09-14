@@ -1,9 +1,24 @@
 ﻿@page "/about"
+@inherits SobreBase
 
 <PageTitle>BlazorClientes | Sobre</PageTitle>
 
-<h3>Sobre o BlazorClientes</h3>
-
-@code {
-
-}
+<div class="@Theme!.ColorClass">
+    <div class="container py-3">
+        <div class="row h-100 align-items-center py-5">
+            <div class="col-lg-6">
+                <h1 class="display-4">BlazorClientes</h1>
+                <h5>| versão 1.0.0</h5>
+                <br />
+                <br />
+                <p class="lead text-muted mb-0">Aplicativo para aprender Blazor WASM e Asp.Net.</p>
+                <p class="lead text-muted">
+                    ®@DateTime.UtcNow.Year Desenvolvido por <a href="https://github.com/rafael-figueiredo-alves" class="text-muted">
+                        <u>Rafael de Figueiredo Alves</u>
+                    </a>
+                </p>
+            </div>
+            <div class="col-lg-6 d-none d-lg-block"><img src="/About.webp" alt="" class="img-fluid"></div>
+        </div>
+    </div>
+</div>
