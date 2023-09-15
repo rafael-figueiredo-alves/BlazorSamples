@@ -59,6 +59,11 @@ namespace BlazorClientes.Services
             Nav!.NavigateTo("/login");
         }
 
+        public Task<string> GetRole()
+        {
+            return authToken!.GetRole();
+        }
+
         public async Task SignIn(LoginUser loginUser)
         {
             try
@@ -216,6 +221,13 @@ namespace BlazorClientes.Services
             paramService!.setParam(ID);
 
             Nav!.NavigateTo("/changepassword");
+        }
+
+        public void ObterContaAdmin(int ID)
+        {
+            paramService!.setParam(ID);
+
+            Nav!.NavigateTo("/getpremium");
         }
 
         public async Task SaveNewPassword(int ID, string NewPassword)

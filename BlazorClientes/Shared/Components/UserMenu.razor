@@ -1,7 +1,7 @@
 ﻿@inherits UserMenuBase
 
 <div class="dropdown me-1">
-    <a class="nav-link dropdown-toggle me-3" style="color: white" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    <a class="nav-link dropdown-toggle me-3" style="color: white; cursor: pointer" role="button" data-bs-toggle="dropdown" aria-expanded="false">
         @UsuarioLogado
     </a>
     <ul class="dropdown-menu dropdown-menu-end @Theme!.ColorClass" data-bs-theme="@Theme!.DataBsTheme">
@@ -9,6 +9,11 @@
         <li><hr class="dropdown-divider"></li>
         <li><a class="dropdown-item" style="cursor: pointer" @onclick="VerPerfil"><span class="oi oi-person me-2" />Ver perfil</a></li>
         <li><a class="dropdown-item" style="cursor: pointer" @onclick="TrocarSenha"><span class="oi oi-key me-2" />Trocar senha</a></li>
+        @if(Conta != "Admin")
+        {
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" style="cursor: pointer" @onclick="ObterAdmin"><span class="oi oi-lock-unlocked me-2" />Obter conta Premium</a></li>
+        }
         <li><hr class="dropdown-divider"></li>
         <li><a class="dropdown-item" style="cursor: pointer" @onclick="EfetuarLogout"><span class="oi oi-account-logout me-2" />Sair</a></li>
     </ul>

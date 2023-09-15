@@ -12,10 +12,12 @@ namespace BlazorClientes.Services
         Task<string> GetEmail();
         Task<string> GetUserID();
         Task<DateTime> GetExpiration();
+        Task<string> GetRole();
         Task<bool> IsLoggedIn();
         Task<UserProfile> SaveProfile(UserProfile _UserProfile);
         Task GetProfile(int ID);
         void ChangePassword(int ID);
         Task SaveNewPassword(int ID, string NewPassword);
+        void ObterContaAdmin(int ID);
     }
 }

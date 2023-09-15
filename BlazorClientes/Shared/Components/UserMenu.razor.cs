@@ -12,6 +12,7 @@ namespace BlazorClientes.Shared.Components
         [Inject] protected IAuthServices? auth { get; set; }
         protected string? UsuarioLogado { get; set; } = "Desconhecido";
         protected string? EmailUsuario { get; set; } = "example@example.com";
+        protected string? Conta { get; set; }
 
         protected int uID { get; set; } = 0;
 
@@ -26,6 +27,7 @@ namespace BlazorClientes.Shared.Components
                     UsuarioLogado = await auth!.GetUserName();
                     EmailUsuario = await auth!.GetEmail();
                     uID = Convert.ToInt16(await auth!.GetUserID());
+                    Conta = await auth!.GetRole();
                     StateHasChanged();
                     if (ExpiraEm < DateTime.Now)
                     {
@@ -48,6 +50,11 @@ namespace BlazorClientes.Shared.Components
         protected void TrocarSenha()
         {
             auth!.ChangePassword(uID);
+        }
+
+        protected void ObterAdmin()
+        {
+            auth!.ObterContaAdmin(uID);
         }
     }
 }
