@@ -254,5 +254,30 @@ namespace BlazorClientes.Services
                 Toast.ShowError("Ocorreu um erro inesperado! Tente novamente.");
             }
         }
+
+        public async Task ChangeAccount(int ID)
+        {
+            try
+            {
+                var httpResponse = await http!.PutAsync("v1/Usuarios/account?id=" + ID.ToString() + "&tipo=Admin", null);
+
+                if (httpResponse.StatusCode == System.Net.HttpStatusCode.NoContent)
+                {
+                    Toast.ShowSuccess("Parabéns, sua conta foi atualizada para o plano Premium com sucesso!");
+
+                    await Logout();
+                }
+                else
+                {
+                    var ResponseString = await httpResponse.Content.ReadAsStringAsync();
+                    var jsonResult = JsonSerializer.Deserialize<ErroRetorno>(ResponseString, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                    Toast.ShowError(jsonResult!.Info!);
+                }
+            }
+            catch
+            {
+                Toast.ShowError("Ocorreu um erro inesperado! Tente novamente.");
+            }
+        }
     }
 }

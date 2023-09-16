@@ -12,7 +12,7 @@ namespace BlazorClientes.Pages
 
         protected void ClickObterPremium()
         {
-
+            Auth!.ChangeAccount((int)param!.GetParam()!);
         }
         
     }

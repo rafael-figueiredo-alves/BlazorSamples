@@ -19,5 +19,6 @@ namespace BlazorClientes.Services
         void ChangePassword(int ID);
         Task SaveNewPassword(int ID, string NewPassword);
         void ObterContaAdmin(int ID);
+        Task ChangeAccount(int ID);
     }
 }
