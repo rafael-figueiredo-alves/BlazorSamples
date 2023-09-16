@@ -3,3 +3,120 @@
 
 <PageTitle>BlazorClientes | Obter conta Premium</PageTitle>
 
+    <svg xmlns="http://www.w3.org/2000/svg" class="d-none" style="color: white">
+      <symbol id="check2" viewBox="0 0 16 16">
+        @if(Theme!.IsDark)
+        {
+            <path stroke="white" d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z" />
+        }
+        else
+        {
+            <path stroke="black" d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z" />
+        }
+    </symbol>
+    </svg>
+
+<header>
+    <div class="pricing-header p-3 pb-md-4 mx-auto text-center">
+      <h1 class="display-4 fw-normal text-body-emphasis">Obter plano Premium do BlazorClientes</h1>
+      <p class="fs-5 text-body-secondary">
+          Veja a seguir as vantagens de possuir uma conta no plano Premium do sistema, com recursos exclusivos, para facilitar ainda mais o seu dia a dia no cotidiano na empresa com um ERP simplificado.
+      </p>
+    </div>
+  </header>
+
+  <main>
+    <div class="row row-cols-1 row-cols-md-3 mb-3 text-center justify-content-center">
+      <div class="col">
+        <div class="card mb-4 rounded-3 shadow-sm">
+          <div class="card-header py-3">
+            <h4 class="my-0 fw-normal">Plano Free - Em uso</h4>
+          </div>
+          <div class="card-body">
+            <h1 class="card-title pricing-card-title">R$ 0<small class="text-body-secondary fw-light">/mês</small></h1>
+            <ul class="list-unstyled mt-3 mb-4">
+              <li>Cadastro de Clientes</li>
+              <li>Cadastro de Pedidos</li>
+              <li>Cadastro de Produtos</li>
+              <li>Suporte por e-mail</li>
+              <li>Tema Claro e Escuro</li>
+              <li>Acessível 24 horas/7 dias por semana</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="col">
+        <div class="card mb-4 rounded-3 shadow-sm border-primary">
+          <div class="card-header py-3 text-bg-primary border-primary">
+            <h4 class="my-0 fw-normal">Plano Premium</h4>
+          </div>
+          <div class="card-body">
+            <h1 class="card-title pricing-card-title">R$ 50<small class="text-body-secondary fw-light">/mês</small></h1>
+            <ul class="list-unstyled mt-3 mb-4">
+              <li>Tudo do plano Free</li>
+              <li>Cadastros avançados (estoque, fornecedores, etc)</li>
+              <li>Funcionalidades de ERP</li>
+              <li>Relatórios</li>
+            </ul>
+            <button type="button" class="w-100 btn btn-lg btn-primary" @onclick="ClickObterPremium">Obter agora</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h2 class="display-6 text-center mb-4">Comparando os planos disponíveis</h2>
+
+    <div class="table-responsive">
+      <table class="table text-center">
+        <thead>
+          <tr>
+            <th style="width: 60%;"></th>
+            <th style="width: 20%;">Plano Free</th>
+            <th style="width: 20%;">Plano Premium</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row" class="text-start">Cadastros simples (Pedidos, Produtos, Clientes)</th>
+            <td><svg class="bi" width="24" height="24"><use xlink:href="#check2"/></svg></td>
+            <td><svg class="bi" width="24" height="24"><use xlink:href="#check2"/></svg></td>
+          </tr>
+          <tr>
+            <th scope="row" class="text-start">Tema Claro e Escuro</th>
+            <td><svg class="bi" width="24" height="24"><use xlink:href="#check2"/></svg></td>
+            <td><svg class="bi" width="24" height="24"><use xlink:href="#check2"/></svg></td>
+          </tr>
+        </tbody>
+
+        <tbody>
+          <tr>
+            <th scope="row" class="text-start">Suporte por e-mail</th>
+            <td><svg class="bi" width="24" height="24"><use xlink:href="#check2"/></svg></td>
+            <td><svg class="bi" width="24" height="24"><use xlink:href="#check2"/></svg></td>
+          </tr>
+          <tr>
+            <th scope="row" class="text-start">Acessível 24 horas/7 dias por semana</th>
+            <td><svg class="bi" width="24" height="24"><use xlink:href="#check2"/></svg></td>
+            <td><svg class="bi" width="24" height="24"><use xlink:href="#check2"/></svg></td>
+          </tr>
+          <tr>
+            <th scope="row" class="text-start">Relatórios</th>
+            <td></td>
+            <td><svg class="bi" width="24" height="24"><use xlink:href="#check2"/></svg></td>
+          </tr>
+          <tr>
+            <th scope="row" class="text-start">Cadastros avançados (Estoque, Fornecedores, etc)</th>
+            <td></td>
+            <td><svg class="bi" width="24" height="24"><use xlink:href="#check2"/></svg></td>
+          </tr>
+          <tr>
+            <th scope="row" class="text-start">Funcionalidades de ERP*</th>
+            <td></td>
+            <td><svg class="bi" width="24" height="24"><use xlink:href="#check2"/></svg></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p></p>
+    <p>* <strong>Funcionalidades de ERP: </strong>Emissão de NFe, controle de estoque, Impressão de relatórios, Contas a Pagar, Contas a Receber, Caixa, Bancos e outros</p>
+</main>
