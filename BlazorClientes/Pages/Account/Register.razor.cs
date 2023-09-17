@@ -5,7 +5,7 @@ using Blazored.Toast.Services;
 using Microsoft.AspNetCore.Components;
 using System.ComponentModel.DataAnnotations;
 
-namespace BlazorClientes.Pages
+namespace BlazorClientes.Pages.Account
 {
     public class RegisterBase : ComponentBase
     {
@@ -28,18 +28,18 @@ namespace BlazorClientes.Pages
         {
             AnoCopyright = DateTime.Now.Year;
 
-            await Auth!.IsLogged();   
+            await Auth!.IsLogged();
         }
         public async void OnValidate()
         {
-            if(!AcceptTerms) 
+            if (!AcceptTerms)
             {
                 Mensagem = "Para criar conta, é necessário marcar \"Aceitar\" os termos.";
                 ExibirAviso = true;
                 return;
             }
 
-            if(_NewUser.Senha != ConfirmaSenha) 
+            if (_NewUser.Senha != ConfirmaSenha)
             {
                 Mensagem = "Senha e confirmação de senha não correspondem! Verifique.";
                 ExibirAviso = true;

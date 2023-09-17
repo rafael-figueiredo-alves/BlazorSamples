@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Components;
 using BlazorClientes.Shared.Components;
 using Blazored.Toast.Services;
 
-namespace BlazorClientes.Pages
+namespace BlazorClientes.Pages.Account
 {
     public class LoginBase : ComponentBase
     {

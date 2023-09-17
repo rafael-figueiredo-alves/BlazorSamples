@@ -51,5 +51,11 @@ namespace BlazorClientes.Shared.Components
             NavManager!.NavigateTo("pagina404");
             await Js!.InvokeVoidAsync("FecharItemMenu", "#ajuda-collapse");
         }
+
+        public async void CadastrarVendedores()
+        {
+            NavManager!.NavigateTo("salespeople");
+            await Js!.InvokeVoidAsync("FecharItemMenu", "#ajuda-collapse");
+        }
     }
 }

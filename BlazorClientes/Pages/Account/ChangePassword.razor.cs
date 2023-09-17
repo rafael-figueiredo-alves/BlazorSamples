@@ -4,7 +4,7 @@ using BlazorClientes.Shared.Components;
 using Microsoft.AspNetCore.Components;
 using System.ComponentModel.DataAnnotations;
 
-namespace BlazorClientes.Pages
+namespace BlazorClientes.Pages.Account
 {
     public class ChangePasswordBase : ComponentBase
     {
