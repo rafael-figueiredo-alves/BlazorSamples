@@ -70,7 +70,7 @@ namespace BlazorClientes.Services
             {
                 var JSONBody = JsonSerializer.Serialize(loginUser);
 
-                var httpResponse = await http!.PostAsync("v1/Usuarios",
+                var httpResponse = await http!.PostAsync("api/v1/Usuarios",
                                                         new StringContent(JSONBody, Encoding.UTF8, "application/json"));
 
                 if (httpResponse.IsSuccessStatusCode)
@@ -106,7 +106,7 @@ namespace BlazorClientes.Services
             {
                 var JSONBody = JsonSerializer.Serialize(usuario);
 
-                var httpResponse = await http!.PostAsync("v1/Usuarios/register",
+                var httpResponse = await http!.PostAsync("api/v1/Usuarios/register",
                                                         new StringContent(JSONBody, Encoding.UTF8, "application/json"));
 
                 if (httpResponse.IsSuccessStatusCode)
@@ -157,7 +157,7 @@ namespace BlazorClientes.Services
             {
                 var JSONBody = JsonSerializer.Serialize(_UserProfile);
 
-                var httpResponse = await http!.PostAsync("v1/Usuarios/" + _UserProfile.ID.ToString(),
+                var httpResponse = await http!.PostAsync("api/v1/Usuarios/" + _UserProfile.ID.ToString(),
                                                         new StringContent(JSONBody, Encoding.UTF8, "application/json"));
 
                 if (httpResponse.IsSuccessStatusCode)
@@ -191,7 +191,7 @@ namespace BlazorClientes.Services
         {
             try
             {
-                var httpResponse = await http!.GetAsync("v1/Usuarios/" + ID.ToString());
+                var httpResponse = await http!.GetAsync("api/v1/Usuarios/" + ID.ToString());
 
                 if (httpResponse.IsSuccessStatusCode)
                 {
@@ -234,7 +234,7 @@ namespace BlazorClientes.Services
         {
             try
             {
-                var httpResponse = await http!.PutAsync("v1/Usuarios/password?id=" + ID.ToString() + "&senha=" + NewPassword, null);
+                var httpResponse = await http!.PutAsync("api/v1/Usuarios/password?id=" + ID.ToString() + "&senha=" + NewPassword, null);
 
                 if (httpResponse.StatusCode == System.Net.HttpStatusCode.NoContent)
                 {
@@ -259,7 +259,7 @@ namespace BlazorClientes.Services
         {
             try
             {
-                var httpResponse = await http!.PutAsync("v1/Usuarios/account?id=" + ID.ToString() + "&tipo=Admin", null);
+                var httpResponse = await http!.PutAsync("api/v1/Usuarios/account?id=" + ID.ToString() + "&tipo=Admin", null);
 
                 if (httpResponse.StatusCode == System.Net.HttpStatusCode.NoContent)
                 {

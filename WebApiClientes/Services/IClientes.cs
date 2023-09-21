@@ -18,7 +18,7 @@ namespace WebApiClientes.Services
         /// </summary>
         /// <param name="id">id</param>
         /// <returns>Retorna cliente</returns>
-        public Task<Clientes> GetCliente(int id);
+        public Task<Clientes> GetCliente(string id);
        
         /// <summary>
         /// Insere novo cliente
@@ -33,13 +33,13 @@ namespace WebApiClientes.Services
         /// <param name="cliente">Cliente</param>
         /// <param name="ID">Id do Cliente</param> 
         /// <returns>Retorna o cliente alterado</returns>
-        public Task<Clientes> PutCliente(Clientes cliente, int ID);
+        public Task<Clientes> PutCliente(Clientes cliente, string ID);
      
         /// <summary>
         /// Apaga cliente
         /// </summary>
         /// <param name="id">id</param>
         /// <returns>Verdadeiro ou falso</returns>
-        public Task<bool> DeleteCliente(int id);
+        public Task<bool> DeleteCliente(string id);
     }
 }

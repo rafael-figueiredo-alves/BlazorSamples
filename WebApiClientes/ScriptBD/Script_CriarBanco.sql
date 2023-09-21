@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS `usuarios` (
 
 /* Criar tabela Clientes */
 CREATE TABLE IF NOT EXISTS `clientes` (
-  `idCliente` int NOT NULL AUTO_INCREMENT,
+  `idCliente` varchar(120) NOT NULL,
   `Nome` varchar(75) DEFAULT NULL,
   `Endereco` varchar(120) DEFAULT NULL,
   `Telefone` varchar(15) DEFAULT NULL,
@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS `clientes` (
   `Email` varchar(150) DEFAULT NULL,
   PRIMARY KEY (`idCliente`),
   UNIQUE KEY `idClientes_UNIQUE` (`idCliente`)
-) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 /* Criar tabela Produtos */
 CREATE TABLE IF NOT EXISTS `produtos` (
@@ -43,8 +43,10 @@ CREATE TABLE IF NOT EXISTS `produtos` (
   `Produto` varchar(100) DEFAULT NULL,
   `Descricao` varchar(45) DEFAULT NULL,
   `Valor` decimal(13,2) DEFAULT NULL,
+  `Barcode` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`idProduto`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
 
 /* Criar tabela Pedidos */
 CREATE TABLE IF NOT EXISTS `pedidos` (
@@ -55,6 +57,7 @@ CREATE TABLE IF NOT EXISTS `pedidos` (
   `IdVendedor` varchar(45) NOT NULL,
   `vComissao` decimal(13,2) DEFAULT NULL,
   `ValorTotal` decimal(13,2) DEFAULT NULL,
+  `Status` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`IdPedido`),
   KEY `Clientes_FK_idx` (`idCliente`),
   KEY `Vendedores_FK_idx` (`IdVendedor`),
@@ -62,9 +65,10 @@ CREATE TABLE IF NOT EXISTS `pedidos` (
   CONSTRAINT `Vendedores_FK` FOREIGN KEY (`IdVendedor`) REFERENCES `vendedores` (`idVendedor`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+
 /* Criar tabela ItensPedido */
 CREATE TABLE IF NOT EXISTS `itenspedido` (
-  `Indice` int NOT NULL,
+  `Indice` int NOT NULL AUTO_INCREMENT,
   `idPedido` varchar(120) NOT NULL,
   `idProduto` varchar(120) NOT NULL,
   `Quantidade` int NOT NULL,

@@ -11,7 +11,7 @@ namespace WebApiClientes.Controllers
     /// <summary>
     /// Endpoint Cliente
     /// </summary>
-    [Route("v1/[controller]")]
+    [Route("api/v1/[controller]")]
     [Authorize(AuthenticationSchemes = "Bearer")] //Usado para adicionar autenticação e autorização
     [ApiController]
     public class ClientesController : ControllerBase
@@ -80,7 +80,7 @@ namespace WebApiClientes.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<Clientes>> GetCliente(int id)
+        public async Task<ActionResult<Clientes>> GetCliente(string id)
         {
             var clientes = await fclientes.GetCliente(id);
             try
@@ -134,7 +134,7 @@ namespace WebApiClientes.Controllers
             {
                 if (clientes != null)
                 {
-                    return Created($"/v1/Clientes/{clientes.Id}", clientes);
+                    return Created($"/v1/Clientes/{clientes.idCliente}", clientes);
                 }
                 else
                 {
@@ -164,7 +164,7 @@ namespace WebApiClientes.Controllers
         [ProducesErrorResponseType(typeof(Erro))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<Clientes>> PutCliente(int id, [FromBody]Clientes cliente)
+        public async Task<ActionResult<Clientes>> PutCliente(string id, [FromBody]Clientes cliente)
         {
             var clientes = await fclientes.PutCliente(cliente, id);
             try
@@ -200,7 +200,7 @@ namespace WebApiClientes.Controllers
         [ProducesErrorResponseType(typeof(Erro))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult> DeleteCliente(int id)
+        public async Task<ActionResult> DeleteCliente(string id)
         {
             bool Apagou = await fclientes.DeleteCliente(id);
             try

@@ -15,7 +15,7 @@ namespace WebApiClientes.Controllers
     /// <summary>
     /// Endpoint dos usuários
     /// </summary>
-    [Route("v1/[controller]")]
+    [Route("api/v1/[controller]")]
     [Authorize(AuthenticationSchemes = "Bearer")]
     [ApiController]
     public class UsuariosController : ControllerBase
@@ -136,10 +136,14 @@ namespace WebApiClientes.Controllers
         /// </summary>
         /// <param name="id">ID do usuário</param>
         /// <returns>Dados do usuário</returns>
+        /// <response code="401">Acesso não autorizado</response>
+        /// <response code="200">Perfil obtido com sucesso</response>
+        /// <response code="500">Erro interno do servidor</response>
         [HttpGet("{id}")]
         [Consumes("application/json")]
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<UserProfile>> GetProfile(int id)
         {

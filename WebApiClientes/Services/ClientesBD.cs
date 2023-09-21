@@ -27,7 +27,7 @@ namespace WebApiClientes.Services
         /// <param name="id"></param>
         /// <returns>Nenhum conteúdo</returns>
         /// <exception cref="NotImplementedException"></exception>
-        public async Task<bool> DeleteCliente(int id)
+        public async Task<bool> DeleteCliente(string id)
         {
             MySqlConnection? conn = null;
             try
@@ -57,7 +57,7 @@ namespace WebApiClientes.Services
         /// </summary>
         /// <param name="id"></param>
         /// <returns>Cliente</returns>
-        public async Task<Clientes> GetCliente(int id)
+        public async Task<Clientes> GetCliente(string id)
         {
             MySqlConnection? conn = null;
             try
@@ -77,12 +77,13 @@ namespace WebApiClientes.Services
                 else
                 {
                     await reader.ReadAsync();
-                    clientes = new Clientes(Convert.ToInt32(reader["idClientes"].ToString()),
+                    clientes = new Clientes(
                                             reader["Nome"].ToString()!,
                                             reader["Endereco"].ToString()!,
                                             reader["Telefone"].ToString()!,
                                             reader["Celular"].ToString()!,
-                                            reader["Email"].ToString()!);
+                                            reader["Email"].ToString()!,
+                                            reader["idClientes"].ToString());
                 }
                 conn.Close();
 
@@ -116,12 +117,13 @@ namespace WebApiClientes.Services
                 var reader = await cmd.ExecuteReaderAsync();
                 while(await reader.ReadAsync())
                 {
-                    clientes.Add(new Clientes(Convert.ToInt32(reader["idClientes"].ToString()),
+                    clientes.Add(new Clientes(
                                               reader["Nome"].ToString()!,
                                               reader["Endereco"].ToString()!,
                                               reader["Telefone"].ToString()!,
                                               reader["Celular"].ToString()!,
-                                              reader["Email"].ToString()!));
+                                              reader["Email"].ToString()!,
+                                              reader["idClientes"].ToString()));
                 }
 
                 conn.Close();
@@ -151,8 +153,9 @@ namespace WebApiClientes.Services
             {
                 conn = new MySqlConnection(Conn);
                 conn.Open();
-                string sql = "insert into clientes (Nome, Endereco, Telefone, Celular, Email) values (@nome, @endereco, @telefone, @celular, @email)";
+                string sql = "insert into clientes (IdCliente, Nome, Endereco, Telefone, Celular, Email) values (@id, @nome, @endereco, @telefone, @celular, @email)";
                 var cmd = new MySqlCommand(sql, conn);
+                cmd.Parameters.Add(new MySqlParameter("id", cliente.idCliente));
                 cmd.Parameters.Add(new MySqlParameter("nome", cliente.Nome));
                 cmd.Parameters.Add(new MySqlParameter("endereco", cliente.Endereco));
                 cmd.Parameters.Add(new MySqlParameter("telefone", cliente.Telefone));
@@ -167,12 +170,13 @@ namespace WebApiClientes.Services
                     if (reader.HasRows)
                     {
                         await reader.ReadAsync();
-                        return new Clientes(Convert.ToInt32(reader["idClientes"].ToString()),
+                        return new Clientes(
                                               reader["Nome"].ToString()!,
                                               reader["Endereco"].ToString()!,
                                               reader["Telefone"].ToString()!,
                                               reader["Celular"].ToString()!,
-                                              reader["Email"].ToString()!);
+                                              reader["Email"].ToString()!,
+                                              reader["idClientes"].ToString());
                     }
                     else
                     {
@@ -201,7 +205,7 @@ namespace WebApiClientes.Services
         /// <param name="ID"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public async Task<Clientes> PutCliente(Clientes cliente, int ID)
+        public async Task<Clientes> PutCliente(Clientes cliente, string ID)
         {
             MySqlConnection? conn = null;
             try
@@ -225,12 +229,13 @@ namespace WebApiClientes.Services
                     if (reader.HasRows)
                     {
                         await reader.ReadAsync();
-                        return new Clientes(Convert.ToInt32(reader["idClientes"].ToString()),
+                        return new Clientes(
                                               reader["Nome"].ToString()!,
                                               reader["Endereco"].ToString()!,
                                               reader["Telefone"].ToString()!,
                                               reader["Celular"].ToString()!,
-                                              reader["Email"].ToString()!);
+                                              reader["Email"].ToString()!,
+                                              reader["idClientes"].ToString());
                     }
                     else
                     {
