@@ -23,6 +23,11 @@ namespace WebApiClientes.Entities
         public string? idVendedor { get; set; }
 
         /// <summary>
+        /// Camnpo % de Comissão do vendedor
+        /// </summary>
+        public int pComissao { get; set; } = 0;
+
+        /// <summary>
         /// Campo Valor Total da comissão
         /// </summary>
         public decimal? vComissao { get; set; }

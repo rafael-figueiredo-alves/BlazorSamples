@@ -21,6 +21,11 @@
         public string? idProduto { get; set; }
 
         /// <summary>
+        /// Campo Descrição do produto comprado
+        /// </summary>
+        public string? Descricao { get; set; }
+
+        /// <summary>
         /// Campo Quantidade
         /// </summary>
         public int Quantidade { get; set; } = 0;
@@ -50,15 +55,27 @@
         /// <param name="valorUnitario">Valor Unitário</param>
         /// <param name="_pDesconto">% desconto</param>
         /// <param name="valor">Valor Total</param>
-        public ItensPedido(int indice, string? _idPedido, string? _idProduto, int quantidade, decimal valorUnitario, int _pDesconto, decimal valor)
+        public ItensPedido(int indice, string? _idPedido, string? _idProduto, int quantidade, decimal valorUnitario, int _pDesconto, decimal? valor = null)
         {
             Indice = indice;
             idPedido = _idPedido;
             idProduto = _idProduto;
             Quantidade = quantidade;
             ValorUnitario = valorUnitario;
-            pDesconto = pDesconto;
-            Valor = valor;
+            pDesconto = _pDesconto;
+            if(valor != null)
+            {
+                Valor = (decimal)valor!;
+            }
+            else
+            {
+                Valor = CalculaTotal();
+            }
+        }
+
+        private decimal CalculaTotal()
+        {
+            return (ValorUnitario * Quantidade) * (1 - (pDesconto / 100));
         }
     }
 }
