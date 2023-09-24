@@ -22,4 +22,8 @@
     <Folder Include="wwwroot\css\bootstrap\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\BlazorClientes.Shared\BlazorClientes.Shared.csproj" />
+  </ItemGroup>
+
 </Project>

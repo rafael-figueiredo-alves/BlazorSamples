@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
-namespace BlazorClientes.Entities
+namespace BlazorClientes.Shared.Entities
 {
     /// <summary>
     /// Entidade Clientes
@@ -8,9 +9,9 @@ namespace BlazorClientes.Entities
     public class Clientes
     {
         /// <summary>
-        /// Campo Id do tipo numérico e auto-incrementável
+        /// Campo Id do tipo GUID
         /// </summary>
-        public int Id { get; }
+        public string idCliente { get; private set; }
         
         /// <summary>
         /// Campo nome
@@ -48,15 +49,22 @@ namespace BlazorClientes.Entities
         /// <summary>
         /// Método construtor da classe/entidade
         /// </summary>
-        /// <param name="_id"></param>
         /// <param name="_nome"></param>
         /// <param name="_endereco"></param>
         /// <param name="_telefone"></param>
         /// <param name="_celular"></param>
         /// <param name="_email"></param>
-        public Clientes(int _id, string _nome,  string _endereco, string _telefone, string _celular, string _email)
+        public Clientes(string _nome,  string _endereco, string _telefone, string _celular, string _email, string? id = null)
         {
-            Id = _id;
+            if(id != null)
+            {
+                idCliente = id!;
+            }
+            else
+            {
+                idCliente = Guid.NewGuid().ToString();
+            }
+            
             Nome = _nome;
             Endereco = _endereco;
             Telefone = _telefone;
@@ -69,7 +77,7 @@ namespace BlazorClientes.Entities
         /// </summary>
         public Clientes()
         {
-
+            idCliente = Guid.NewGuid().ToString();
         }
     }
 }

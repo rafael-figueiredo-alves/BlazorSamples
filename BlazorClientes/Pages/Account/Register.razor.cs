@@ -1,4 +1,4 @@
-﻿using BlazorClientes.Entities;
+﻿using BlazorClientes.Shared.Entities;
 using BlazorClientes.Services;
 using BlazorClientes.Shared.Components;
 using Blazored.Toast.Services;
@@ -16,7 +16,7 @@ namespace BlazorClientes.Pages.Account
         public TermsDlg? TermsOfServiceDlg;
         public int AnoCopyright { get; set; }
 
-        public Usuarios _NewUser = new();
+        public usuarios _NewUser = new();
 
         [Required(ErrorMessage = "É necessário repetir sua senha para confirmar a mesma.")]
         public string? ConfirmaSenha { get; set; }

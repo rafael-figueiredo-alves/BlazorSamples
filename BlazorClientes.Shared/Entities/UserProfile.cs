@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace BlazorClientes.Entities
+namespace BlazorClientes.Shared.Entities
 {
     /// <summary>
     /// Classe que manipula o perfil do usuário

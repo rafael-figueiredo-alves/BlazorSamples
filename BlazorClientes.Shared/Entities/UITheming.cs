@@ -1,4 +1,4 @@
-﻿namespace BlazorClientes.Entities
+﻿namespace BlazorClientes.Shared.Entities
 {
     public class UITheming
     {

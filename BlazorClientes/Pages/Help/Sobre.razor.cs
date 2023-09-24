@@ -1,4 +1,4 @@
-﻿using BlazorClientes.Entities;
+﻿using BlazorClientes.Shared.Entities;
 using Microsoft.AspNetCore.Components;
 
 namespace BlazorClientes.Pages.Help

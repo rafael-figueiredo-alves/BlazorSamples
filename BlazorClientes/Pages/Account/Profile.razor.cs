@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
-using BlazorClientes.Entities;
+using BlazorClientes.Shared.Entities;
 using BlazorClientes.Services;
 
 namespace BlazorClientes.Pages.Account

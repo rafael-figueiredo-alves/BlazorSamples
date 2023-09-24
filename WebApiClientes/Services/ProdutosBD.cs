@@ -1,5 +1,5 @@
 ﻿using MySql.Data.MySqlClient;
-using WebApiClientes.Entities;
+using BlazorClientes.Shared.Entities;
 
 namespace WebApiClientes.Services
 {
@@ -20,7 +20,7 @@ namespace WebApiClientes.Services
         }
 
         /// <summary>
-        /// Método para apagar Vendedores
+        /// Método para apagar Produto
         /// </summary>
         /// <param name="id"></param>
         /// <returns>Nenhum conteúdo</returns>
@@ -32,7 +32,7 @@ namespace WebApiClientes.Services
             {
                 conn = new MySqlConnection(Conn);
                 conn.Open();
-                string sql = "delete from vendedores where idVendedor = @id";
+                string sql = "delete from produtos where idProduto = @id";
                 var cmd = new MySqlCommand(sql, conn);
                 cmd.Parameters.Add(new MySqlParameter("id", id));
                 var ResultSet = await cmd.ExecuteNonQueryAsync();
@@ -51,38 +51,40 @@ namespace WebApiClientes.Services
         }
 
         /// <summary>
-        /// Pega Cliente pelo ID
+        /// Pega Produto pelo ID
         /// </summary>
         /// <param name="id"></param>
-        /// <returns>Cliente</returns>
+        /// <returns>Produto</returns>
         public async Task<Produtos> GetProduto(string id)
         {
             MySqlConnection? conn = null;
             try
             {
-                Vendedores vendedor;
+                Produtos produto;
 
                 conn = new MySqlConnection(Conn);
                 conn.Open();
-                string sql = "select * from vendedores where idVendedor = @id";
+                string sql = "select * from produtos where idProduto = @id";
                 var cmd = new MySqlCommand(sql, conn);
                 cmd.Parameters.Add(new MySqlParameter("id", id));
                 var reader = await cmd.ExecuteReaderAsync();
                 if (!reader.HasRows)
                 {
-                    vendedor = new Vendedores();
+                    produto = new Produtos();
                 }
                 else
                 {
                     await reader.ReadAsync();
-                    vendedor = new Vendedores(
-                                            reader["Vendedor"].ToString()!,
-                                            Convert.ToInt32(reader["pComissao"].ToString()!),
-                                            reader["idVendedor"].ToString());
+                    produto = new Produtos(
+                                            reader["Produto"].ToString()!,
+                                            reader["Descricao"].ToString()!,
+                                            Convert.ToDecimal(reader["Valor"].ToString()!),
+                                            reader["Barcode"].ToString()!,
+                                            reader["idProduto"].ToString());
                 }
                 conn.Close();
 
-                return vendedor;
+                return produto;
             }
             catch
             {
@@ -95,31 +97,33 @@ namespace WebApiClientes.Services
         }
 
         /// <summary>
-        /// Retorna lista de vendedores
+        /// Retorna lista de produtos
         /// </summary>
-        /// <returns>Lista de vendedores</returns>
+        /// <returns>Lista de produtos</returns>
         public async Task<List<Produtos>> GetProdutos()
         {
-            var vendedores = new List<Vendedores>();
+            var produtos = new List<Produtos>();
 
             MySqlConnection? conn = null;
             try
             {
                 conn = new MySqlConnection(Conn);
                 conn.Open();
-                string sql = "select * from vendedores";
+                string sql = "select * from produtos";
                 var cmd = new MySqlCommand(sql, conn);
                 var reader = await cmd.ExecuteReaderAsync();
                 while (await reader.ReadAsync())
                 {
-                    vendedores.Add(new Vendedores(
-                                              reader["Vendedor"].ToString()!,
-                                              Convert.ToInt32(reader["pComissao"].ToString()!),
-                                              reader["idVendedor"].ToString()));
+                    produtos.Add(new Produtos(
+                                              reader["Produto"].ToString()!,
+                                              reader["Descricao"].ToString()!,
+                                              Convert.ToDecimal(reader["Valor"].ToString()!),
+                                              reader["Barcode"].ToString()!,
+                                              reader["idProduto"].ToString()));
                 }
 
                 conn.Close();
-                return vendedores;
+                return produtos;
 
             }
             catch
@@ -133,25 +137,27 @@ namespace WebApiClientes.Services
         }
 
         /// <summary>
-        /// Inclui vendedor
+        /// Inclui produto
         /// </summary>
-        /// <param name="vendedor">vendedor</param>
+        /// <param name="produto">produto</param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public async Task<Produtos> PostProduto(Produtos vendedor)
+        public async Task<Produtos> PostProduto(Produtos produto)
         {
             MySqlConnection? conn = null;
             try
             {
                 conn = new MySqlConnection(Conn);
                 conn.Open();
-                string sql = "insert into vendedores (IdVendedor, Vendedor, pComissao) values (@id, @vendedor, @pcomissao)";
+                string sql = "insert into produtos (IdProduto, Produto, Descricao, Valor, Barcode) values (@id, @produto, @descricao, @valor, @barcode)";
                 var cmd = new MySqlCommand(sql, conn);
-                cmd.Parameters.Add(new MySqlParameter("id", vendedor.idVendedor));
-                cmd.Parameters.Add(new MySqlParameter("vendedor", vendedor.Vendedor));
-                cmd.Parameters.Add(new MySqlParameter("pcomissao", vendedor.pComissao));
+                cmd.Parameters.Add(new MySqlParameter("id", produto.idProduto));
+                cmd.Parameters.Add(new MySqlParameter("produto", produto.Produto));
+                cmd.Parameters.Add(new MySqlParameter("descricao", produto.Descricao));
+                cmd.Parameters.Add(new MySqlParameter("valor", produto.Valor));
+                cmd.Parameters.Add(new MySqlParameter("barcode", produto.Barcode));
                 await cmd.ExecuteNonQueryAsync();
-                sql = "select * from vendedores where (idVendedor = @id)";
+                sql = "select * from produtos where (idProduto = @id)";
                 cmd.CommandText = sql;
                 var reader = await cmd.ExecuteReaderAsync();
                 if (reader != null)
@@ -159,10 +165,12 @@ namespace WebApiClientes.Services
                     if (reader.HasRows)
                     {
                         await reader.ReadAsync();
-                        return new Vendedores(
-                                              reader["Vendedor"].ToString()!,
-                                              Convert.ToInt32(reader["pComissao"].ToString()!),
-                                              reader["idVendedor"].ToString());
+                        return new Produtos(
+                                              reader["Produto"].ToString()!,
+                                              reader["Descricao"].ToString()!,
+                                              Convert.ToDecimal(reader["Valor"].ToString()!),
+                                              reader["Barcode"].ToString()!,
+                                              reader["idProduto"].ToString());
                     }
                     else
                     {
@@ -185,26 +193,28 @@ namespace WebApiClientes.Services
         }
 
         /// <summary>
-        /// Altera dados de vendedor
+        /// Altera dados de produto
         /// </summary>
-        /// <param name="vendedor"></param>
+        /// <param name="produto"></param>
         /// <param name="ID"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public async Task<Produtos> PutProduto(Produtos vendedor, string ID)
+        public async Task<Produtos> PutProduto(Produtos produto, string ID)
         {
             MySqlConnection? conn = null;
             try
             {
                 conn = new MySqlConnection(Conn);
                 conn.Open();
-                string sql = "update vendedores set Vendedor = @vendedor, pComissao = @pcomissao where idVendedor = @id";
+                string sql = "update produtos set Produto = @produto, Descricao = @descricao, Valor = @valor, Barcode = @barcode where idProduto = @id";
                 var cmd = new MySqlCommand(sql, conn);
                 cmd.Parameters.Add(new MySqlParameter("id", ID));
-                cmd.Parameters.Add(new MySqlParameter("vendedor", vendedor.Vendedor));
-                cmd.Parameters.Add(new MySqlParameter("pcomissao", vendedor.pComissao));
+                cmd.Parameters.Add(new MySqlParameter("produto", produto.Produto));
+                cmd.Parameters.Add(new MySqlParameter("descricao", produto.Descricao));
+                cmd.Parameters.Add(new MySqlParameter("valor", produto.Valor));
+                cmd.Parameters.Add(new MySqlParameter("barcode", produto.Barcode));
                 await cmd.ExecuteNonQueryAsync();
-                sql = "select * from vendedores where idVendedor = @id";
+                sql = "select * from produtos where idProduto = @id";
                 cmd.CommandText = sql;
                 var reader = await cmd.ExecuteReaderAsync();
                 if (reader != null)
@@ -212,10 +222,12 @@ namespace WebApiClientes.Services
                     if (reader.HasRows)
                     {
                         await reader.ReadAsync();
-                        return new Vendedores(
-                                              reader["Vendedor"].ToString()!,
-                                              Convert.ToInt32(reader["pComissao"].ToString()!),
-                                              reader["idVendedor"].ToString());
+                        return new Produtos(
+                                              reader["Produto"].ToString()!,
+                                              reader["Descricao"].ToString()!,
+                                              Convert.ToDecimal(reader["Valor"].ToString()!),
+                                              reader["Barcode"].ToString()!,
+                                              reader["idProduto"].ToString());
                     }
                     else
                     {

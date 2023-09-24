@@ -1,11 +1,13 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace BlazorClientes.Entities
+namespace BlazorClientes.Shared.Entities
 {
     /// <summary>
     /// Classe entidade Usuários
     /// </summary>
-    public class Usuarios
+#pragma warning disable CS8981 // O nome do tipo contém apenas caracteres ascii em caixa baixa. Esses nomes podem ficar reservados para o idioma.
+    public class usuarios
+#pragma warning restore CS8981 // O nome do tipo contém apenas caracteres ascii em caixa baixa. Esses nomes podem ficar reservados para o idioma.
     {
         /// <summary>
         /// Campo de identificação única
@@ -41,7 +43,7 @@ namespace BlazorClientes.Entities
         /// <param name="email"></param>
         /// <param name="senha"></param>
         /// <param name="tipoConta"></param>
-        public Usuarios(int iD, string? nome, string? email, string? senha, string? tipoConta)
+        public usuarios(int iD, string? nome, string? email, string? senha, string? tipoConta)
         {
             ID = iD;
             Nome = nome;
@@ -50,9 +52,7 @@ namespace BlazorClientes.Entities
             TipoConta = tipoConta;
         }
 
-        public Usuarios() 
-        {
-        }
+        public usuarios() { }
     }
 
     /// <summary>

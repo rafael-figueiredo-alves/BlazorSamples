@@ -7,7 +7,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Reflection.Metadata.Ecma335;
 using System.Security.Claims;
 using System.Text;
-using WebApiClientes.Entities;
+using BlazorClientes.Shared.Entities;
 using WebApiClientes.Services;
 
 namespace WebApiClientes.Controllers

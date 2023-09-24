@@ -1,4 +1,4 @@
-﻿namespace WebApiClientes.Entities
+﻿namespace BlazorClientes.Shared.Entities
 {
     /// <summary>
     /// Classe dos itens do pedido

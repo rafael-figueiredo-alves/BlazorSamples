@@ -1,5 +1,5 @@
 ﻿using BlazorClientes.Auth;
-using BlazorClientes.Entities;
+using BlazorClientes.Shared.Entities;
 using Blazored.Toast.Services;
 using Microsoft.AspNetCore.Components;
 using System.Text;
@@ -88,7 +88,7 @@ namespace BlazorClientes.Services
                 else
                 {
                     var ResponseString = await httpResponse.Content.ReadAsStringAsync();
-                    var jsonResult = JsonSerializer.Deserialize<ErroRetorno>(ResponseString, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                    var jsonResult = JsonSerializer.Deserialize<Erro>(ResponseString, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
                     throw new Exception(jsonResult!.Info);
                 }
             }
@@ -98,7 +98,7 @@ namespace BlazorClientes.Services
             }
         }
 
-        public async Task SignUp(Usuarios usuario)
+        public async Task SignUp(usuarios usuario)
         {
             usuario.TipoConta = "User";
             var msgErro = string.Empty;
@@ -124,7 +124,7 @@ namespace BlazorClientes.Services
                 else
                 {
                     var ResponseString = await httpResponse.Content.ReadAsStringAsync();
-                    ErroRetorno? jsonResult = JsonSerializer.Deserialize<ErroRetorno>(ResponseString);
+                    Erro? jsonResult = JsonSerializer.Deserialize<Erro>(ResponseString);
                     msgErro = jsonResult!.Info;
                     throw new Exception(msgErro);
                 }
@@ -173,7 +173,7 @@ namespace BlazorClientes.Services
                 else
                 {
                     var ResponseString = await httpResponse.Content.ReadAsStringAsync();
-                    var jsonResult = JsonSerializer.Deserialize<ErroRetorno>(ResponseString, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                    var jsonResult = JsonSerializer.Deserialize<Erro>(ResponseString, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
                     
                     Toast.ShowError(jsonResult!.Info!);
 
@@ -206,7 +206,7 @@ namespace BlazorClientes.Services
                 else
                 {
                     var ResponseString = await httpResponse.Content.ReadAsStringAsync();
-                    var jsonResult = JsonSerializer.Deserialize<ErroRetorno>(ResponseString, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                    var jsonResult = JsonSerializer.Deserialize<Erro>(ResponseString, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
                     throw new Exception(jsonResult!.Info);
                 }
             }
@@ -245,7 +245,7 @@ namespace BlazorClientes.Services
                 else
                 {
                     var ResponseString = await httpResponse.Content.ReadAsStringAsync();
-                    var jsonResult = JsonSerializer.Deserialize<ErroRetorno>(ResponseString, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                    var jsonResult = JsonSerializer.Deserialize<Erro>(ResponseString, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
                     Toast.ShowError(jsonResult!.Info!);
                 }
             }
@@ -270,7 +270,7 @@ namespace BlazorClientes.Services
                 else
                 {
                     var ResponseString = await httpResponse.Content.ReadAsStringAsync();
-                    var jsonResult = JsonSerializer.Deserialize<ErroRetorno>(ResponseString, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                    var jsonResult = JsonSerializer.Deserialize<Erro>(ResponseString, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
                     Toast.ShowError(jsonResult!.Info!);
                 }
             }

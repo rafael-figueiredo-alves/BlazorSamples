@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace WebApiClientes.Entities
+namespace BlazorClientes.Shared.Entities
 {
     /// <summary>
     /// Entidade responsável pelos Vendedores

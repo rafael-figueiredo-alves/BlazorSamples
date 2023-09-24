@@ -1,4 +1,4 @@
-﻿using BlazorClientes.Entities;
+﻿using BlazorClientes.Shared.Entities;
 
 namespace BlazorClientes.Services
 {
@@ -6,7 +6,7 @@ namespace BlazorClientes.Services
     {
         Task IsLogged();
         Task SignIn(LoginUser loginUser);
-        Task SignUp(Usuarios usuario);
+        Task SignUp(usuarios usuario);
         Task Logout();
         Task<string> GetUserName();
         Task<string> GetEmail();

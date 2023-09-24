@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-namespace WebApiClientes.Entities
+namespace BlazorClientes.Shared.Entities
 {
     /// <summary>
     /// Classe customizada da BadRequest

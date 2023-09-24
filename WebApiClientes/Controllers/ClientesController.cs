@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Mime;
-using WebApiClientes.Entities;
+using BlazorClientes.Shared.Entities;
 using WebApiClientes.Services;
 
 namespace WebApiClientes.Controllers
