@@ -55,11 +55,12 @@
         /// <param name="valorUnitario">Valor Unitário</param>
         /// <param name="_pDesconto">% desconto</param>
         /// <param name="valor">Valor Total</param>
-        public ItensPedido(int indice, string? _idPedido, string? _idProduto, int quantidade, decimal valorUnitario, int _pDesconto, decimal? valor = null)
+        public ItensPedido(int indice, string? _idPedido, string? _idProduto, string? _Descricao, int quantidade, decimal valorUnitario, int _pDesconto, decimal? valor = null)
         {
             Indice = indice;
             idPedido = _idPedido;
             idProduto = _idProduto;
+            Descricao = _Descricao;
             Quantidade = quantidade;
             ValorUnitario = valorUnitario;
             pDesconto = _pDesconto;

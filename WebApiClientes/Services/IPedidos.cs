@@ -40,6 +40,6 @@ namespace WebApiClientes.Services
         /// </summary>
         /// <param name="id">id</param>
         /// <returns>Verdadeiro ou falso</returns>
-        public Task<bool> DeleteVendedor(string id);
+        public Task<bool> DeletePedido(string id);
     }
 }
