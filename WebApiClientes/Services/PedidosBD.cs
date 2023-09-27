@@ -1,5 +1,6 @@
 ﻿using BlazorClientes.Shared.Entities;
 using MySql.Data.MySqlClient;
+using MySqlX.XDevAPI;
 
 namespace WebApiClientes.Services
 {
@@ -88,10 +89,12 @@ namespace WebApiClientes.Services
                                             Convert.ToDateTime(reader["DataEntrega"].ToString()!),
                                             reader["status"].ToString()!,
                                             reader["idPedido"].ToString()!);
+                    pedido.Cliente = reader["Cliente"].ToString()!;
+                    pedido.Vendedor = reader["Vendedor"].ToString()!;
                     string sql_itens = "select itenspedido.*, produtos.Descricao from itenspedido where idPedido = @id";
                     var cmd_itens = new MySqlCommand(sql_itens, conn);
                     var reader_itens = await cmd.ExecuteReaderAsync();
-                    while (await reader.ReadAsync())
+                    while (await reader_itens.ReadAsync())
                     {
                         pedido.Itens.Add(new ItensPedido(
                                                         Convert.ToInt32(reader_itens["Indice"].ToString()!),
@@ -135,19 +138,43 @@ namespace WebApiClientes.Services
                 string sql = "select * from clientes";
                 var cmd = new MySqlCommand(sql, conn);
                 var reader = await cmd.ExecuteReaderAsync();
+                
                 while (await reader.ReadAsync())
                 {
-                    pedidos.Add(new Pedidos(
-                                              reader["Nome"].ToString()!,
-                                              reader["Endereco"].ToString()!,
-                                              reader["Telefone"].ToString()!,
-                                              reader["Celular"].ToString()!,
-                                              reader["Email"].ToString()!,
-                                              reader["idCliente"].ToString()));
+                    Pedidos pedido = new Pedidos(
+                                            reader["idCliente"].ToString()!,
+                                            reader["idVendedor"].ToString()!,
+                                            Convert.ToDecimal(reader["vComissao"].ToString()!),
+                                            Convert.ToInt32(reader["pComissao"].ToString()!),
+                                            Convert.ToDecimal(reader["ValorTotal"].ToString()!),
+                                            Convert.ToDateTime(reader["DataEmissao"].ToString()!),
+                                            Convert.ToDateTime(reader["DataEntrega"].ToString()!),
+                                            reader["status"].ToString()!,
+                                            reader["idPedido"].ToString()!);
+                    pedido.Cliente = reader["Cliente"].ToString()!;
+                    pedido.Vendedor = reader["Vendedor"].ToString()!;
+                    string sql_itens = "select itenspedido.*, produtos.Descricao from itenspedido where idPedido = @id";
+                    var cmd_itens = new MySqlCommand(sql_itens, conn);
+                    var reader_itens = await cmd.ExecuteReaderAsync();
+                    while (await reader_itens.ReadAsync())
+                    {
+                        pedido.Itens.Add(new ItensPedido(
+                                                        Convert.ToInt32(reader_itens["Indice"].ToString()!),
+                                                        reader_itens["idPedido"].ToString()!,
+                                                        reader_itens["idProduto"].ToString()!,
+                                                        reader_itens["Descricao"].ToString()!,
+                                                        Convert.ToInt32(reader_itens["Quantidade"].ToString()!),
+                                                        Convert.ToDecimal(reader_itens["ValorUnitario"].ToString()!),
+                                                        Convert.ToInt32(reader_itens["pDesconto"].ToString()!),
+                                                        Convert.ToDecimal(reader_itens["Valor"].ToString()!)
+                            ));
+                    }
+
+                    pedidos.Add(pedido);
                 }
 
                 conn.Close();
-                return clientes;
+                return pedidos;
 
             }
             catch
@@ -173,40 +200,33 @@ namespace WebApiClientes.Services
             {
                 conn = new MySqlConnection(Conn);
                 conn.Open();
-                string sql = "insert into clientes (IdCliente, Nome, Endereco, Telefone, Celular, Email) values (@id, @nome, @endereco, @telefone, @celular, @email)";
+                
+                string sql = "insert into pedidos (IdPedido, IdCliente, DataEmissao, DataEntrega, IdVendedor, vComissao, ValorTotal, Status) values (@idPedido, @idCliente, @dataEmissao, @dataEntrega, @idVendedor, @vcomissao, @valorTotal, Sstatus)";
                 var cmd = new MySqlCommand(sql, conn);
-                cmd.Parameters.Add(new MySqlParameter("id", cliente.idCliente));
-                cmd.Parameters.Add(new MySqlParameter("nome", cliente.Nome));
-                cmd.Parameters.Add(new MySqlParameter("endereco", cliente.Endereco));
-                cmd.Parameters.Add(new MySqlParameter("telefone", cliente.Telefone));
-                cmd.Parameters.Add(new MySqlParameter("celular", cliente.Celular));
-                cmd.Parameters.Add(new MySqlParameter("email", cliente.Email));
+                cmd.Parameters.Add(new MySqlParameter("idPedido", pedido.idPedido));
+                cmd.Parameters.Add(new MySqlParameter("idCliente", pedido.idCliente));
+                cmd.Parameters.Add(new MySqlParameter("dataEmissao", pedido.DataEmissao));
+                cmd.Parameters.Add(new MySqlParameter("dataEntrega", pedido.DataEntrega));
+                cmd.Parameters.Add(new MySqlParameter("idVendedor", pedido.idVendedor));
+                cmd.Parameters.Add(new MySqlParameter("vcomissao", pedido.vComissao));
+                cmd.Parameters.Add(new MySqlParameter("valorTotal", pedido.ValorTotal));
+                cmd.Parameters.Add(new MySqlParameter("status", pedido.Status));
                 await cmd.ExecuteNonQueryAsync();
-                sql = "select * from Clientes where (idCliente = @id)";
-                cmd.CommandText = sql;
-                var reader = await cmd.ExecuteReaderAsync();
-                if (reader != null)
+
+                foreach(var item in pedido.Itens)
                 {
-                    if (reader.HasRows)
-                    {
-                        await reader.ReadAsync();
-                        return new Clientes(
-                                              reader["Nome"].ToString()!,
-                                              reader["Endereco"].ToString()!,
-                                              reader["Telefone"].ToString()!,
-                                              reader["Celular"].ToString()!,
-                                              reader["Email"].ToString()!,
-                                              reader["idCliente"].ToString());
-                    }
-                    else
-                    {
-                        return null!;
-                    }
+                    cmd.Parameters.Clear();
+                    cmd.CommandText = "insert into pedidos (IdPedido, IdProduto, Quantidade, ValorUnitario, pDesconto, Valor) values (@idPedido, @idProduto, @quantidade, @valorUnitario, @pdesconto, @valor)";
+                    cmd.Parameters.Add(new MySqlParameter("idPedido", item.idPedido));
+                    cmd.Parameters.Add(new MySqlParameter("idProduto", item.idProduto));
+                    cmd.Parameters.Add(new MySqlParameter("quantidade", item.Quantidade));
+                    cmd.Parameters.Add(new MySqlParameter("valorUnitario", item.ValorUnitario));
+                    cmd.Parameters.Add(new MySqlParameter("pdesconto", item.pDesconto));
+                    cmd.Parameters.Add(new MySqlParameter("valor", item.Valor));
+                    await cmd.ExecuteNonQueryAsync();
                 }
-                else
-                {
-                    return null!;
-                }
+                
+                return await GetPedido(pedido.idCliente!);
             }
             catch
             {
@@ -232,40 +252,33 @@ namespace WebApiClientes.Services
             {
                 conn = new MySqlConnection(Conn);
                 conn.Open();
-                string sql = "update clientes set Nome = @nome, Endereco = @endereco, Telefone = @telefone, Celular = @celular, Email = @email where idCliente = @id";
+
+                string sql = "Update pedidos set IdCliente = @idCliente, DataEmissao = @dataEmissao, DataEntrega = @dataEntrega, IdVendedor = @idVendedor, vComissao, ValorTotal, Status) values (@idPedido, @idCliente, @dataEmissao, @dataEntrega, @idVendedor, @vcomissao, @valorTotal, Sstatus)";
                 var cmd = new MySqlCommand(sql, conn);
-                cmd.Parameters.Add(new MySqlParameter("id", ID));
-                cmd.Parameters.Add(new MySqlParameter("nome", cliente.Nome));
-                cmd.Parameters.Add(new MySqlParameter("endereco", cliente.Endereco));
-                cmd.Parameters.Add(new MySqlParameter("telefone", cliente.Telefone));
-                cmd.Parameters.Add(new MySqlParameter("celular", cliente.Celular));
-                cmd.Parameters.Add(new MySqlParameter("email", cliente.Email));
+                cmd.Parameters.Add(new MySqlParameter("idPedido", pedido.idPedido));
+                cmd.Parameters.Add(new MySqlParameter("idCliente", pedido.idCliente));
+                cmd.Parameters.Add(new MySqlParameter("dataEmissao", pedido.DataEmissao));
+                cmd.Parameters.Add(new MySqlParameter("dataEntrega", pedido.DataEntrega));
+                cmd.Parameters.Add(new MySqlParameter("idVendedor", pedido.idVendedor));
+                cmd.Parameters.Add(new MySqlParameter("vcomissao", pedido.vComissao));
+                cmd.Parameters.Add(new MySqlParameter("valorTotal", pedido.ValorTotal));
+                cmd.Parameters.Add(new MySqlParameter("status", pedido.Status));
                 await cmd.ExecuteNonQueryAsync();
-                sql = "select * from Clientes where idCliente = @id";
-                cmd.CommandText = sql;
-                var reader = await cmd.ExecuteReaderAsync();
-                if (reader != null)
+
+                foreach (var item in pedido.Itens)
                 {
-                    if (reader.HasRows)
-                    {
-                        await reader.ReadAsync();
-                        return new Clientes(
-                                              reader["Nome"].ToString()!,
-                                              reader["Endereco"].ToString()!,
-                                              reader["Telefone"].ToString()!,
-                                              reader["Celular"].ToString()!,
-                                              reader["Email"].ToString()!,
-                                              reader["idClientes"].ToString());
-                    }
-                    else
-                    {
-                        return null!;
-                    }
+                    cmd.Parameters.Clear();
+                    cmd.CommandText = "insert into pedidos (IdPedido, IdProduto, Quantidade, ValorUnitario, pDesconto, Valor) values (@idPedido, @idProduto, @quantidade, @valorUnitario, @pdesconto, @valor)";
+                    cmd.Parameters.Add(new MySqlParameter("idPedido", item.idPedido));
+                    cmd.Parameters.Add(new MySqlParameter("idProduto", item.idProduto));
+                    cmd.Parameters.Add(new MySqlParameter("quantidade", item.Quantidade));
+                    cmd.Parameters.Add(new MySqlParameter("valorUnitario", item.ValorUnitario));
+                    cmd.Parameters.Add(new MySqlParameter("pdesconto", item.pDesconto));
+                    cmd.Parameters.Add(new MySqlParameter("valor", item.Valor));
+                    await cmd.ExecuteNonQueryAsync();
                 }
-                else
-                {
-                    return null!;
-                }
+
+                return await GetPedido(pedido.idCliente!);
             }
             catch
             {
