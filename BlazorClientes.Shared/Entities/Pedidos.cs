@@ -111,4 +111,16 @@ namespace BlazorClientes.Shared.Entities
             Itens = new List<ItensPedido>();
         }
     }
+
+    public enum FiltrosPedidoPeriodo
+    {
+        PorDataEmissao,
+        PorDataEntrega
+    }
+
+    public enum FiltrosPedido
+    {
+        PorCliente,
+        PorVendedor
+    }
 }

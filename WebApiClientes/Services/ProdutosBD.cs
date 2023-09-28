@@ -248,5 +248,70 @@ namespace WebApiClientes.Services
                 conn?.Close();
             }
         }
+
+        /// <summary>
+        /// Retorna lista de produtos com nome ou descrição informado
+        /// </summary>
+        /// <returns>Lista de produtos</returns>
+        public async Task<List<Produtos>> GetProdutosPorFiltro(FiltroProdutos FiltrarPor, string? TermoBusca)
+        {
+            var produtos = new List<Produtos>();
+
+            if(string.IsNullOrEmpty(TermoBusca))
+            {
+                TermoBusca = "%";
+            }
+
+            MySqlConnection? conn = null;
+            try
+            {
+                conn = new MySqlConnection(Conn);
+                conn.Open();
+
+                string sql;
+
+                switch (FiltrarPor)
+                {
+                    case FiltroProdutos.PorProduto:
+                        sql = "select * from produtos where produto like '%" + TermoBusca + "%'";
+                        break;
+                    case FiltroProdutos.PorDescricao:
+                        sql = "select * from produtos where descricao like '%" + TermoBusca + "%'";
+                        break;
+                    case FiltroProdutos.PorBarcode:
+                        sql = "select * from produtos where barcode like '%" + TermoBusca + "%'";
+                        break;
+                    default:
+                        sql = "select * from produtos";
+                        break;
+                }
+
+                sql = "select * from produtos";
+                var cmd = new MySqlCommand(sql, conn);
+                var reader = await cmd.ExecuteReaderAsync();
+                while (await reader.ReadAsync())
+                {
+                    produtos.Add(new Produtos(
+                                              reader["Produto"].ToString()!,
+                                              reader["Descricao"].ToString()!,
+                                              Convert.ToDecimal(reader["Valor"].ToString()!),
+                                              reader["Barcode"].ToString()!,
+                                              reader["idProduto"].ToString()));
+                }
+
+                conn.Close();
+                return produtos;
+
+            }
+            catch
+            {
+                return null!;
+            }
+            finally
+            {
+                conn?.Close();
+            }
+        }
+
     }
 }

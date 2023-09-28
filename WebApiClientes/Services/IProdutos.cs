@@ -41,5 +41,13 @@ namespace WebApiClientes.Services
         /// <param name="id">id</param>
         /// <returns>Verdadeiro ou falso</returns>
         public Task<bool> DeleteProduto(string id);
+
+        /// <summary>
+        /// Listar pordutos filtrados por um campo e um termo
+        /// </summary>
+        /// <param name="FiltrarPor">Campo</param>
+        /// <param name="TermoBusca">Termo</param>
+        /// <returns>Lista de Produtos</returns>
+        public Task<List<Produtos>> GetProdutosPorFiltro(FiltroProdutos FiltrarPor, string? TermoBusca);
     }
 }

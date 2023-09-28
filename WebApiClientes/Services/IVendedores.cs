@@ -41,5 +41,13 @@ namespace WebApiClientes.Services
         /// <param name="id">id</param>
         /// <returns>Verdadeiro ou falso</returns>
         public Task<bool> DeleteVendedor(string id);
+
+        /// <summary>
+        /// Método para pegar lista de Vendedores filtrados
+        /// </summary>
+        /// <param name="FiltrarPor"></param>
+        /// <param name="TermoBusca"></param>
+        /// <returns></returns>
+        public Task<List<Vendedores>> GetVendedoresPorFiltro(FiltroVendedor FiltrarPor, string? TermoBusca);
     }
 }

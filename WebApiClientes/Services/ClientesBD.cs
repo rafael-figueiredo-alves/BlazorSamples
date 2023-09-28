@@ -256,5 +256,68 @@ namespace WebApiClientes.Services
                 conn?.Close();
             }
         }
+
+        /// <summary>
+        /// Buscar por clientes usando um filtro de busca
+        /// </summary>
+        /// <param name="FiltrarPor">Campo a filtrar</param>
+        /// <param name="TermoBusca">Termo a buscar</param>
+        /// <returns>Lista de Clientes</returns>
+        public async Task<List<Clientes>> GetClientesPorFiltro(FiltrosCliente FiltrarPor, string? TermoBusca)
+        {
+            var clientes = new List<Clientes>();
+
+            if(string.IsNullOrEmpty(TermoBusca))
+            {
+                TermoBusca = "%";
+            }
+
+            MySqlConnection? conn = null;
+            try
+            {
+                conn = new MySqlConnection(Conn);
+                conn.Open();
+                
+                string sql;
+
+                switch(FiltrarPor)
+                {
+                    case FiltrosCliente.PorNome:
+                        sql = "select * from clientes where Nome like '%" + TermoBusca + "%'";
+                        break;
+                    case FiltrosCliente.PorEndereco:
+                        sql = "select * from clientes where Endereco like '%" + TermoBusca + "%'";
+                        break;
+                    default:
+                        sql = "select * from clientes";
+                        break;
+                }
+
+                var cmd = new MySqlCommand(sql, conn);
+                var reader = await cmd.ExecuteReaderAsync();
+                while (await reader.ReadAsync())
+                {
+                    clientes.Add(new Clientes(
+                                              reader["Nome"].ToString()!,
+                                              reader["Endereco"].ToString()!,
+                                              reader["Telefone"].ToString()!,
+                                              reader["Celular"].ToString()!,
+                                              reader["Email"].ToString()!,
+                                              reader["idCliente"].ToString()));
+                }
+
+                conn.Close();
+                return clientes;
+
+            }
+            catch
+            {
+                return null!;
+            }
+            finally
+            {
+                conn?.Close();
+            }
+        }
     }
 }

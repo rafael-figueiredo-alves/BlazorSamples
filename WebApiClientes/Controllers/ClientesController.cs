@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Net.Mime;
 using BlazorClientes.Shared.Entities;
 using WebApiClientes.Services;
+using System.Collections.Generic;
 
 namespace WebApiClientes.Controllers
 {
@@ -33,9 +34,19 @@ namespace WebApiClientes.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)] //Informa status codes retornáveis
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<List<Clientes>>> Get()
+        public async Task<ActionResult<List<Clientes>>> Get([FromQuery] FiltrosCliente? FiltrarPor, string? Termo)
         {
-            var clientes = await fclientes.GetClientes();
+            List<Clientes> clientes;
+
+            if ((FiltrarPor == null) && (string.IsNullOrEmpty(Termo)))
+            {
+                clientes = await fclientes.GetClientes();
+            }
+            else
+            {
+                clientes = await fclientes.GetClientesPorFiltro((FiltrosCliente)FiltrarPor!, Termo);
+            }
+             
             try
             {
                 if (clientes != null)

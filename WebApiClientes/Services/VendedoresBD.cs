@@ -236,5 +236,62 @@ namespace WebApiClientes.Services
                 conn?.Close();
             }
         }
+
+        /// <summary>
+        /// Método para pegar lista de Vendedores filtrados
+        /// </summary>
+        /// <param name="FiltrarPor"></param>
+        /// <param name="TermoBusca"></param>
+        /// <returns></returns>
+        public async Task<List<Vendedores>> GetVendedoresPorFiltro(FiltroVendedor FiltrarPor, string? TermoBusca)
+        {
+            var vendedores = new List<Vendedores>();
+
+            if(string.IsNullOrEmpty(TermoBusca))
+            {
+                TermoBusca = "%";
+            }
+
+            MySqlConnection? conn = null;
+            try
+            {
+                conn = new MySqlConnection(Conn);
+                conn.Open();
+
+                string sql;
+
+                switch(FiltrarPor)
+                {
+                    case FiltroVendedor.PorNome:
+                        sql = "select * from vendedores where Vendedor like '" + TermoBusca + "%'";
+                        break;
+                    default:
+                        sql = "select * from vendedores";
+                        break;
+                }
+
+                var cmd = new MySqlCommand(sql, conn);
+                var reader = await cmd.ExecuteReaderAsync();
+                while (await reader.ReadAsync())
+                {
+                    vendedores.Add(new Vendedores(
+                                              reader["Vendedor"].ToString()!,
+                                              Convert.ToInt32(reader["pComissao"].ToString()!),
+                                              reader["idVendedor"].ToString()));
+                }
+
+                conn.Close();
+                return vendedores;
+
+            }
+            catch
+            {
+                return null!;
+            }
+            finally
+            {
+                conn?.Close();
+            }
+        }
     }
 }

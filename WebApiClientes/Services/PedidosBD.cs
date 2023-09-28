@@ -216,7 +216,7 @@ namespace WebApiClientes.Services
                 foreach(var item in pedido.Itens)
                 {
                     cmd.Parameters.Clear();
-                    cmd.CommandText = "insert into pedidos (IdPedido, IdProduto, Quantidade, ValorUnitario, pDesconto, Valor) values (@idPedido, @idProduto, @quantidade, @valorUnitario, @pdesconto, @valor)";
+                    cmd.CommandText = "insert into itenspedido (IdPedido, IdProduto, Quantidade, ValorUnitario, pDesconto, Valor) values (@idPedido, @idProduto, @quantidade, @valorUnitario, @pdesconto, @valor)";
                     cmd.Parameters.Add(new MySqlParameter("idPedido", item.idPedido));
                     cmd.Parameters.Add(new MySqlParameter("idProduto", item.idProduto));
                     cmd.Parameters.Add(new MySqlParameter("quantidade", item.Quantidade));
@@ -253,7 +253,7 @@ namespace WebApiClientes.Services
                 conn = new MySqlConnection(Conn);
                 conn.Open();
 
-                string sql = "Update pedidos set IdCliente = @idCliente, DataEmissao = @dataEmissao, DataEntrega = @dataEntrega, IdVendedor = @idVendedor, vComissao, ValorTotal, Status) values (@idPedido, @idCliente, @dataEmissao, @dataEntrega, @idVendedor, @vcomissao, @valorTotal, Sstatus)";
+                string sql = "Update pedidos set IdCliente = @idCliente, DataEmissao = @dataEmissao, DataEntrega = @dataEntrega, IdVendedor = @idVendedor, vComissao = @vcomissao, ValorTotal = @valorTotal, Status = @status WHERE idPedido = @idPedido";
                 var cmd = new MySqlCommand(sql, conn);
                 cmd.Parameters.Add(new MySqlParameter("idPedido", pedido.idPedido));
                 cmd.Parameters.Add(new MySqlParameter("idCliente", pedido.idCliente));
@@ -267,15 +267,30 @@ namespace WebApiClientes.Services
 
                 foreach (var item in pedido.Itens)
                 {
-                    cmd.Parameters.Clear();
-                    cmd.CommandText = "insert into pedidos (IdPedido, IdProduto, Quantidade, ValorUnitario, pDesconto, Valor) values (@idPedido, @idProduto, @quantidade, @valorUnitario, @pdesconto, @valor)";
-                    cmd.Parameters.Add(new MySqlParameter("idPedido", item.idPedido));
-                    cmd.Parameters.Add(new MySqlParameter("idProduto", item.idProduto));
-                    cmd.Parameters.Add(new MySqlParameter("quantidade", item.Quantidade));
-                    cmd.Parameters.Add(new MySqlParameter("valorUnitario", item.ValorUnitario));
-                    cmd.Parameters.Add(new MySqlParameter("pdesconto", item.pDesconto));
-                    cmd.Parameters.Add(new MySqlParameter("valor", item.Valor));
-                    await cmd.ExecuteNonQueryAsync();
+                    if (item.Indice > 0)
+                    {
+                        cmd.Parameters.Clear();
+                        cmd.CommandText = "update itenspedido set IdProduto = @idProduto, Quantidade = @quantidade, ValorUnitario = @valorUnitario, pDesconto = @pdesconto, Valor = @valor where IdPedido = @idPedido";
+                        cmd.Parameters.Add(new MySqlParameter("idPedido", item.idPedido));
+                        cmd.Parameters.Add(new MySqlParameter("idProduto", item.idProduto));
+                        cmd.Parameters.Add(new MySqlParameter("quantidade", item.Quantidade));
+                        cmd.Parameters.Add(new MySqlParameter("valorUnitario", item.ValorUnitario));
+                        cmd.Parameters.Add(new MySqlParameter("pdesconto", item.pDesconto));
+                        cmd.Parameters.Add(new MySqlParameter("valor", item.Valor));
+                        await cmd.ExecuteNonQueryAsync();
+                    }
+                    else
+                    {
+                        cmd.Parameters.Clear();
+                        cmd.CommandText = "insert into itenspedido (IdPedido, IdProduto, Quantidade, ValorUnitario, pDesconto, Valor) values (@idPedido, @idProduto, @quantidade, @valorUnitario, @pdesconto, @valor)";
+                        cmd.Parameters.Add(new MySqlParameter("idPedido", item.idPedido));
+                        cmd.Parameters.Add(new MySqlParameter("idProduto", item.idProduto));
+                        cmd.Parameters.Add(new MySqlParameter("quantidade", item.Quantidade));
+                        cmd.Parameters.Add(new MySqlParameter("valorUnitario", item.ValorUnitario));
+                        cmd.Parameters.Add(new MySqlParameter("pdesconto", item.pDesconto));
+                        cmd.Parameters.Add(new MySqlParameter("valor", item.Valor));
+                        await cmd.ExecuteNonQueryAsync();
+                    }
                 }
 
                 return await GetPedido(pedido.idCliente!);

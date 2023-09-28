@@ -9,58 +9,47 @@ namespace WebApiClientes.Controllers
 {
     //Os comentários com /// são usados no swagger
     /// <summary>
-    /// Endpoint para gerenciamento de Produtos
+    /// Endpoint Pedidos
     /// </summary>
     [Route("api/v1/[controller]")]
     [Authorize(AuthenticationSchemes = "Bearer")] //Usado para adicionar autenticação e autorização
     [ApiController]
-    public class ProdutosController : ControllerBase
+    public class PedidosController : ControllerBase
     {
-        private readonly IProdutos fprodutos = new ProdutosBD();
+        private readonly IPedidos fpedidos = new PedidosBD();
 
         /// <summary>
-        /// Retorna uma lista com todos os produtos cadastrados no sistema
+        /// Retorna uma lista com todos os pedidos cadastrados no sistema
         /// </summary>
-        /// <returns>Retorna lista de produtos</returns>
+        /// <returns>Retorna lista de pedidos</returns>
         /// <remarks>
-        /// Obtenha uma relação com todos os dados de todos os produtos
+        /// Obtenha uma relação com todos os dados de todos os pedidos
         /// </remarks>
-        /// <response code="200">Sucesso ao obter lista de produtos</response>
-        /// <response code="404">Não foram encontrados produtos</response>
+        /// <response code="200">Sucesso ao obter lista de pedidos</response>
+        /// <response code="404">Não foram encontrados pedidos</response>
         /// <response code="500">Ocorreu um erro interno no servidor</response>
         [HttpGet]
         [Produces(MediaTypeNames.Application.Json)] //Informa qual formato de retorno
         [ProducesResponseType(StatusCodes.Status200OK)] //Informa status codes retornáveis
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<List<Produtos>>> Get([FromQuery] FiltroProdutos? FiltrarPor, string? termo)
+        public async Task<ActionResult<List<Pedidos>>> Get()
         {
-            List<Produtos> produtos;
-
-            if((FiltrarPor == null) && (string.IsNullOrEmpty(termo)))
-            {
-                produtos = await fprodutos.GetProdutos();
-            }
-            else
-            {
-                produtos = await fprodutos.GetProdutosPorFiltro((FiltroProdutos)FiltrarPor!, termo);
-            }
-
-
+            var pedidos = await fpedidos.GetPedidos();
             try
             {
-                if (produtos != null)
+                if (pedidos != null)
                 {
-                    if (produtos.Any())
+                    if (pedidos.Any())
                     {
                         //Os dois comandos abaixo adicionam Headers personalizados
                         Response.Headers.Add("AppName", "Web Api Clientes");
                         Response.Headers.Add("Version", "1.0.0");
-                        return Ok(produtos);
+                        return Ok(pedidos);
                     }
                     else
                     {
-                        return NotFound(produtos);
+                        return NotFound(pedidos);
                     }
                 }
                 else
@@ -76,35 +65,35 @@ namespace WebApiClientes.Controllers
         }
 
         /// <summary>
-        /// Retorna dados do produto com ID informado
+        /// Retorna dados do pedido com ID informado
         /// </summary>
-        /// <returns>Retorna dados do produto com ID informado</returns>
+        /// <returns>Retorna dados do pedido com ID informado</returns>
         /// <remarks>
-        /// Obtém dados do produto que possua o ID informado. Caso informe um ID que não exista cadastro, você receberá mensagem que não foi possível encontrar o produto
+        /// Obtém dados do pedido que possua o ID informado. Caso informe um ID que não exista cadastro, você receberá mensagem que não foi possível encontrar o pedido
         /// </remarks>
-        /// <param name="id">Informe o ID do produto que deseja consultar</param>
-        /// <response code="200">Sucesso ao obter lista de produtos</response>
-        /// <response code="404">Não foram encontrados produtos</response>
+        /// <param name="id">Informe o ID do pedido que deseja consultar</param>
+        /// <response code="200">Sucesso ao obter lista de pedidos</response>
+        /// <response code="404">Não foram encontrados pedidos</response>
         /// <response code="500">Ocorreu um erro interno no servidor</response>
         [HttpGet("{id}")]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<Produtos>> GetProduto(string id)
+        public async Task<ActionResult<Pedidos>> GetPedido(string id)
         {
-            var produtos = await fprodutos.GetProduto(id);
+            var pedidos = await fpedidos.GetPedido(id);
             try
             {
-                if (produtos != null)
+                if (pedidos != null)
                 {
-                    if ((produtos.Produto != null) && (produtos.Descricao != null))
+                    if ((pedidos.idPedido != null) && (pedidos.idCliente != null) && (pedidos.idVendedor != null))
                     {
-                        return Ok(produtos);
+                        return Ok(pedidos);
                     }
                     else
                     {
-                        return NotFound(new Erro("Nenhum produto encontrado", "O ID informado não retornou produto algum. Tente um outro ID."));
+                        return NotFound(new Erro("Nenhum pedido encontrado.", "O ID informado não retornou pedido algum. Tente um outro ID."));
                     }
                 }
                 else
@@ -120,31 +109,31 @@ namespace WebApiClientes.Controllers
         }
 
         /// <summary>
-        /// Utilize este Endpoint para criar um novo produto
+        /// Utilize este Endpoint para criar um novo pedido
         /// </summary>
         /// <remarks>
-        /// Este endpoint permite adicionar novo produto a base de dados
+        /// Este endpoint permite adicionar novo pedido a base de dados
         /// </remarks>
-        /// <param name="produto">produto</param>
-        /// <returns>Dados do produto recém criado</returns>
-        /// <response code="201">Produto adicionado com sucesso</response>
+        /// <param name="pedido">Pedido a ser adicionado</param>
+        /// <returns>Dados do pedido recém criado</returns>
+        /// <response code="201">Pedido adicionado com sucesso</response>
         /// <response code="400">Ocorreu algum problema com so dados informados, violando alguma regra de validação</response>
         /// <response code="500">Ocorreu um erro interno no servidor</response>
         [HttpPost]
-        [Consumes(MediaTypeNames.Application.Json)] //Mostra qual formato será consumido
+        [Consumes(MediaTypeNames.Application.Json)] //Mostra qual formatyo será consumido
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesErrorResponseType(typeof(Erro))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<Produtos>> PostVendedores([FromBody] Produtos produto)
+        public async Task<ActionResult<Pedidos>> PostPedido([FromBody] Pedidos pedido)
         {
-            var produtos = await fprodutos.PostProduto(produto);
+            var pedidos = await fpedidos.PostPedido(pedido);
             try
             {
-                if (produtos != null)
+                if (pedidos != null)
                 {
-                    return Created($"/v1/Produtos/{produtos.idProduto}", produtos);
+                    return Created($"/v1/Pedidos/{pedidos.idPedido}", pedidos);
                 }
                 else
                 {
@@ -159,11 +148,11 @@ namespace WebApiClientes.Controllers
         }
 
         /// <summary>
-        /// Este método é utilizado para atualizar o registro do produto informado.
+        /// Este método é utilizado para atualizar o registro do pedido informado.
         /// </summary>
-        /// <param name="id">Id do produto</param>
-        /// <param name="produto">Dados do produto</param>
-        /// <returns>Dados do produto atualizado</returns>
+        /// <param name="id">Id do pedido</param>
+        /// <param name="pedido">Dados do pedido</param>
+        /// <returns>Dados do pedido atualizado</returns>
         /// <response code="200">Dados atualizados com sucesso</response>
         /// <response code="400">Ocorreu um erro com os dados informados que não são válidos</response>
         /// <response code="500">Ocorreu um erro inesperado no servidor</response>
@@ -174,14 +163,14 @@ namespace WebApiClientes.Controllers
         [ProducesErrorResponseType(typeof(Erro))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<Produtos>> PutProduto(string id, [FromBody] Produtos produto)
+        public async Task<ActionResult<Pedidos>> PutPedido(string id, [FromBody] Pedidos pedido)
         {
-            var produtos = await fprodutos.PutProduto(produto, id);
+            var pedidos = await fpedidos.PutPedido(pedido, id);
             try
             {
-                if (produtos != null)
+                if (pedidos != null)
                 {
-                    return Ok(produtos);
+                    return Ok(pedidos);
                 }
                 else
                 {
@@ -196,11 +185,11 @@ namespace WebApiClientes.Controllers
         }
 
         /// <summary>
-        /// Utilize este método para apagar um produto
+        /// Utilize este método para apagar um pedido
         /// </summary>
-        /// <param name="id">ID do produto</param>
+        /// <param name="id">ID do pedido</param>
         /// <returns>Não retorna conteúdo, apenas status code = 204</returns>
-        /// <response code="204">Produto apagado com sucesso</response>
+        /// <response code="204">Pedido apagado com sucesso</response>
         /// <response code="400">Ocorreu um erro com os dados informados que não são válidos</response>
         /// <response code="500">Ocorreu um erro inesperado no servidor</response>
         [HttpDelete("{id}")]
@@ -210,9 +199,9 @@ namespace WebApiClientes.Controllers
         [ProducesErrorResponseType(typeof(Erro))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult> DeleteProduto(string id)
+        public async Task<ActionResult> DeletePedido(string id)
         {
-            bool Apagou = await fprodutos.DeleteProduto(id);
+            bool Apagou = await fpedidos.DeletePedido(id);
             try
             {
                 if (Apagou)
@@ -221,7 +210,7 @@ namespace WebApiClientes.Controllers
                 }
                 else
                 {
-                    return BadRequest(new Erro("Não foi possível apagar produto.", "O id informado é inválido e por isso não foi possível apagar o produto informado."));
+                    return BadRequest(new Erro("Não foi possível apagar pedido", "O id informado é inválido e por isso não foi possível apagar o pedido informado"));
                 }
             }
             catch (Exception e)

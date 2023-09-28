@@ -33,9 +33,19 @@ namespace WebApiClientes.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)] //Informa status codes retornáveis
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<List<Vendedores>>> Get()
+        public async Task<ActionResult<List<Vendedores>>> Get([FromQuery] FiltroVendedor? FiltrarPor, string? TermoBusca)
         {
-            var vendedores = await fvendedores.GetVendedores();
+            List<Vendedores> vendedores;
+
+            if((FiltrarPor == null) && (string.IsNullOrEmpty(TermoBusca)))
+            {
+                vendedores = await fvendedores.GetVendedores();
+            }
+            else
+            {
+                vendedores = await fvendedores.GetVendedoresPorFiltro((FiltroVendedor)FiltrarPor!, TermoBusca);
+            }
+
             try
             {
                 if (vendedores != null)

@@ -72,4 +72,11 @@ namespace BlazorClientes.Shared.Entities
             idProduto = Guid.NewGuid().ToString();
         }
     }
+
+    public enum FiltroProdutos
+    {
+        PorProduto,
+        PorDescricao,
+        PorBarcode
+    }
 }

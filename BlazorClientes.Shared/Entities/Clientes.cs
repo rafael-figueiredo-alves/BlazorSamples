@@ -80,4 +80,10 @@ namespace BlazorClientes.Shared.Entities
             idCliente = Guid.NewGuid().ToString();
         }
     }
+
+    public enum FiltrosCliente
+    {
+        PorNome,
+        PorEndereco
+    }
 }

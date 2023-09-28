@@ -53,4 +53,9 @@ namespace BlazorClientes.Shared.Entities
             idVendedor = Guid.NewGuid().ToString();
         }
     }
+
+    public enum FiltroVendedor
+    {
+        PorNome
+    }
 }
