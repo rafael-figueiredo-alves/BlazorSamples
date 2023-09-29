@@ -38,13 +38,18 @@ namespace BlazorClientes.Shared.Entities
         /// </summary>
         [StringLength(15, ErrorMessage = "Campo Celular aceita apenas 15 digitos. Verifique se colocou algum espaço ou caracter a mais")]
         public string? Celular { get; set;}
-       
+
         /// <summary>
         /// Campo e-mail
         /// </summary>
         [EmailAddress]
         [StringLength(150, ErrorMessage = "Campo Email aceita apenas 150 digitos. Verifique se colocou algum espaço ou caracter a mais")]
-        public string? Email { get; set;}
+        public string? Email { get; set; }
+
+        /// <summary>
+        /// Propriedade para identificar que registro é novo ou não
+        /// </summary>
+        public bool isNewRecord { get; set; } = true;
 
         /// <summary>
         /// Método construtor da classe/entidade
@@ -59,6 +64,7 @@ namespace BlazorClientes.Shared.Entities
             if(id != null)
             {
                 idCliente = id!;
+                isNewRecord = false;
             }
             else
             {

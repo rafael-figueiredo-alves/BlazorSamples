@@ -1,7 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using BlazorClientes.Shared.Entities;
 using MySql.Data.MySqlClient;
-using MySqlX.XDevAPI;
-using BlazorClientes.Shared.Entities;
 
 namespace WebApiClientes.Services
 {

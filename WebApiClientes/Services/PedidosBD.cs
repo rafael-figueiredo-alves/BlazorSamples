@@ -177,6 +177,10 @@ namespace WebApiClientes.Services
                 return pedidos;
 
             }
+            catch (IndexOutOfRangeException ex)
+            {
+                return pedidos;
+            }
             catch
             {
                 return null!;
@@ -294,6 +298,51 @@ namespace WebApiClientes.Services
                 }
 
                 return await GetPedido(pedido.idCliente!);
+            }
+            catch
+            {
+                return null!;
+            }
+            finally
+            {
+                conn?.Close();
+            }
+        }
+
+        /// <summary>
+        /// Troca Status do Pedido
+        /// </summary>
+        /// <param name="ID">Id do Pedido</param>
+        /// <param name="PedidoStatus">Novo Status</param>
+        /// <returns>Pedido atualizado</returns>
+        public async Task<Pedidos> SetPedidoStatus(string ID, string PedidoStatus)
+        {
+            MySqlConnection? conn = null;
+            try
+            {
+                conn = new MySqlConnection(Conn);
+                conn.Open();
+                if(PedidoStatus == "Entregue")
+                {
+                    string sql = "update pedidos set Status = @status, DataEntrega = @entregueEm where idPedido = @id";
+                    var cmd = new MySqlCommand(sql, conn);
+                    cmd.Parameters.Add(new MySqlParameter("id", ID));
+                    cmd.Parameters.Add(new MySqlParameter("status", PedidoStatus));
+                    cmd.Parameters.Add(new MySqlParameter("entregueEm", DateTime.Now));
+                    var ResultSet = await cmd.ExecuteNonQueryAsync();
+                }
+                else
+                {
+                    string sql = "update pedidos set Status = @status where idPedido = @id";
+                    var cmd = new MySqlCommand(sql, conn);
+                    cmd.Parameters.Add(new MySqlParameter("id", ID));
+                    cmd.Parameters.Add(new MySqlParameter("status", PedidoStatus));
+                    var ResultSet = await cmd.ExecuteNonQueryAsync();
+                }
+
+                conn.Close();
+
+                return await GetPedido(ID);
             }
             catch
             {

@@ -41,5 +41,13 @@ namespace WebApiClientes.Services
         /// <param name="id">id</param>
         /// <returns>Verdadeiro ou falso</returns>
         public Task<bool> DeletePedido(string id);
+
+        /// <summary>
+        /// Troca Status do Pedido
+        /// </summary>
+        /// <param name="ID">Id do Pedido</param>
+        /// <param name="PedidoStatus">Novo Status</param>
+        /// <returns>Pedido atualizado</returns>
+        public Task<Pedidos> SetPedidoStatus(string ID, string PedidoStatus);
     }
 }

@@ -68,6 +68,11 @@ namespace BlazorClientes.Shared.Entities
         public List<ItensPedido> Itens {  get; set; }
 
         /// <summary>
+        /// Propriedade para identificar que registro é novo ou não
+        /// </summary>
+        public bool isNewRecord { get; set; } = true;
+
+        /// <summary>
         /// Método Construtor
         /// </summary>
         /// <param name="_idCliente">id Cliente</param>
@@ -83,6 +88,7 @@ namespace BlazorClientes.Shared.Entities
             if(_idPedido != null)
             {
                 idPedido = _idPedido;
+                isNewRecord = false;
             }
             else
             {

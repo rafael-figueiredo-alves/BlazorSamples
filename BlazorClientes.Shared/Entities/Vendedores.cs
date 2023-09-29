@@ -25,6 +25,11 @@ namespace BlazorClientes.Shared.Entities
         public int pComissao { get; set; } = 5;
 
         /// <summary>
+        /// Propriedade para identificar que registro é novo ou não
+        /// </summary>
+        public bool isNewRecord { get; set; } = true;
+
+        /// <summary>
         /// Método construtor
         /// </summary>
         /// <param name="vendedor">Nome do vendedor</param>
@@ -35,6 +40,7 @@ namespace BlazorClientes.Shared.Entities
             if(idVendedor != null)
             {
                 idVendedor = _idVendedor!;
+                isNewRecord = false;
             }
             else
             {

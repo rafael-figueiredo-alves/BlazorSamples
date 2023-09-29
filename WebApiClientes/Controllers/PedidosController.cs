@@ -49,6 +49,8 @@ namespace WebApiClientes.Controllers
                     }
                     else
                     {
+                        Response.Headers.Add("AppName", "Web Api Clientes");
+                        Response.Headers.Add("Version", "1.0.0");
                         return NotFound(pedidos);
                     }
                 }
@@ -170,7 +172,12 @@ namespace WebApiClientes.Controllers
             {
                 if (pedidos != null)
                 {
-                    return Ok(pedidos);
+                    if (pedidos.isNewRecord)
+                    {
+                        return BadRequest(new Erro("Registro não encontrado", "O id informado é inválido e por isso não foi possível alterar o pedido informado"));
+                    }
+                    else
+                        return Ok(pedidos);
                 }
                 else
                 {
@@ -216,6 +223,48 @@ namespace WebApiClientes.Controllers
             catch (Exception e)
             {
                 return StatusCode(500, e.Message);
+            }
+        }
+
+        /// <summary>
+        /// Este método é utilizado para atualizar o status do pedido informado.
+        /// </summary>
+        /// <param name="id">Id do pedido</param>
+        /// <param name="pedidoStatus">Status do pedido</param>
+        /// <returns>Dados do pedido atualizado</returns>
+        /// <response code="200">Dados atualizados com sucesso</response>
+        /// <response code="400">Ocorreu um erro com os dados informados que não são válidos</response>
+        /// <response code="500">Ocorreu um erro inesperado no servidor</response>
+        [HttpPut]
+        [Consumes(MediaTypeNames.Application.Json)]
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesErrorResponseType(typeof(Erro))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<Pedidos>> PutPedido([FromQuery] string id, string pedidoStatus)
+        {
+            var pedidos = await fpedidos.SetPedidoStatus(id, pedidoStatus);
+            try
+            {
+                if (pedidos != null)
+                {
+                    if(pedidos.isNewRecord)
+                    {
+                        return BadRequest(new Erro("Registro não encontrado", "O id informado é inválido e por isso não foi possível alterar status do pedido informado"));
+                    }
+                    else
+                     return Ok(pedidos);
+                }
+                else
+                {
+                    return StatusCode(500, new Erro("Houve um erro interno com o servidor",
+                                                    "Ocorreu um problema inesperado em nosso servidor, tente acessar nossa API mais tarde."));
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
             }
         }
     }

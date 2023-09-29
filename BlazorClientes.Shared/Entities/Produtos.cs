@@ -40,6 +40,11 @@ namespace BlazorClientes.Shared.Entities
         public string? Barcode { get; set; }
 
         /// <summary>
+        /// Propriedade para identificar que registro é novo ou não
+        /// </summary>
+        public bool isNewRecord { get; set; } = true;
+
+        /// <summary>
         /// Método Construtor
         /// </summary>
         /// <param name="produto">Produto</param>
@@ -52,6 +57,7 @@ namespace BlazorClientes.Shared.Entities
             if(_idProduto != null)
             {
                 idProduto = _idProduto;
+                isNewRecord = false;
             }
             else
             {
