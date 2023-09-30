@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Mime;
+using System.Text.Json;
 using WebApiClientes.Services;
 
 namespace WebApiClientes.Controllers
@@ -34,6 +35,8 @@ namespace WebApiClientes.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<List<Clientes>>> Get([FromQuery] FiltrosCliente? FiltrarPor, string? Termo)
         {
+            string dataHash;
+
             List<Clientes> clientes;
 
             if ((FiltrarPor == null) && (string.IsNullOrEmpty(Termo)))
@@ -44,33 +47,43 @@ namespace WebApiClientes.Controllers
             {
                 clientes = await fclientes.GetClientesPorFiltro((FiltrosCliente)FiltrarPor!, Termo);
             }
-             
-            try
+
+            dataHash = HashMD5.Hash(JsonSerializer.Serialize(clientes));
+
+            if ((string.IsNullOrEmpty(Request.Headers.IfNoneMatch)) && (HashMD5.VerifyETag(Request.Headers.IfNoneMatch!, dataHash)))
             {
-                if (clientes != null)
+                return StatusCode(StatusCodes.Status304NotModified, null);
+            }
+            else
+            {
+                try
                 {
-                    if (clientes.Any())
+                    if (clientes != null)
                     {
-                        //Os dois comandos abaixo adicionam Headers personalizados
-                        Response.Headers.Add("AppName", "Web Api Clientes");
-                        Response.Headers.Add("Version", "1.0.0");
-                        //Serializar e enviar o Hash no etag
-                        return Ok(clientes);
+                        if (clientes.Any())
+                        {
+                            //Os dois comandos abaixo adicionam Headers personalizados
+                            Response.Headers.Add("AppName", "Web Api Clientes");
+                            Response.Headers.Add("Version", "1.0.0");
+                            //Serializar e enviar o Hash no etag
+                            Response.Headers.ETag = dataHash;
+                            return Ok(clientes);
+                        }
+                        else
+                        {
+                            return NotFound(clientes);
+                        }
                     }
                     else
                     {
-                        return NotFound(clientes);
+                        return StatusCode(500, new Erro("Houve um erro interno com o servidor",
+                                                        "Ocorreu um problema inesperado em nosso servidor, tente acessar nossa API mais tarde."));
                     }
                 }
-                else
+                catch (Exception ex)
                 {
-                    return StatusCode(500, new Erro("Houve um erro interno com o servidor", 
-                                                    "Ocorreu um problema inesperado em nosso servidor, tente acessar nossa API mais tarde."));
+                    return StatusCode(500, ex.Message);
                 }
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
             }
         }
 

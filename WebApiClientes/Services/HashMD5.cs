@@ -1,4 +1,5 @@
 ﻿using System.Security.Cryptography;
+using System.Security.Policy;
 using System.Text;
 
 namespace WebApiClientes.Services
@@ -65,6 +66,17 @@ namespace WebApiClientes.Services
         {
             using (var md5 = MD5.Create())
                 return VerifyMd5Hash(md5.ComputeHash(data), hash);
+        }
+
+        /// <summary>
+        /// Método para verificar o ETag com Hash do conteúdo a ser enviado
+        /// </summary>
+        /// <param name="etag">ETag provindo da requisição</param>
+        /// <param name="dataHash">Hash do Conteúdo a ser enviado</param>
+        /// <returns>Verdadeiro se etag e hash forem iguais</returns>
+        public static bool VerifyETag(string etag, string dataHash)
+        {
+            return 0 == StringComparer.OrdinalIgnoreCase.Compare(etag, dataHash);
         }
     }
 }
