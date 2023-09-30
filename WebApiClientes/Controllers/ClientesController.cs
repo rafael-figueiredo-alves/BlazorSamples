@@ -1,10 +1,8 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http.HttpResults;
+﻿using BlazorClientes.Shared.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Mime;
-using BlazorClientes.Shared.Entities;
 using WebApiClientes.Services;
-using System.Collections.Generic;
 
 namespace WebApiClientes.Controllers
 {
@@ -56,6 +54,7 @@ namespace WebApiClientes.Controllers
                         //Os dois comandos abaixo adicionam Headers personalizados
                         Response.Headers.Add("AppName", "Web Api Clientes");
                         Response.Headers.Add("Version", "1.0.0");
+                        //Serializar e enviar o Hash no etag
                         return Ok(clientes);
                     }
                     else

@@ -49,5 +49,23 @@ namespace WebApiClientes.Services
         /// <param name="PedidoStatus">Novo Status</param>
         /// <returns>Pedido atualizado</returns>
         public Task<Pedidos> SetPedidoStatus(string ID, string PedidoStatus);
+
+        /// <summary>
+        /// Retorna lista de pedidos por filtro igual
+        /// </summary>
+        /// <returns>Lista de pedidos</returns>
+        public Task<List<Pedidos>> GetPedidosFiltroIgual(string Campo, string Termo);
+
+        /// <summary>
+        /// Retorna lista de pedidos por filtro LIKE
+        /// </summary>
+        /// <returns>Lista de pedidos</returns>
+        public Task<List<Pedidos>> GetPedidosFiltroLike(string Campo, string Termo);
+
+        /// <summary>
+        /// Retorna lista de pedidos por período informado
+        /// </summary>
+        /// <returns>Lista de pedidos</returns>
+        public Task<List<Pedidos>> GetPedidosPorPerido(string Campo, DateTime De, DateTime Ate);
     }
 }

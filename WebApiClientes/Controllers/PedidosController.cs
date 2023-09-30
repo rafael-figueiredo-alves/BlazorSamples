@@ -1,6 +1,5 @@
 ﻿using BlazorClientes.Shared.Entities;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Mime;
 using WebApiClientes.Services;
@@ -33,9 +32,43 @@ namespace WebApiClientes.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)] //Informa status codes retornáveis
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<List<Pedidos>>> Get()
+        public async Task<ActionResult<List<Pedidos>>> Get([FromQuery] FiltrosPedido? FiltrarPor, string? Termo1, string? Termo2)
         {
-            var pedidos = await fpedidos.GetPedidos();
+            List<Pedidos> pedidos;
+
+            if(FiltrarPor == null)
+            {
+                pedidos = await fpedidos.GetPedidos();
+            }
+            else
+            {
+                switch(FiltrarPor)
+                {
+                    case FiltrosPedido.PorDataEmissao:
+                        pedidos = await fpedidos.GetPedidosPorPerido("DataEmissao", Convert.ToDateTime(Termo1 == null ? DateTime.Now.ToString() : Termo1), Convert.ToDateTime(Termo2 == null ? DateTime.Now.ToString() : Termo2));
+                        break;
+                    case FiltrosPedido.PorDataEntrega:
+                        pedidos = await fpedidos.GetPedidosPorPerido("DataEntrega", Convert.ToDateTime(Termo1 == null ? DateTime.Now.ToString() : Termo1), Convert.ToDateTime(Termo2 == null ? DateTime.Now.ToString() : Termo2));
+                        break;
+                    case FiltrosPedido.PorClienteID:
+                        pedidos = await fpedidos.GetPedidosFiltroIgual("idCliente", (Termo1 == null ? "0" : Termo1));
+                        break;
+                    case FiltrosPedido.PorVendedorID:
+                        pedidos = await fpedidos.GetPedidosFiltroIgual("idVendedor", (Termo1 == null ? "0" : Termo1));
+                        break;
+                    case FiltrosPedido.PorClienteNome:
+                        pedidos = await fpedidos.GetPedidosFiltroLike("clientes.Nome", (Termo1 == null ? "%" : Termo1));
+                        break;
+                    case FiltrosPedido.PorVendedorNome:
+                        pedidos = await fpedidos.GetPedidosFiltroLike("vendedores.Vendedor", (Termo1 == null ? "%" : Termo1));
+                        break;
+                    default:
+                        pedidos = await fpedidos.GetPedidos();
+                        break;
+                }
+            }
+                
+                
             try
             {
                 if (pedidos != null)

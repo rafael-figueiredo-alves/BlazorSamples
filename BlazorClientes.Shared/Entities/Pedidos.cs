@@ -118,15 +118,14 @@ namespace BlazorClientes.Shared.Entities
         }
     }
 
-    public enum FiltrosPedidoPeriodo
-    {
-        PorDataEmissao,
-        PorDataEntrega
-    }
-
     public enum FiltrosPedido
     {
-        PorCliente,
-        PorVendedor
+        PorDataEmissao,
+        PorDataEntrega,
+        PorClienteID,
+        PorClienteNome,
+        PorVendedorID,
+        PorVendedorNome,
+        PorStatus
     }
 }

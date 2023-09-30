@@ -1,6 +1,5 @@
 ﻿using BlazorClientes.Shared.Entities;
 using MySql.Data.MySqlClient;
-using MySqlX.XDevAPI;
 
 namespace WebApiClientes.Services
 {
@@ -93,6 +92,7 @@ namespace WebApiClientes.Services
                     pedido.Vendedor = reader["Vendedor"].ToString()!;
                     string sql_itens = "select itenspedido.*, produtos.Descricao from itenspedido where idPedido = @id";
                     var cmd_itens = new MySqlCommand(sql_itens, conn);
+                    cmd_itens.Parameters.Add(new MySqlParameter("id", id));
                     var reader_itens = await cmd.ExecuteReaderAsync();
                     while (await reader_itens.ReadAsync())
                     {
@@ -135,7 +135,7 @@ namespace WebApiClientes.Services
             {
                 conn = new MySqlConnection(Conn);
                 conn.Open();
-                string sql = "select * from clientes";
+                string sql = "select pedidos.*, clientes.Nome AS Cliente, vendedores.Vendedor, vendedores.pComissao from pedidos Inner Join clientes ON (clientes.idCliente = pedidos.idCliente) INNER JOIN vendedores on (vendedores.idVendedor = pedidos.idVendedor)";
                 var cmd = new MySqlCommand(sql, conn);
                 var reader = await cmd.ExecuteReaderAsync();
                 
@@ -155,6 +155,7 @@ namespace WebApiClientes.Services
                     pedido.Vendedor = reader["Vendedor"].ToString()!;
                     string sql_itens = "select itenspedido.*, produtos.Descricao from itenspedido where idPedido = @id";
                     var cmd_itens = new MySqlCommand(sql_itens, conn);
+                    cmd_itens.Parameters.Add(new MySqlParameter("id", pedido.idPedido));
                     var reader_itens = await cmd.ExecuteReaderAsync();
                     while (await reader_itens.ReadAsync())
                     {
@@ -177,7 +178,7 @@ namespace WebApiClientes.Services
                 return pedidos;
 
             }
-            catch (IndexOutOfRangeException ex)
+            catch (IndexOutOfRangeException)
             {
                 return pedidos;
             }
@@ -343,6 +344,220 @@ namespace WebApiClientes.Services
                 conn.Close();
 
                 return await GetPedido(ID);
+            }
+            catch
+            {
+                return null!;
+            }
+            finally
+            {
+                conn?.Close();
+            }
+        }
+
+        /// <summary>
+        /// Retorna lista de pedidos por período informado
+        /// </summary>
+        /// <returns>Lista de pedidos</returns>
+        public async Task<List<Pedidos>> GetPedidosPorPerido(string Campo, DateTime De, DateTime Ate)
+        {
+            var pedidos = new List<Pedidos>();
+
+            MySqlConnection? conn = null;
+            try
+            {
+                conn = new MySqlConnection(Conn);
+                conn.Open();
+                string sql = "select pedidos.*, clientes.Nome AS Cliente, vendedores.Vendedor, vendedores.pComissao from pedidos Inner Join clientes ON (clientes.idCliente = pedidos.idCliente) INNER JOIN vendedores on (vendedores.idVendedor = pedidos.idVendedor) WHERE (" + Campo + " >= @de) and (" + Campo + " <= @ate)";
+                var cmd = new MySqlCommand(sql, conn);
+                cmd.Parameters.Add(new MySqlParameter("de", De));
+                cmd.Parameters.Add(new MySqlParameter("ate", Ate));
+                var reader = await cmd.ExecuteReaderAsync();
+
+                while (await reader.ReadAsync())
+                {
+                    Pedidos pedido = new Pedidos(
+                                            reader["idCliente"].ToString()!,
+                                            reader["idVendedor"].ToString()!,
+                                            Convert.ToDecimal(reader["vComissao"].ToString()!),
+                                            Convert.ToInt32(reader["pComissao"].ToString()!),
+                                            Convert.ToDecimal(reader["ValorTotal"].ToString()!),
+                                            Convert.ToDateTime(reader["DataEmissao"].ToString()!),
+                                            Convert.ToDateTime(reader["DataEntrega"].ToString()!),
+                                            reader["status"].ToString()!,
+                                            reader["idPedido"].ToString()!);
+                    pedido.Cliente = reader["Cliente"].ToString()!;
+                    pedido.Vendedor = reader["Vendedor"].ToString()!;
+                    string sql_itens = "select itenspedido.*, produtos.Descricao from itenspedido where idPedido = @id";
+                    var cmd_itens = new MySqlCommand(sql_itens, conn);
+                    cmd_itens.Parameters.Add(new MySqlParameter("id", pedido.idPedido));
+                    var reader_itens = await cmd.ExecuteReaderAsync();
+                    while (await reader_itens.ReadAsync())
+                    {
+                        pedido.Itens.Add(new ItensPedido(
+                                                        Convert.ToInt32(reader_itens["Indice"].ToString()!),
+                                                        reader_itens["idPedido"].ToString()!,
+                                                        reader_itens["idProduto"].ToString()!,
+                                                        reader_itens["Descricao"].ToString()!,
+                                                        Convert.ToInt32(reader_itens["Quantidade"].ToString()!),
+                                                        Convert.ToDecimal(reader_itens["ValorUnitario"].ToString()!),
+                                                        Convert.ToInt32(reader_itens["pDesconto"].ToString()!),
+                                                        Convert.ToDecimal(reader_itens["Valor"].ToString()!)
+                            ));
+                    }
+
+                    pedidos.Add(pedido);
+                }
+
+                conn.Close();
+                return pedidos;
+
+            }
+            catch (IndexOutOfRangeException)
+            {
+                return pedidos;
+            }
+            catch
+            {
+                return null!;
+            }
+            finally
+            {
+                conn?.Close();
+            }
+        }
+
+        /// <summary>
+        /// Retorna lista de pedidos por filtro LIKE
+        /// </summary>
+        /// <returns>Lista de pedidos</returns>
+        public async Task<List<Pedidos>> GetPedidosFiltroLike(string Campo, string Termo)
+        {
+            var pedidos = new List<Pedidos>();
+
+            MySqlConnection? conn = null;
+            try
+            {
+                conn = new MySqlConnection(Conn);
+                conn.Open();
+                string sql = "select pedidos.*, clientes.Nome AS Cliente, vendedores.Vendedor, vendedores.pComissao from pedidos Inner Join clientes ON (clientes.idCliente = pedidos.idCliente) INNER JOIN vendedores on (vendedores.idVendedor = pedidos.idVendedor) WHERE (" + Campo + " LIKE @termo)";
+                var cmd = new MySqlCommand(sql, conn);
+                cmd.Parameters.Add(new MySqlParameter("termo", "%" + Termo + "%"));
+                var reader = await cmd.ExecuteReaderAsync();
+
+                while (await reader.ReadAsync())
+                {
+                    Pedidos pedido = new Pedidos(
+                                            reader["idCliente"].ToString()!,
+                                            reader["idVendedor"].ToString()!,
+                                            Convert.ToDecimal(reader["vComissao"].ToString()!),
+                                            Convert.ToInt32(reader["pComissao"].ToString()!),
+                                            Convert.ToDecimal(reader["ValorTotal"].ToString()!),
+                                            Convert.ToDateTime(reader["DataEmissao"].ToString()!),
+                                            Convert.ToDateTime(reader["DataEntrega"].ToString()!),
+                                            reader["status"].ToString()!,
+                                            reader["idPedido"].ToString()!);
+                    pedido.Cliente = reader["Cliente"].ToString()!;
+                    pedido.Vendedor = reader["Vendedor"].ToString()!;
+                    string sql_itens = "select itenspedido.*, produtos.Descricao from itenspedido where idPedido = @id";
+                    var cmd_itens = new MySqlCommand(sql_itens, conn);
+                    cmd_itens.Parameters.Add(new MySqlParameter("id", pedido.idPedido));
+                    var reader_itens = await cmd.ExecuteReaderAsync();
+                    while (await reader_itens.ReadAsync())
+                    {
+                        pedido.Itens.Add(new ItensPedido(
+                                                        Convert.ToInt32(reader_itens["Indice"].ToString()!),
+                                                        reader_itens["idPedido"].ToString()!,
+                                                        reader_itens["idProduto"].ToString()!,
+                                                        reader_itens["Descricao"].ToString()!,
+                                                        Convert.ToInt32(reader_itens["Quantidade"].ToString()!),
+                                                        Convert.ToDecimal(reader_itens["ValorUnitario"].ToString()!),
+                                                        Convert.ToInt32(reader_itens["pDesconto"].ToString()!),
+                                                        Convert.ToDecimal(reader_itens["Valor"].ToString()!)
+                            ));
+                    }
+
+                    pedidos.Add(pedido);
+                }
+
+                conn.Close();
+                return pedidos;
+
+            }
+            catch (IndexOutOfRangeException)
+            {
+                return pedidos;
+            }
+            catch
+            {
+                return null!;
+            }
+            finally
+            {
+                conn?.Close();
+            }
+        }
+
+        /// <summary>
+        /// Retorna lista de pedidos por filtro Igual
+        /// </summary>
+        /// <returns>Lista de pedidos</returns>
+        public async Task<List<Pedidos>> GetPedidosFiltroIgual(string Campo, string Termo)
+        {
+            var pedidos = new List<Pedidos>();
+
+            MySqlConnection? conn = null;
+            try
+            {
+                conn = new MySqlConnection(Conn);
+                conn.Open();
+                string sql = "select pedidos.*, clientes.Nome AS Cliente, vendedores.Vendedor, vendedores.pComissao from pedidos Inner Join clientes ON (clientes.idCliente = pedidos.idCliente) INNER JOIN vendedores on (vendedores.idVendedor = pedidos.idVendedor) WHERE (" + Campo + "= @termo)";
+                var cmd = new MySqlCommand(sql, conn);
+                cmd.Parameters.Add(new MySqlParameter("termo", Termo));
+                var reader = await cmd.ExecuteReaderAsync();
+
+                while (await reader.ReadAsync())
+                {
+                    Pedidos pedido = new Pedidos(
+                                            reader["idCliente"].ToString()!,
+                                            reader["idVendedor"].ToString()!,
+                                            Convert.ToDecimal(reader["vComissao"].ToString()!),
+                                            Convert.ToInt32(reader["pComissao"].ToString()!),
+                                            Convert.ToDecimal(reader["ValorTotal"].ToString()!),
+                                            Convert.ToDateTime(reader["DataEmissao"].ToString()!),
+                                            Convert.ToDateTime(reader["DataEntrega"].ToString()!),
+                                            reader["status"].ToString()!,
+                                            reader["idPedido"].ToString()!);
+                    pedido.Cliente = reader["Cliente"].ToString()!;
+                    pedido.Vendedor = reader["Vendedor"].ToString()!;
+                    string sql_itens = "select itenspedido.*, produtos.Descricao from itenspedido where idPedido = @id";
+                    var cmd_itens = new MySqlCommand(sql_itens, conn);
+                    cmd_itens.Parameters.Add(new MySqlParameter("id", pedido.idPedido));
+                    var reader_itens = await cmd.ExecuteReaderAsync();
+                    while (await reader_itens.ReadAsync())
+                    {
+                        pedido.Itens.Add(new ItensPedido(
+                                                        Convert.ToInt32(reader_itens["Indice"].ToString()!),
+                                                        reader_itens["idPedido"].ToString()!,
+                                                        reader_itens["idProduto"].ToString()!,
+                                                        reader_itens["Descricao"].ToString()!,
+                                                        Convert.ToInt32(reader_itens["Quantidade"].ToString()!),
+                                                        Convert.ToDecimal(reader_itens["ValorUnitario"].ToString()!),
+                                                        Convert.ToInt32(reader_itens["pDesconto"].ToString()!),
+                                                        Convert.ToDecimal(reader_itens["Valor"].ToString()!)
+                            ));
+                    }
+
+                    pedidos.Add(pedido);
+                }
+
+                conn.Close();
+                return pedidos;
+
+            }
+            catch (IndexOutOfRangeException)
+            {
+                return pedidos;
             }
             catch
             {
