@@ -32,6 +32,7 @@ namespace WebApiClientes.Controllers
         [Produces(MediaTypeNames.Application.Json)] //Informa qual formato de retorno
         [ProducesResponseType(StatusCodes.Status200OK)] //Informa status codes retornáveis
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status304NotModified)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<List<Clientes>>> Get([FromQuery] FiltrosCliente? FiltrarPor, string? Termo)
         {
@@ -50,7 +51,7 @@ namespace WebApiClientes.Controllers
 
             dataHash = HashMD5.Hash(JsonSerializer.Serialize(clientes));
 
-            if ((string.IsNullOrEmpty(Request.Headers.IfNoneMatch)) && (HashMD5.VerifyETag(Request.Headers.IfNoneMatch!, dataHash)))
+            if ((!string.IsNullOrEmpty(Request.Headers.IfNoneMatch)) && (HashMD5.VerifyETag(Request.Headers.IfNoneMatch!, dataHash)))
             {
                 return StatusCode(StatusCodes.Status304NotModified, null);
             }
@@ -102,33 +103,46 @@ namespace WebApiClientes.Controllers
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status304NotModified)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<Clientes>> GetCliente(string id)
         {
+            string dataHash;
+
             var clientes = await fclientes.GetCliente(id);
-            try
+
+            dataHash = HashMD5.Hash(JsonSerializer.Serialize(clientes));
+
+            if ((!string.IsNullOrEmpty(Request.Headers.IfNoneMatch)) && (HashMD5.VerifyETag(Request.Headers.IfNoneMatch!, dataHash)))
             {
-                if (clientes != null)
+                return StatusCode(StatusCodes.Status304NotModified, null);
+            }
+            else
+            {
+                try
                 {
-                    if ((clientes.Nome != null) && (clientes.Endereco != null) && (clientes.Telefone != null)
-                         && (clientes.Celular != null) && (clientes.Email != null))
+                    if (clientes != null)
                     {
-                        return Ok(clientes);
+                        if ((clientes.Nome != null) && (clientes.Endereco != null) && (clientes.Telefone != null)
+                             && (clientes.Celular != null) && (clientes.Email != null))
+                        {
+                            return Ok(clientes);
+                        }
+                        else
+                        {
+                            return NotFound(new Erro("Nenhum cliente encontrado", "O ID informado não retornou cliente algum. Tente um outro ID."));
+                        }
                     }
                     else
                     {
-                        return NotFound(new Erro("Nenhum cliente encontrado", "O ID informado não retornou cliente algum. Tente um outro ID."));
+                        return StatusCode(500, new Erro("Houve um erro interno com o servidor",
+                                                        "Ocorreu um problema inesperado em nosso servidor, tente acessar nossa API mais tarde."));
                     }
                 }
-                else
+                catch (Exception ex)
                 {
-                    return StatusCode(500, new Erro("Houve um erro interno com o servidor",
-                                                    "Ocorreu um problema inesperado em nosso servidor, tente acessar nossa API mais tarde."));
+                    return StatusCode(500, ex.Message);
                 }
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
             }
         }
 

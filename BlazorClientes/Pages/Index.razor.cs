@@ -1,5 +1,6 @@
 ﻿using BlazorClientes.Services;
 using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
 using System.IO.IsolatedStorage;
 
 namespace BlazorClientes.Pages
