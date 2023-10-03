@@ -1,0 +1,14 @@
+﻿@inherits PaginacaoBase
+
+<nav aria-label="Paginacao" class="@Theme!.ColorClass">
+    <ul class="pagination justify-content-end @Theme!.ColorClass">
+        @foreach (LinkModel link in links!)
+        {
+            <li @onclick="@(() => PaginaSelecionadaLink(link))"
+                style="cursor: pointer;"
+                class="page-item @(link.Enabled ? null : "disabled") @(link.Active ? "active" : null) @Theme!.ColorClass">
+                <span class="page-link @Theme!.ColorClass" href="#">@link.Text</span>
+            </li>
+        }
+    </ul>
+</nav>
