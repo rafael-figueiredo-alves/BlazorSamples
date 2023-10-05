@@ -3,8 +3,49 @@
 
 <PageTitle>BlazorClientes | Clientes</PageTitle>
 
-<SearchInput />
+<SearchInput>
+    <h3>Clientes</h3>
+</SearchInput>
 
-<h3>Clientes</h3>
+@if (Lista == null)
+{
+    <p>Carregando clientes...</p>
+}
+else
+if (!Lista.Any())
+{
+    <p>Sem clientes para listar</p>
+}
+else
+{
+    <table class="table table-hover @Theme!.ColorClass" style="color: @Theme!.ColorFontStyle" data-bs-theme="@Theme.DataBsTheme">
+        <thead>
+            <tr>
+                <th scope="col">Cliente</th>
+                <th scope="col">Celular</th>
+                <th scope="col" class="d-none d-md-table-cell">Telefone</th>
+                <th scope="col" class="d-none d-md-table-cell">E-mail</th>
+                <th scope="col">Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (Clientes cliente in Lista!)
+            {
+                <tr>
+                    <td class="col-4 col-md-4 align-middle" style="color: @Theme!.ColorFontStyle!" data-bs-theme="@Theme.DataBsTheme">@cliente.Nome</td>
+                    <td class="col-4 col-md-2 align-middle" style="color: @Theme!.ColorFontStyle" data-bs-theme="@Theme.DataBsTheme">@cliente.Celular</td>
+                    <td class="d-none d-md-table-cell col-2 align-middle" style="color: @Theme!.ColorFontStyle!" data-bs-theme="@Theme.DataBsTheme">@cliente.Telefone</td>
+                    <td class="d-none d-md-table-cell col-2 align-middle" style="color: @Theme!.ColorFontStyle!" data-bs-theme="@Theme.DataBsTheme">@cliente.Email</td>
+                    <td class="col-4 col-md-2">
+                        <div class="d-inline align-content-end">
+                            <a class="btn btn-primary rounded-circle" @onclick="@(()=> UpdateCliente(cliente))"><span class="oi oi-pencil" /></a>
+                            <a class="btn btn-danger rounded-circle" @onclick="@(()=> DeleteCliente(cliente.idCliente))"><span class="oi oi-trash" /></a>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
 
 <Paginacao />

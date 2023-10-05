@@ -10,6 +10,7 @@ namespace BlazorClientes.Shared.Components
         public string? TermoPesquisa { get; set; }
         [Parameter] public EventCallback<string> SearchClick { get; set; }
         [Parameter] public EventCallback ClearClick { get; set; }
+        [Parameter] public RenderFragment? ChildContent { get; set; }
 
         protected async Task Pesquisar()
         {

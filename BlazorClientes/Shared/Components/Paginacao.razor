@@ -2,7 +2,7 @@
 
 <nav aria-label="Paginacao" class="@Theme!.ColorClass">
     <ul class="pagination justify-content-end @Theme!.ColorClass">
-        @foreach (LinkModel link in links!)
+        @foreach (LinkModel link in Links!)
         {
             <li @onclick="@(() => PaginaSelecionadaLink(link))"
                 style="cursor: pointer;"
