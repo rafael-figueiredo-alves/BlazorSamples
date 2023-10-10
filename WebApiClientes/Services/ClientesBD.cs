@@ -100,20 +100,42 @@ namespace WebApiClientes.Services
         /// <summary>
         /// Retorna lista de clientes
         /// </summary>
+        /// <param name="Page">Informações para paginação</param>
         /// <returns>Lista de clientes</returns>
-        public async Task<List<Clientes>> GetClientes()
+        public async Task<List<Clientes>> GetClientes(PageInfo Page)
         {
             var clientes = new List<Clientes>();
+            var PageNumber = Page.Page ?? 1;
+            var PageSize = Page.PageSize ?? 10;
+            int TotalPages;
+            int TotalRecords;
 
             MySqlConnection? conn = null;
             try
             {
                 conn = new MySqlConnection(Conn);
                 conn.Open();
-                string sql = "select * from clientes";
+                string sql = "select Count(*) AS Total from clientes";
+                var cmd_counter = new MySqlCommand(sql, conn);
+                var reader_counter = await cmd_counter.ExecuteReaderAsync();
+                await reader_counter.ReadAsync();
+                
+                TotalRecords = Convert.ToInt32(reader_counter["Total"].ToString());
+                int inicio = (PageNumber - 1) * PageSize;
+                TotalPages = Convert.ToInt32(Math.Ceiling((double)TotalRecords / PageSize));
+
+                Page.Page = PageNumber;
+                Page.PageSize = PageSize;
+                Page.TotalPages = TotalPages;
+                Page.TotalRecords = TotalRecords;
+                reader_counter.Close();
+
+                sql = "select * from clientes limit @inicio, @qtd";
                 var cmd = new MySqlCommand(sql, conn);
+                cmd.Parameters.Add(new MySqlParameter("inicio", inicio));
+                cmd.Parameters.Add(new MySqlParameter("qtd", PageSize));
                 var reader = await cmd.ExecuteReaderAsync();
-                while(await reader.ReadAsync())
+                while (await reader.ReadAsync())
                 {
                     clientes.Add(new Clientes(
                                               reader["Nome"].ToString()!,
@@ -260,8 +282,9 @@ namespace WebApiClientes.Services
         /// </summary>
         /// <param name="FiltrarPor">Campo a filtrar</param>
         /// <param name="TermoBusca">Termo a buscar</param>
+        /// <param name="Page">Informações para paginação</param>
         /// <returns>Lista de Clientes</returns>
-        public async Task<List<Clientes>> GetClientesPorFiltro(FiltrosCliente FiltrarPor, string? TermoBusca)
+        public async Task<List<Clientes>> GetClientesPorFiltro(PageInfo Page, FiltrosCliente FiltrarPor, string? TermoBusca)
         {
             var clientes = new List<Clientes>();
 
@@ -273,25 +296,51 @@ namespace WebApiClientes.Services
             MySqlConnection? conn = null;
             try
             {
+                var PageNumber = Page.Page ?? 1;
+                var PageSize = Page.PageSize ?? 10;
+                int TotalPages;
+                int TotalRecords;
+
                 conn = new MySqlConnection(Conn);
                 conn.Open();
                 
                 string sql;
+                string sql_counter;
 
                 switch(FiltrarPor)
                 {
                     case FiltrosCliente.PorNome:
                         sql = "select * from clientes where Nome like '%" + TermoBusca + "%'";
+                        sql_counter = "select Count(*) AS Total from clientes where Nome like '%" + TermoBusca + "%'";
                         break;
                     case FiltrosCliente.PorEndereco:
                         sql = "select * from clientes where Endereco like '%" + TermoBusca + "%'";
+                        sql_counter = "select Count(*) AS Total from clientes where Endereco like '%" + TermoBusca + "%'";
                         break;
                     default:
                         sql = "select * from clientes";
+                        sql_counter = "select Count(*) from clientes";
                         break;
                 }
 
+                var cmd_counter = new MySqlCommand(sql_counter, conn);
+                var reader_counter = await cmd_counter.ExecuteReaderAsync();
+                await reader_counter.ReadAsync();
+
+                TotalRecords = Convert.ToInt32(reader_counter["Total"].ToString());
+                int inicio = (PageNumber - 1) * PageSize;
+                TotalPages = Convert.ToInt32(Math.Ceiling((double)TotalRecords / PageSize));
+
+                Page.Page = PageNumber;
+                Page.PageSize = PageSize;
+                Page.TotalPages = TotalPages;
+                Page.TotalRecords = TotalRecords;
+                reader_counter.Close();
+
+                sql = sql + " limit @inicio, @qtd";
                 var cmd = new MySqlCommand(sql, conn);
+                cmd.Parameters.Add(new MySqlParameter("inicio", inicio));
+                cmd.Parameters.Add(new MySqlParameter("qtd", PageSize));
                 var reader = await cmd.ExecuteReaderAsync();
                 while (await reader.ReadAsync())
                 {

@@ -1,6 +1,7 @@
 ﻿using BlazorClientes.Shared.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Net.Mime;
 using System.Text.Json;
 using WebApiClientes.Services;
@@ -34,19 +35,21 @@ namespace WebApiClientes.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status304NotModified)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<List<Clientes>>> Get([FromQuery] FiltrosCliente? FiltrarPor, string? Termo)
+        public async Task<ActionResult<List<Clientes>>> Get([FromQuery] FiltrosCliente? FiltrarPor, string? Termo, int? Pagina, int? QtdRegistrosPorPagina)
         {
             string dataHash;
 
             List<Clientes> clientes;
 
+            PageInfo Page = new PageInfo();
+
             if ((FiltrarPor == null) && (string.IsNullOrEmpty(Termo)))
             {
-                clientes = await fclientes.GetClientes();
+                clientes = await fclientes.GetClientes(Page);
             }
             else
             {
-                clientes = await fclientes.GetClientesPorFiltro((FiltrosCliente)FiltrarPor!, Termo);
+                clientes = await fclientes.GetClientesPorFiltro(Page, (FiltrosCliente)FiltrarPor!, Termo);
             }
 
             dataHash = HashMD5.Hash(JsonSerializer.Serialize(clientes));
@@ -66,6 +69,10 @@ namespace WebApiClientes.Controllers
                             //Os dois comandos abaixo adicionam Headers personalizados
                             Response.Headers.Add("AppName", "Web Api Clientes");
                             Response.Headers.Add("Version", "1.0.0");
+                            Response.Headers.Add("PageNumber", Page.Page.ToString());
+                            Response.Headers.Add("PageSize", Page.PageSize.ToString());
+                            Response.Headers.Add("TotalRecords", Page.TotalRecords.ToString());
+                            Response.Headers.Add("TotalPages", Page.TotalPages.ToString());
                             //Serializar e enviar o Hash no etag
                             Response.Headers.ETag = dataHash;
                             return Ok(clientes);
