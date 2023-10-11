@@ -10,8 +10,9 @@ namespace WebApiClientes.Services
         /// <summary>
         /// Método ´para pegar lista de Pedidos
         /// </summary>
+        /// <param name="Page">Informações para paginação</param>
         /// <returns>Lista de Pedidos</returns>
-        public Task<List<Pedidos>> GetPedidos();
+        public Task<List<Pedidos>> GetPedidos(PageInfo Page);
 
         /// <summary>
         /// Paga Pedido por ID
@@ -54,18 +55,18 @@ namespace WebApiClientes.Services
         /// Retorna lista de pedidos por filtro igual
         /// </summary>
         /// <returns>Lista de pedidos</returns>
-        public Task<List<Pedidos>> GetPedidosFiltroIgual(string Campo, string Termo);
+        public Task<List<Pedidos>> GetPedidosFiltroIgual(PageInfo Page, string Campo, string Termo);
 
         /// <summary>
         /// Retorna lista de pedidos por filtro LIKE
         /// </summary>
         /// <returns>Lista de pedidos</returns>
-        public Task<List<Pedidos>> GetPedidosFiltroLike(string Campo, string Termo);
+        public Task<List<Pedidos>> GetPedidosFiltroLike(PageInfo Page, string Campo, string Termo);
 
         /// <summary>
         /// Retorna lista de pedidos por período informado
         /// </summary>
         /// <returns>Lista de pedidos</returns>
-        public Task<List<Pedidos>> GetPedidosPorPerido(string Campo, DateTime De, DateTime Ate);
+        public Task<List<Pedidos>> GetPedidosPorPerido(PageInfo Page, string Campo, DateTime De, DateTime Ate);
     }
 }

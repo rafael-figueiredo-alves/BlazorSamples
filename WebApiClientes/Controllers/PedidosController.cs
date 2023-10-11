@@ -1,7 +1,9 @@
 ﻿using BlazorClientes.Shared.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using MySqlX.XDevAPI;
 using System.Net.Mime;
+using System.Text.Json;
 using WebApiClientes.Services;
 
 namespace WebApiClientes.Controllers
@@ -26,14 +28,37 @@ namespace WebApiClientes.Controllers
         /// </remarks>
         /// <response code="200">Sucesso ao obter lista de pedidos</response>
         /// <response code="404">Não foram encontrados pedidos</response>
+        /// <response code="401">Acesso não autorizado. Você precisa se autenticar para poder acessar este endpoint</response>
+        /// <response code="403">Recurso só disponível para usuários autenticados com um determinado tipo de conta</response>
+        /// <response code="304">Não houve mudanças nos dados, portanto o cache pode ser utilizado porque se encontra atualizado</response>
         /// <response code="500">Ocorreu um erro interno no servidor</response>
         [HttpGet]
         [Produces(MediaTypeNames.Application.Json)] //Informa qual formato de retorno
         [ProducesResponseType(StatusCodes.Status200OK)] //Informa status codes retornáveis
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<List<Pedidos>>> Get([FromQuery] FiltrosPedido? FiltrarPor, string? Termo1, string? Termo2)
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status304NotModified)]
+        public async Task<ActionResult<List<Pedidos>>> Get([FromQuery] FiltrosPedido? FiltrarPor, string? Termo1, string? Termo2, int? Pagina, int? QtdRegistrosPorPagina)
         {
+            Response.Headers.Add("AppName", "Web Api Clientes");
+            Response.Headers.Add("Version", "1.0.0");
+
+            string dataHash;
+
+            PageInfo Page = new PageInfo();
+
+            if (Pagina != null)
+            {
+                Page.Page = Pagina;
+            }
+
+            if (QtdRegistrosPorPagina != null)
+            {
+                Page.PageSize = QtdRegistrosPorPagina;
+            }
+
             List<Pedidos> pedidos;
 
             if(FiltrarPor == null)
@@ -67,35 +92,52 @@ namespace WebApiClientes.Controllers
                         break;
                 }
             }
-                
-                
-            try
+
+            dataHash = HashMD5.Hash(JsonSerializer.Serialize(pedidos));
+
+            if ((!string.IsNullOrEmpty(Request.Headers.IfNoneMatch)) && (HashMD5.VerifyETag(Request.Headers.IfNoneMatch!, dataHash)))
             {
-                if (pedidos != null)
+                //Os comandos abaixo adicionam Headers personalizados
+                Response.Headers.Add("PageNumber", Page.Page.ToString());
+                Response.Headers.Add("PageSize", Page.PageSize.ToString());
+                Response.Headers.Add("TotalRecords", Page.TotalRecords.ToString());
+                Response.Headers.Add("TotalPages", Page.TotalPages.ToString());
+                //Serializar e enviar o Hash no etag
+                Response.Headers.ETag = dataHash;
+                return StatusCode(StatusCodes.Status304NotModified, null);
+            }
+            else
+            {
+                try
                 {
-                    if (pedidos.Any())
+                    if (pedidos != null)
                     {
-                        //Os dois comandos abaixo adicionam Headers personalizados
-                        Response.Headers.Add("AppName", "Web Api Clientes");
-                        Response.Headers.Add("Version", "1.0.0");
-                        return Ok(pedidos);
+                        if (pedidos.Any())
+                        {
+                            //Os comandos abaixo adicionam Headers personalizados
+                            Response.Headers.Add("PageNumber", Page.Page.ToString());
+                            Response.Headers.Add("PageSize", Page.PageSize.ToString());
+                            Response.Headers.Add("TotalRecords", Page.TotalRecords.ToString());
+                            Response.Headers.Add("TotalPages", Page.TotalPages.ToString());
+                            //Serializar e enviar o Hash no etag
+                            Response.Headers.ETag = dataHash;
+                            return Ok(pedidos);
+                        }
+                        else
+                        {
+                            return NotFound(pedidos);
+                        }
                     }
                     else
                     {
-                        Response.Headers.Add("AppName", "Web Api Clientes");
-                        Response.Headers.Add("Version", "1.0.0");
-                        return NotFound(pedidos);
+                        return StatusCode(500, new Erro("Houve um erro interno com o servidor",
+                                                        "Ocorreu um problema inesperado em nosso servidor, tente acessar nossa API mais tarde."));
                     }
                 }
-                else
+                catch (Exception ex)
                 {
-                    return StatusCode(500, new Erro("Houve um erro interno com o servidor",
-                                                    "Ocorreu um problema inesperado em nosso servidor, tente acessar nossa API mais tarde."));
+                    return StatusCode(500, ex.Message);
                 }
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
             }
         }
 

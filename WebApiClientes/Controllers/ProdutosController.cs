@@ -1,7 +1,9 @@
 ﻿using BlazorClientes.Shared.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using MySqlX.XDevAPI;
 using System.Net.Mime;
+using System.Text.Json;
 using WebApiClientes.Services;
 
 namespace WebApiClientes.Controllers
@@ -25,18 +27,41 @@ namespace WebApiClientes.Controllers
         /// Obtenha uma relação com todos os dados de todos os produtos
         /// </remarks>
         /// <response code="200">Sucesso ao obter lista de produtos</response>
+        /// <response code="304">Não houve mudanças nos dados, portanto o cache pode ser utilizado porque se encontra atualizado</response>
+        /// <response code="401">Acesso não autorizado. Você precisa se autenticar para poder acessar este endpoint</response>
+        /// <response code="403">Recurso só disponível para usuários autenticados com um determinado tipo de conta</response>
         /// <response code="404">Não foram encontrados produtos</response>
         /// <response code="500">Ocorreu um erro interno no servidor</response>
         [HttpGet]
         [Produces(MediaTypeNames.Application.Json)] //Informa qual formato de retorno
         [ProducesResponseType(StatusCodes.Status200OK)] //Informa status codes retornáveis
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status304NotModified)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<List<Produtos>>> Get([FromQuery] FiltroProdutos? FiltrarPor, string? termo)
+        public async Task<ActionResult<List<Produtos>>> Get([FromQuery] FiltroProdutos? FiltrarPor, string? termo, int? Pagina, int? QtdRegistrosPorPagina)
         {
+            Response.Headers.Add("AppName", "Web Api Clientes");
+            Response.Headers.Add("Version", "1.0.0");
+
+            string dataHash;
+
             List<Produtos> produtos;
 
-            if((FiltrarPor == null) && (string.IsNullOrEmpty(termo)))
+            PageInfo Page = new PageInfo();
+
+            if (Pagina != null)
+            {
+                Page.Page = Pagina;
+            }
+
+            if (QtdRegistrosPorPagina != null)
+            {
+                Page.PageSize = QtdRegistrosPorPagina;
+            }
+
+            if ((FiltrarPor == null) && (string.IsNullOrEmpty(termo)))
             {
                 produtos = await fprodutos.GetProdutos();
             }
@@ -45,32 +70,51 @@ namespace WebApiClientes.Controllers
                 produtos = await fprodutos.GetProdutosPorFiltro((FiltroProdutos)FiltrarPor!, termo);
             }
 
+            dataHash = HashMD5.Hash(JsonSerializer.Serialize(produtos));
 
-            try
+            if ((!string.IsNullOrEmpty(Request.Headers.IfNoneMatch)) && (HashMD5.VerifyETag(Request.Headers.IfNoneMatch!, dataHash)))
             {
-                if (produtos != null)
+                //Os comandos abaixo adicionam Headers personalizados
+                Response.Headers.Add("PageNumber", Page.Page.ToString());
+                Response.Headers.Add("PageSize", Page.PageSize.ToString());
+                Response.Headers.Add("TotalRecords", Page.TotalRecords.ToString());
+                Response.Headers.Add("TotalPages", Page.TotalPages.ToString());
+                //Serializar e enviar o Hash no etag
+                Response.Headers.ETag = dataHash;
+                return StatusCode(StatusCodes.Status304NotModified, null);
+            }
+            else
+            {
+                try
                 {
-                    if (produtos.Any())
+                    if (produtos != null)
                     {
-                        //Os dois comandos abaixo adicionam Headers personalizados
-                        Response.Headers.Add("AppName", "Web Api Clientes");
-                        Response.Headers.Add("Version", "1.0.0");
-                        return Ok(produtos);
+                        if (produtos.Any())
+                        {
+                            //Os comandos abaixo adicionam Headers personalizados
+                            Response.Headers.Add("PageNumber", Page.Page.ToString());
+                            Response.Headers.Add("PageSize", Page.PageSize.ToString());
+                            Response.Headers.Add("TotalRecords", Page.TotalRecords.ToString());
+                            Response.Headers.Add("TotalPages", Page.TotalPages.ToString());
+                            //Serializar e enviar o Hash no etag
+                            Response.Headers.ETag = dataHash;
+                            return Ok(produtos);
+                        }
+                        else
+                        {
+                            return NotFound(produtos);
+                        }
                     }
                     else
                     {
-                        return NotFound(produtos);
+                        return StatusCode(500, new Erro("Houve um erro interno com o servidor",
+                                                        "Ocorreu um problema inesperado em nosso servidor, tente acessar nossa API mais tarde."));
                     }
                 }
-                else
+                catch (Exception ex)
                 {
-                    return StatusCode(500, new Erro("Houve um erro interno com o servidor",
-                                                    "Ocorreu um problema inesperado em nosso servidor, tente acessar nossa API mais tarde."));
+                    return StatusCode(500, ex.Message);
                 }
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
             }
         }
 

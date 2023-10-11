@@ -10,8 +10,9 @@ namespace WebApiClientes.Services
         /// <summary>
         /// Método ´para pegar lista de Produtos
         /// </summary>
+        /// <param name="Page">Informações para paginação</param>
         /// <returns>Lista de Produtos</returns>
-        public Task<List<Produtos>> GetProdutos();
+        public Task<List<Produtos>> GetProdutos(PageInfo Page);
 
         /// <summary>
         /// Paga Produto por ID
@@ -47,7 +48,8 @@ namespace WebApiClientes.Services
         /// </summary>
         /// <param name="FiltrarPor">Campo</param>
         /// <param name="TermoBusca">Termo</param>
+        /// <param name="Page">Informações para paginação</param>
         /// <returns>Lista de Produtos</returns>
-        public Task<List<Produtos>> GetProdutosPorFiltro(FiltroProdutos FiltrarPor, string? TermoBusca);
+        public Task<List<Produtos>> GetProdutosPorFiltro(PageInfo Page, FiltroProdutos FiltrarPor, string? TermoBusca);
     }
 }
