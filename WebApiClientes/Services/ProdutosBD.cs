@@ -1,5 +1,6 @@
 ﻿using MySql.Data.MySqlClient;
 using BlazorClientes.Shared.Entities;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace WebApiClientes.Services
 {
@@ -100,17 +101,38 @@ namespace WebApiClientes.Services
         /// Retorna lista de produtos
         /// </summary>
         /// <returns>Lista de produtos</returns>
-        public async Task<List<Produtos>> GetProdutos()
+        public async Task<List<Produtos>> GetProdutos(PageInfo Page)
         {
             var produtos = new List<Produtos>();
+            var PageNumber = Page.Page ?? 1;
+            var PageSize = Page.PageSize ?? 10;
+            int TotalPages;
+            int TotalRecords;
 
             MySqlConnection? conn = null;
             try
             {
                 conn = new MySqlConnection(Conn);
                 conn.Open();
-                string sql = "select * from produtos";
+                string sql_counter = "select Count(*) AS Total from produtos";
+                var cmd_counter = new MySqlCommand(sql_counter, conn);
+                var reader_counter = await cmd_counter.ExecuteReaderAsync();
+                await reader_counter.ReadAsync();
+
+                TotalRecords = Convert.ToInt32(reader_counter["Total"].ToString());
+                int inicio = (PageNumber - 1) * PageSize;
+                TotalPages = Convert.ToInt32(Math.Ceiling((double)TotalRecords / PageSize));
+
+                Page.Page = PageNumber;
+                Page.PageSize = PageSize;
+                Page.TotalPages = TotalPages;
+                Page.TotalRecords = TotalRecords;
+                reader_counter.Close();
+
+                string sql = "select * from produtos limit @inicio, @qtd";
                 var cmd = new MySqlCommand(sql, conn);
+                cmd.Parameters.Add(new MySqlParameter("inicio", inicio));
+                cmd.Parameters.Add(new MySqlParameter("qtd", PageSize));
                 var reader = await cmd.ExecuteReaderAsync();
                 while (await reader.ReadAsync())
                 {
@@ -253,11 +275,15 @@ namespace WebApiClientes.Services
         /// Retorna lista de produtos com nome ou descrição informado
         /// </summary>
         /// <returns>Lista de produtos</returns>
-        public async Task<List<Produtos>> GetProdutosPorFiltro(FiltroProdutos FiltrarPor, string? TermoBusca)
+        public async Task<List<Produtos>> GetProdutosPorFiltro(PageInfo Page, FiltroProdutos FiltrarPor, string? TermoBusca)
         {
             var produtos = new List<Produtos>();
+            var PageNumber = Page.Page ?? 1;
+            var PageSize = Page.PageSize ?? 10;
+            int TotalPages;
+            int TotalRecords;
 
-            if(string.IsNullOrEmpty(TermoBusca))
+            if (string.IsNullOrEmpty(TermoBusca))
             {
                 TermoBusca = "%";
             }
@@ -269,25 +295,46 @@ namespace WebApiClientes.Services
                 conn.Open();
 
                 string sql;
+                string sql_counter;
 
                 switch (FiltrarPor)
                 {
                     case FiltroProdutos.PorProduto:
                         sql = "select * from produtos where produto like '%" + TermoBusca + "%'";
+                        sql_counter = "select Count(*) AS Total from produtos where produto like '%" + TermoBusca + "%'";
                         break;
                     case FiltroProdutos.PorDescricao:
                         sql = "select * from produtos where descricao like '%" + TermoBusca + "%'";
+                        sql_counter = "select Count(*) AS Total from produtos where descricao like '%" + TermoBusca + "%'";
                         break;
                     case FiltroProdutos.PorBarcode:
                         sql = "select * from produtos where barcode like '%" + TermoBusca + "%'";
+                        sql_counter = "select Count(*) AS Total from produtos where barcode like '%" + TermoBusca + "%'";
                         break;
                     default:
                         sql = "select * from produtos";
+                        sql_counter = "select Count(*) from produtos";
                         break;
                 }
 
-                sql = "select * from produtos";
+                var cmd_counter = new MySqlCommand(sql_counter, conn);
+                var reader_counter = await cmd_counter.ExecuteReaderAsync();
+                await reader_counter.ReadAsync();
+
+                TotalRecords = Convert.ToInt32(reader_counter["Total"].ToString());
+                int inicio = (PageNumber - 1) * PageSize;
+                TotalPages = Convert.ToInt32(Math.Ceiling((double)TotalRecords / PageSize));
+
+                Page.Page = PageNumber;
+                Page.PageSize = PageSize;
+                Page.TotalPages = TotalPages;
+                Page.TotalRecords = TotalRecords;
+                reader_counter.Close();
+
+                sql = sql + " limit @inicio, @qtd";
                 var cmd = new MySqlCommand(sql, conn);
+                cmd.Parameters.Add(new MySqlParameter("inicio", inicio));
+                cmd.Parameters.Add(new MySqlParameter("qtd", PageSize));
                 var reader = await cmd.ExecuteReaderAsync();
                 while (await reader.ReadAsync())
                 {

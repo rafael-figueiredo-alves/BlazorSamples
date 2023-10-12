@@ -126,17 +126,38 @@ namespace WebApiClientes.Services
         /// Retorna lista de pedidos
         /// </summary>
         /// <returns>Lista de pedidos</returns>
-        public async Task<List<Pedidos>> GetPedidos()
+        public async Task<List<Pedidos>> GetPedidos(PageInfo Page)
         {
             var pedidos = new List<Pedidos>();
+            var PageNumber = Page.Page ?? 1;
+            var PageSize = Page.PageSize ?? 10;
+            int TotalPages;
+            int TotalRecords;
 
             MySqlConnection? conn = null;
             try
             {
                 conn = new MySqlConnection(Conn);
                 conn.Open();
-                string sql = "select pedidos.*, clientes.Nome AS Cliente, vendedores.Vendedor, vendedores.pComissao from pedidos Inner Join clientes ON (clientes.idCliente = pedidos.idCliente) INNER JOIN vendedores on (vendedores.idVendedor = pedidos.idVendedor)";
+                string sql_counter = "select Count(*) AS Total from pedidos";
+                var cmd_counter = new MySqlCommand(sql_counter, conn);
+                var reader_counter = await cmd_counter.ExecuteReaderAsync();
+                await reader_counter.ReadAsync();
+
+                TotalRecords = Convert.ToInt32(reader_counter["Total"].ToString());
+                int inicio = (PageNumber - 1) * PageSize;
+                TotalPages = Convert.ToInt32(Math.Ceiling((double)TotalRecords / PageSize));
+
+                Page.Page = PageNumber;
+                Page.PageSize = PageSize;
+                Page.TotalPages = TotalPages;
+                Page.TotalRecords = TotalRecords;
+                reader_counter.Close();
+
+                string sql = "select pedidos.*, clientes.Nome AS Cliente, vendedores.Vendedor, vendedores.pComissao from pedidos Inner Join clientes ON (clientes.idCliente = pedidos.idCliente) INNER JOIN vendedores on (vendedores.idVendedor = pedidos.idVendedor) LIMIT @inicio, @qtd";
                 var cmd = new MySqlCommand(sql, conn);
+                cmd.Parameters.Add(new MySqlParameter("inicio", inicio));
+                cmd.Parameters.Add(new MySqlParameter("qtd", PageSize));
                 var reader = await cmd.ExecuteReaderAsync();
                 
                 while (await reader.ReadAsync())
@@ -359,19 +380,42 @@ namespace WebApiClientes.Services
         /// Retorna lista de pedidos por período informado
         /// </summary>
         /// <returns>Lista de pedidos</returns>
-        public async Task<List<Pedidos>> GetPedidosPorPerido(string Campo, DateTime De, DateTime Ate)
+        public async Task<List<Pedidos>> GetPedidosPorPerido(PageInfo Page, string Campo, DateTime De, DateTime Ate)
         {
             var pedidos = new List<Pedidos>();
+            var PageNumber = Page.Page ?? 1;
+            var PageSize = Page.PageSize ?? 10;
+            int TotalPages;
+            int TotalRecords;
 
             MySqlConnection? conn = null;
             try
             {
                 conn = new MySqlConnection(Conn);
                 conn.Open();
-                string sql = "select pedidos.*, clientes.Nome AS Cliente, vendedores.Vendedor, vendedores.pComissao from pedidos Inner Join clientes ON (clientes.idCliente = pedidos.idCliente) INNER JOIN vendedores on (vendedores.idVendedor = pedidos.idVendedor) WHERE (" + Campo + " >= @de) and (" + Campo + " <= @ate)";
+                string sql_counter = "select Count(*) AS Total from pedidos  WHERE (" + Campo + " >= @de) and (" + Campo + " <= @ate)";
+                var cmd_counter = new MySqlCommand(sql_counter, conn);
+                cmd_counter.Parameters.Add(new MySqlParameter("de", De));
+                cmd_counter.Parameters.Add(new MySqlParameter("ate", Ate));
+                var reader_counter = await cmd_counter.ExecuteReaderAsync();
+                await reader_counter.ReadAsync();
+
+                TotalRecords = Convert.ToInt32(reader_counter["Total"].ToString());
+                int inicio = (PageNumber - 1) * PageSize;
+                TotalPages = Convert.ToInt32(Math.Ceiling((double)TotalRecords / PageSize));
+
+                Page.Page = PageNumber;
+                Page.PageSize = PageSize;
+                Page.TotalPages = TotalPages;
+                Page.TotalRecords = TotalRecords;
+                reader_counter.Close();
+
+                string sql = "select pedidos.*, clientes.Nome AS Cliente, vendedores.Vendedor, vendedores.pComissao from pedidos Inner Join clientes ON (clientes.idCliente = pedidos.idCliente) INNER JOIN vendedores on (vendedores.idVendedor = pedidos.idVendedor) WHERE (" + Campo + " >= @de) and (" + Campo + " <= @ate)  limit @inicio, @qtd";
                 var cmd = new MySqlCommand(sql, conn);
                 cmd.Parameters.Add(new MySqlParameter("de", De));
                 cmd.Parameters.Add(new MySqlParameter("ate", Ate));
+                cmd.Parameters.Add(new MySqlParameter("inicio", inicio));
+                cmd.Parameters.Add(new MySqlParameter("qtd", PageSize));
                 var reader = await cmd.ExecuteReaderAsync();
 
                 while (await reader.ReadAsync())
@@ -431,18 +475,40 @@ namespace WebApiClientes.Services
         /// Retorna lista de pedidos por filtro LIKE
         /// </summary>
         /// <returns>Lista de pedidos</returns>
-        public async Task<List<Pedidos>> GetPedidosFiltroLike(string Campo, string Termo)
+        public async Task<List<Pedidos>> GetPedidosFiltroLike(PageInfo Page, string Campo, string Termo)
         {
             var pedidos = new List<Pedidos>();
+            var PageNumber = Page.Page ?? 1;
+            var PageSize = Page.PageSize ?? 10;
+            int TotalPages;
+            int TotalRecords;
 
             MySqlConnection? conn = null;
             try
             {
                 conn = new MySqlConnection(Conn);
                 conn.Open();
-                string sql = "select pedidos.*, clientes.Nome AS Cliente, vendedores.Vendedor, vendedores.pComissao from pedidos Inner Join clientes ON (clientes.idCliente = pedidos.idCliente) INNER JOIN vendedores on (vendedores.idVendedor = pedidos.idVendedor) WHERE (" + Campo + " LIKE @termo)";
+                string sql_counter = "select Count(*) AS Total from pedidos WHERE (" + Campo + " LIKE @termo)";
+                var cmd_counter = new MySqlCommand(sql_counter, conn);
+                cmd_counter.Parameters.Add(new MySqlParameter("termo", "%" + Termo + "%"));
+                var reader_counter = await cmd_counter.ExecuteReaderAsync();
+                await reader_counter.ReadAsync();
+
+                TotalRecords = Convert.ToInt32(reader_counter["Total"].ToString());
+                int inicio = (PageNumber - 1) * PageSize;
+                TotalPages = Convert.ToInt32(Math.Ceiling((double)TotalRecords / PageSize));
+
+                Page.Page = PageNumber;
+                Page.PageSize = PageSize;
+                Page.TotalPages = TotalPages;
+                Page.TotalRecords = TotalRecords;
+                reader_counter.Close();
+
+                string sql = "select pedidos.*, clientes.Nome AS Cliente, vendedores.Vendedor, vendedores.pComissao from pedidos Inner Join clientes ON (clientes.idCliente = pedidos.idCliente) INNER JOIN vendedores on (vendedores.idVendedor = pedidos.idVendedor) WHERE (" + Campo + " LIKE @termo) limit @inicio, @qtd";
                 var cmd = new MySqlCommand(sql, conn);
                 cmd.Parameters.Add(new MySqlParameter("termo", "%" + Termo + "%"));
+                cmd.Parameters.Add(new MySqlParameter("inicio", inicio));
+                cmd.Parameters.Add(new MySqlParameter("qtd", PageSize));
                 var reader = await cmd.ExecuteReaderAsync();
 
                 while (await reader.ReadAsync())
@@ -502,18 +568,41 @@ namespace WebApiClientes.Services
         /// Retorna lista de pedidos por filtro Igual
         /// </summary>
         /// <returns>Lista de pedidos</returns>
-        public async Task<List<Pedidos>> GetPedidosFiltroIgual(string Campo, string Termo)
+        public async Task<List<Pedidos>> GetPedidosFiltroIgual(PageInfo Page, string Campo, string Termo)
         {
             var pedidos = new List<Pedidos>();
+            var PageNumber = Page.Page ?? 1;
+            var PageSize = Page.PageSize ?? 10;
+            int TotalPages;
+            int TotalRecords;
 
             MySqlConnection? conn = null;
             try
             {
                 conn = new MySqlConnection(Conn);
                 conn.Open();
-                string sql = "select pedidos.*, clientes.Nome AS Cliente, vendedores.Vendedor, vendedores.pComissao from pedidos Inner Join clientes ON (clientes.idCliente = pedidos.idCliente) INNER JOIN vendedores on (vendedores.idVendedor = pedidos.idVendedor) WHERE (" + Campo + "= @termo)";
+                string sql_counter = "select Count(*) AS Total from pedidos WHERE (" + Campo + " = @termo)";
+                var cmd_counter = new MySqlCommand(sql_counter, conn);
+                cmd_counter.Parameters.Add(new MySqlParameter("termo", Termo));
+                var reader_counter = await cmd_counter.ExecuteReaderAsync();
+                await reader_counter.ReadAsync();
+
+                TotalRecords = Convert.ToInt32(reader_counter["Total"].ToString());
+                int inicio = (PageNumber - 1) * PageSize;
+                TotalPages = Convert.ToInt32(Math.Ceiling((double)TotalRecords / PageSize));
+
+                Page.Page = PageNumber;
+                Page.PageSize = PageSize;
+                Page.TotalPages = TotalPages;
+                Page.TotalRecords = TotalRecords;
+                reader_counter.Close();
+
+
+                string sql = "select pedidos.*, clientes.Nome AS Cliente, vendedores.Vendedor, vendedores.pComissao from pedidos Inner Join clientes ON (clientes.idCliente = pedidos.idCliente) INNER JOIN vendedores on (vendedores.idVendedor = pedidos.idVendedor) WHERE (" + Campo + " = @termo) limit @inicio, @qtd";
                 var cmd = new MySqlCommand(sql, conn);
                 cmd.Parameters.Add(new MySqlParameter("termo", Termo));
+                cmd.Parameters.Add(new MySqlParameter("inicio", inicio));
+                cmd.Parameters.Add(new MySqlParameter("qtd", PageSize));
                 var reader = await cmd.ExecuteReaderAsync();
 
                 while (await reader.ReadAsync())
