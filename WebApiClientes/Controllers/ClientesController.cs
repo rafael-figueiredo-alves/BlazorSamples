@@ -1,7 +1,6 @@
 ﻿using BlazorClientes.Shared.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Net.Mime;
 using System.Text.Json;
 using WebApiClientes.Services;
@@ -49,7 +48,7 @@ namespace WebApiClientes.Controllers
 
             List<Clientes> clientes;
 
-            PageInfo Page = new PageInfo();
+            PageInfo Page = new();
 
             if(Pagina != null)
             {

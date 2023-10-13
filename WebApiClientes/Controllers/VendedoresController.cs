@@ -1,7 +1,6 @@
 ﻿using BlazorClientes.Shared.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MySqlX.XDevAPI;
 using System.Net.Mime;
 using System.Text.Json;
 using WebApiClientes.Services;
@@ -40,7 +39,6 @@ namespace WebApiClientes.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status304NotModified)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<List<Vendedores>>> Get([FromQuery] FiltroVendedor? FiltrarPor, string? TermoBusca, int? Pagina, int? QtdRegistrosPorPagina)
         {
             Response.Headers.Add("AppName", "Web Api Clientes");
@@ -50,7 +48,7 @@ namespace WebApiClientes.Controllers
 
             List<Vendedores> vendedores;
 
-            PageInfo Page = new PageInfo();
+            PageInfo Page = new();
 
             if (Pagina != null)
             {
@@ -64,11 +62,11 @@ namespace WebApiClientes.Controllers
 
             if ((FiltrarPor == null) && (string.IsNullOrEmpty(TermoBusca)))
             {
-                vendedores = await fvendedores.GetVendedores();
+                vendedores = await fvendedores.GetVendedores(Page);
             }
             else
             {
-                vendedores = await fvendedores.GetVendedoresPorFiltro((FiltroVendedor)FiltrarPor!, TermoBusca);
+                vendedores = await fvendedores.GetVendedoresPorFiltro(Page, (FiltroVendedor)FiltrarPor!, TermoBusca);
             }
 
             dataHash = HashMD5.Hash(JsonSerializer.Serialize(vendedores));

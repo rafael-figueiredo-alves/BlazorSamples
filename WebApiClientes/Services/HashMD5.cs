@@ -11,7 +11,7 @@ namespace WebApiClientes.Services
     {
         private static string GetMd5Hash(byte[] data)
         {
-            StringBuilder sBuilder = new StringBuilder();
+            StringBuilder sBuilder = new();
             for (int i = 0; i < data.Length; i++)
                 sBuilder.Append(data[i].ToString("x2"));
             return sBuilder.ToString();
@@ -29,8 +29,7 @@ namespace WebApiClientes.Services
         /// <returns>Hash MD5</returns>
         public static string Hash(string data)
         {
-            using (var md5 = MD5.Create())
-                return GetMd5Hash(md5.ComputeHash(Encoding.UTF8.GetBytes(data)));
+            return GetMd5Hash(MD5.HashData(Encoding.UTF8.GetBytes(data)));
         }
 
         /// <summary>
@@ -40,8 +39,8 @@ namespace WebApiClientes.Services
         /// <returns>Hash MD5</returns>
         public static string Hash(FileStream data)
         {
-            using (var md5 = MD5.Create())
-                return GetMd5Hash(md5.ComputeHash(data));
+            using var md5 = MD5.Create();
+            return GetMd5Hash(md5.ComputeHash(data));
         }
 
         /// <summary>
@@ -52,8 +51,7 @@ namespace WebApiClientes.Services
         /// <returns>True ou False</returns>
         public static bool Verify(string data, string hash)
         {
-            using (var md5 = MD5.Create())
-                return VerifyMd5Hash(md5.ComputeHash(Encoding.UTF8.GetBytes(data)), hash);
+            return VerifyMd5Hash(MD5.HashData(Encoding.UTF8.GetBytes(data)), hash);
         }
 
         /// <summary>
@@ -64,8 +62,8 @@ namespace WebApiClientes.Services
         /// <returns>True ou False</returns>
         public static bool Verify(FileStream data, string hash)
         {
-            using (var md5 = MD5.Create())
-                return VerifyMd5Hash(md5.ComputeHash(data), hash);
+            using var md5 = MD5.Create();
+            return VerifyMd5Hash(md5.ComputeHash(data), hash);
         }
 
         /// <summary>

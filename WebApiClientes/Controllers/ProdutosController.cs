@@ -1,7 +1,6 @@
 ﻿using BlazorClientes.Shared.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MySqlX.XDevAPI;
 using System.Net.Mime;
 using System.Text.Json;
 using WebApiClientes.Services;
@@ -49,7 +48,7 @@ namespace WebApiClientes.Controllers
 
             List<Produtos> produtos;
 
-            PageInfo Page = new PageInfo();
+            PageInfo Page = new();
 
             if (Pagina != null)
             {
@@ -63,11 +62,11 @@ namespace WebApiClientes.Controllers
 
             if ((FiltrarPor == null) && (string.IsNullOrEmpty(termo)))
             {
-                produtos = await fprodutos.GetProdutos();
+                produtos = await fprodutos.GetProdutos(Page);
             }
             else
             {
-                produtos = await fprodutos.GetProdutosPorFiltro((FiltroProdutos)FiltrarPor!, termo);
+                produtos = await fprodutos.GetProdutosPorFiltro(Page, (FiltroProdutos)FiltrarPor!, termo);
             }
 
             dataHash = HashMD5.Hash(JsonSerializer.Serialize(produtos));

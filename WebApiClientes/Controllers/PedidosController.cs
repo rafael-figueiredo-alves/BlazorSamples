@@ -1,7 +1,6 @@
 ﻿using BlazorClientes.Shared.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MySqlX.XDevAPI;
 using System.Net.Mime;
 using System.Text.Json;
 using WebApiClientes.Services;
@@ -47,7 +46,7 @@ namespace WebApiClientes.Controllers
 
             string dataHash;
 
-            PageInfo Page = new PageInfo();
+            PageInfo Page = new();
 
             if (Pagina != null)
             {
@@ -63,34 +62,21 @@ namespace WebApiClientes.Controllers
 
             if(FiltrarPor == null)
             {
-                pedidos = await fpedidos.GetPedidos();
+                pedidos = await fpedidos.GetPedidos(Page);
             }
             else
             {
-                switch(FiltrarPor)
+                pedidos = FiltrarPor switch
                 {
-                    case FiltrosPedido.PorDataEmissao:
-                        pedidos = await fpedidos.GetPedidosPorPerido("DataEmissao", Convert.ToDateTime(Termo1 == null ? DateTime.Now.ToString() : Termo1), Convert.ToDateTime(Termo2 == null ? DateTime.Now.ToString() : Termo2));
-                        break;
-                    case FiltrosPedido.PorDataEntrega:
-                        pedidos = await fpedidos.GetPedidosPorPerido("DataEntrega", Convert.ToDateTime(Termo1 == null ? DateTime.Now.ToString() : Termo1), Convert.ToDateTime(Termo2 == null ? DateTime.Now.ToString() : Termo2));
-                        break;
-                    case FiltrosPedido.PorClienteID:
-                        pedidos = await fpedidos.GetPedidosFiltroIgual("idCliente", (Termo1 == null ? "0" : Termo1));
-                        break;
-                    case FiltrosPedido.PorVendedorID:
-                        pedidos = await fpedidos.GetPedidosFiltroIgual("idVendedor", (Termo1 == null ? "0" : Termo1));
-                        break;
-                    case FiltrosPedido.PorClienteNome:
-                        pedidos = await fpedidos.GetPedidosFiltroLike("clientes.Nome", (Termo1 == null ? "%" : Termo1));
-                        break;
-                    case FiltrosPedido.PorVendedorNome:
-                        pedidos = await fpedidos.GetPedidosFiltroLike("vendedores.Vendedor", (Termo1 == null ? "%" : Termo1));
-                        break;
-                    default:
-                        pedidos = await fpedidos.GetPedidos();
-                        break;
-                }
+                    FiltrosPedido.PorDataEmissao => await fpedidos.GetPedidosPorPerido(Page, "DataEmissao", Convert.ToDateTime(Termo1 ?? DateTime.Now.ToString()), Convert.ToDateTime(Termo2 ?? DateTime.Now.ToString())),
+                    FiltrosPedido.PorDataEntrega => await fpedidos.GetPedidosPorPerido(Page, "DataEntrega", Convert.ToDateTime(Termo1 ?? DateTime.Now.ToString()), Convert.ToDateTime(Termo2 ?? DateTime.Now.ToString())),
+                    FiltrosPedido.PorClienteID => await fpedidos.GetPedidosFiltroIgual(Page, "idCliente", Termo1 ?? "0"),
+                    FiltrosPedido.PorVendedorID => await fpedidos.GetPedidosFiltroIgual(Page, "idVendedor", Termo1 ?? "0"),
+                    FiltrosPedido.PorClienteNome => await fpedidos.GetPedidosFiltroLike(Page, "clientes.Nome", Termo1 ?? "%"),
+                    FiltrosPedido.PorVendedorNome => await fpedidos.GetPedidosFiltroLike(Page, "vendedores.Vendedor", Termo1 ?? "%"),
+                    FiltrosPedido.PorStatus => await fpedidos.GetPedidosFiltroLike(Page, "Status", Termo1 ?? "%"),
+                    _ => await fpedidos.GetPedidos(Page),
+                };
             }
 
             dataHash = HashMD5.Hash(JsonSerializer.Serialize(pedidos));

@@ -141,10 +141,8 @@ namespace WebApiClientes.Services
                 conn.Open();
                 string sql_counter = "select Count(*) AS Total from pedidos";
                 var cmd_counter = new MySqlCommand(sql_counter, conn);
-                var reader_counter = await cmd_counter.ExecuteReaderAsync();
-                await reader_counter.ReadAsync();
+                TotalRecords = Convert.ToInt32(await cmd_counter.ExecuteScalarAsync());
 
-                TotalRecords = Convert.ToInt32(reader_counter["Total"].ToString());
                 int inicio = (PageNumber - 1) * PageSize;
                 TotalPages = Convert.ToInt32(Math.Ceiling((double)TotalRecords / PageSize));
 
@@ -152,7 +150,6 @@ namespace WebApiClientes.Services
                 Page.PageSize = PageSize;
                 Page.TotalPages = TotalPages;
                 Page.TotalRecords = TotalRecords;
-                reader_counter.Close();
 
                 string sql = "select pedidos.*, clientes.Nome AS Cliente, vendedores.Vendedor, vendedores.pComissao from pedidos Inner Join clientes ON (clientes.idCliente = pedidos.idCliente) INNER JOIN vendedores on (vendedores.idVendedor = pedidos.idVendedor) LIMIT @inicio, @qtd";
                 var cmd = new MySqlCommand(sql, conn);
