@@ -6,6 +6,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using WebApiClientes.Services;
+using WebApiClientes.Services.Interfaces;
 
 namespace WebApiClientes.Controllers
 {
@@ -166,7 +167,7 @@ namespace WebApiClientes.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message);
+                return StatusCode(500, new Erro("Houve um erro interno com o servidor", ex.Message));
             }
         }
 

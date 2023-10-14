@@ -1,5 +1,6 @@
 ﻿using BlazorClientes.Shared.Entities;
 using MySql.Data.MySqlClient;
+using WebApiClientes.Services.Interfaces;
 
 namespace WebApiClientes.Services
 {

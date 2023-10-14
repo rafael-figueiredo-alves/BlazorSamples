@@ -1,6 +1,6 @@
 ﻿using BlazorClientes.Shared.Entities;
 
-namespace WebApiClientes.Services
+namespace WebApiClientes.Services.Interfaces
 {
     /// <summary>
     /// interface de serviços da classe clientes
@@ -13,14 +13,14 @@ namespace WebApiClientes.Services
         /// <param name="Page">Informações para paginação</param>
         /// <returns>Lista de clientes</returns>
         public Task<List<Clientes>> GetClientes(PageInfo Page);
-       
+
         /// <summary>
         /// Paga Cliente por ID
         /// </summary>
         /// <param name="id">id</param>
         /// <returns>Retorna cliente</returns>
         public Task<Clientes> GetCliente(string id);
-       
+
         /// <summary>
         /// Insere novo cliente
         /// </summary>
@@ -35,7 +35,7 @@ namespace WebApiClientes.Services
         /// <param name="ID">Id do Cliente</param> 
         /// <returns>Retorna o cliente alterado</returns>
         public Task<Clientes> PutCliente(Clientes cliente, string ID);
-     
+
         /// <summary>
         /// Apaga cliente
         /// </summary>

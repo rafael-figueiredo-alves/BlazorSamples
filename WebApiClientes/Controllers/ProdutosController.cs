@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Net.Mime;
 using System.Text.Json;
 using WebApiClientes.Services;
+using WebApiClientes.Services.Interfaces;
 
 namespace WebApiClientes.Controllers
 {
@@ -112,7 +113,7 @@ namespace WebApiClientes.Controllers
                 }
                 catch (Exception ex)
                 {
-                    return StatusCode(500, ex.Message);
+                    return StatusCode(500, new Erro("Houve um erro interno com o servidor", ex.Message));
                 }
             }
         }
@@ -157,7 +158,7 @@ namespace WebApiClientes.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message);
+                return StatusCode(500, new Erro("Houve um erro interno com o servidor", ex.Message));
             }
         }
 
@@ -196,7 +197,7 @@ namespace WebApiClientes.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message);
+                return StatusCode(500, new Erro("Houve um erro interno com o servidor", ex.Message));
             }
         }
 
@@ -233,7 +234,7 @@ namespace WebApiClientes.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message);
+                return StatusCode(500, new Erro("Houve um erro interno com o servidor", ex.Message));
             }
         }
 
@@ -266,9 +267,9 @@ namespace WebApiClientes.Controllers
                     return BadRequest(new Erro("Não foi possível apagar produto.", "O id informado é inválido e por isso não foi possível apagar o produto informado."));
                 }
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                return StatusCode(500, e.Message);
+                return StatusCode(500, new Erro("Houve um erro interno com o servidor", ex.Message));
             }
         }
     }

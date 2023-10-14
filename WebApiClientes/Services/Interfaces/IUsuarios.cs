@@ -1,6 +1,6 @@
 ﻿using BlazorClientes.Shared.Entities;
 
-namespace WebApiClientes.Services
+namespace WebApiClientes.Services.Interfaces
 {
     /// <summary>
     /// Interface de serviços de usuário

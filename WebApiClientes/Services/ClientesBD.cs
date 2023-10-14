@@ -1,5 +1,6 @@
 ﻿using BlazorClientes.Shared.Entities;
 using MySql.Data.MySqlClient;
+using WebApiClientes.Services.Interfaces;
 
 namespace WebApiClientes.Services
 {
@@ -22,9 +23,8 @@ namespace WebApiClientes.Services
         /// <summary>
         /// Método para apagar clientes
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="id">ID do Cliente a apagar</param>
         /// <returns>Nenhum conteúdo</returns>
-        /// <exception cref="NotImplementedException"></exception>
         public async Task<bool> DeleteCliente(string id)
         {
             MySqlConnection? conn = null;
@@ -36,13 +36,12 @@ namespace WebApiClientes.Services
                 var cmd = new MySqlCommand(sql, conn);
                 cmd.Parameters.Add(new MySqlParameter("id", id));
                 var ResultSet = await cmd.ExecuteNonQueryAsync();
-                conn.Close();
 
                 return (!ResultSet.Equals(0));
             }
-            catch
+            catch (Exception ex)
             {
-                return false;
+                throw new Exception(ex.Message);
             }
             finally
             {

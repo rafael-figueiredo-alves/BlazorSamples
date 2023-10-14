@@ -1,5 +1,4 @@
 ﻿using System.Security.Cryptography;
-using System.Security.Policy;
 using System.Text;
 
 namespace WebApiClientes.Services

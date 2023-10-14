@@ -1,6 +1,6 @@
-﻿using MySql.Data.MySqlClient;
-using BlazorClientes.Shared.Entities;
-using Microsoft.AspNetCore.Mvc.RazorPages;
+﻿using BlazorClientes.Shared.Entities;
+using MySql.Data.MySqlClient;
+using WebApiClientes.Services.Interfaces;
 
 namespace WebApiClientes.Services
 {
@@ -116,10 +116,8 @@ namespace WebApiClientes.Services
                 conn.Open();
                 string sql_counter = "select Count(*) AS Total from produtos";
                 var cmd_counter = new MySqlCommand(sql_counter, conn);
-                var reader_counter = await cmd_counter.ExecuteReaderAsync();
-                await reader_counter.ReadAsync();
-
-                TotalRecords = Convert.ToInt32(reader_counter["Total"].ToString());
+                TotalRecords = Convert.ToInt32(await cmd_counter.ExecuteScalarAsync());
+ 
                 int inicio = (PageNumber - 1) * PageSize;
                 TotalPages = Convert.ToInt32(Math.Ceiling((double)TotalRecords / PageSize));
 
@@ -127,7 +125,6 @@ namespace WebApiClientes.Services
                 Page.PageSize = PageSize;
                 Page.TotalPages = TotalPages;
                 Page.TotalRecords = TotalRecords;
-                reader_counter.Close();
 
                 string sql = "select * from produtos limit @inicio, @qtd";
                 var cmd = new MySqlCommand(sql, conn);
@@ -318,10 +315,8 @@ namespace WebApiClientes.Services
                 }
 
                 var cmd_counter = new MySqlCommand(sql_counter, conn);
-                var reader_counter = await cmd_counter.ExecuteReaderAsync();
-                await reader_counter.ReadAsync();
+                TotalRecords = Convert.ToInt32(await cmd_counter.ExecuteScalarAsync());
 
-                TotalRecords = Convert.ToInt32(reader_counter["Total"].ToString());
                 int inicio = (PageNumber - 1) * PageSize;
                 TotalPages = Convert.ToInt32(Math.Ceiling((double)TotalRecords / PageSize));
 
@@ -329,9 +324,8 @@ namespace WebApiClientes.Services
                 Page.PageSize = PageSize;
                 Page.TotalPages = TotalPages;
                 Page.TotalRecords = TotalRecords;
-                reader_counter.Close();
 
-                sql = sql + " limit @inicio, @qtd";
+                sql += " limit @inicio, @qtd";
                 var cmd = new MySqlCommand(sql, conn);
                 cmd.Parameters.Add(new MySqlParameter("inicio", inicio));
                 cmd.Parameters.Add(new MySqlParameter("qtd", PageSize));
