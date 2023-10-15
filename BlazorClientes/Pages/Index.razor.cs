@@ -1,4 +1,4 @@
-﻿using BlazorClientes.Services;
+﻿using BlazorClientes.Services.Interfaces;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using System.IO.IsolatedStorage;

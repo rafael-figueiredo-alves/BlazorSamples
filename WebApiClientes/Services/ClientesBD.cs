@@ -54,12 +54,12 @@ namespace WebApiClientes.Services
         /// </summary>
         /// <param name="id"></param>
         /// <returns>Cliente</returns>
-        public async Task<Clientes> GetCliente(string id)
+        public async Task<Clientes?> GetCliente(string id)
         {
             MySqlConnection? conn = null;
             try
             {
-                Clientes clientes;
+                Clientes? clientes;
 
                 conn = new MySqlConnection(Conn);
                 conn.Open();
@@ -69,7 +69,7 @@ namespace WebApiClientes.Services
                 var reader = await cmd.ExecuteReaderAsync();
                 if (!reader.HasRows)
                 {
-                    clientes = new Clientes();
+                    clientes = null;
                 }
                 else
                 {
@@ -82,13 +82,12 @@ namespace WebApiClientes.Services
                                             reader["Email"].ToString()!,
                                             reader["idCliente"].ToString());
                 }
-                conn.Close();
 
                 return clientes;
             }
-            catch
+            catch (Exception ex)
             {
-                return null!;
+                throw new Exception(ex.Message);
             }
             finally
             {
@@ -142,13 +141,12 @@ namespace WebApiClientes.Services
                                               reader["idCliente"].ToString()));
                 }
 
-                conn.Close();
                 return clientes;
 
             }
-            catch
+            catch (Exception ex)
             {
-                return null!; 
+                throw new Exception(ex.Message);
             }
             finally 
             { 
@@ -204,9 +202,9 @@ namespace WebApiClientes.Services
                     return null!;
                 }
             }
-            catch
+            catch (Exception ex) 
             {
-                return null!;
+                throw new Exception(ex.Message);
             }
             finally
             {
@@ -263,9 +261,9 @@ namespace WebApiClientes.Services
                     return null!;
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                return null!;
+                throw new Exception(ex.Message);
             }
             finally
             {
@@ -346,13 +344,12 @@ namespace WebApiClientes.Services
                                               reader["idCliente"].ToString()));
                 }
 
-                conn.Close();
                 return clientes;
 
             }
-            catch
+            catch (Exception ex)
             {
-                return null!;
+                throw new Exception(ex.Message);
             }
             finally
             {

@@ -50,7 +50,22 @@ Utilizando praticamente o mesmo código, o primeiro aplicativo fruto dos experim
 
  # WebApi - Clientes
 
- Criei uma webapi usando o C# e Asp.Net Core, usando MySQL com direito a autenticação, autorização e endpoints para CRUD de dados simples de Clientes que é usado no BlazorClientes. Em construção...
+ Criei uma webapi usando o C# e Asp.Net Core, usando MySQL com direito a autenticação, autorização e endpoints para CRUD de dados simples de Clientes que é usado no BlazorClientes.
+
+ ## Recursos aprendidos e usados:
+- [X] Documentação Swagger
+- [X] Uso de ADO.Net
+- [X] Paginação e filtragem de dados
+- [X] Manipulação de listas
+- [X] HashMD 5 para uso de ETag
+- [X] Autenticação / Autorização
+- [X] Programação Assíncrona
+- [X] Code-behind
+- [X] Classes
+- [X] Laços de repetição e condicionais
+- [X] EventCallback
+- [X] Injeção de Dependência
+- [X] Tratamento de erros com Try...Catch
 
  # BlazorClientes
 

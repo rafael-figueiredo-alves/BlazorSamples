@@ -37,13 +37,12 @@ namespace WebApiClientes.Services
                 var cmd = new MySqlCommand(sql, conn);
                 cmd.Parameters.Add(new MySqlParameter("id", id));
                 var ResultSet = await cmd.ExecuteNonQueryAsync();
-                conn.Close();
 
                 return (!ResultSet.Equals(0));
             }
-            catch
+            catch (Exception ex)
             {
-                return false;
+                throw new Exception(ex.Message);
             }
             finally
             {
@@ -56,12 +55,12 @@ namespace WebApiClientes.Services
         /// </summary>
         /// <param name="id"></param>
         /// <returns>Cliente</returns>
-        public async Task<Vendedores> GetVendedor(string id)
+        public async Task<Vendedores?> GetVendedor(string id)
         {
             MySqlConnection? conn = null;
             try
             {
-                Vendedores vendedor;
+                Vendedores? vendedor;
 
                 conn = new MySqlConnection(Conn);
                 conn.Open();
@@ -71,7 +70,7 @@ namespace WebApiClientes.Services
                 var reader = await cmd.ExecuteReaderAsync();
                 if (!reader.HasRows)
                 {
-                    vendedor = new Vendedores();
+                    vendedor = null;
                 }
                 else
                 {
@@ -81,13 +80,12 @@ namespace WebApiClientes.Services
                                             Convert.ToInt32(reader["pComissao"].ToString()!),
                                             reader["idVendedor"].ToString());
                 }
-                conn.Close();
 
                 return vendedor;
             }
-            catch
+            catch (Exception ex)
             {
-                return null!;
+                throw new Exception(ex.Message);
             }
             finally
             {
@@ -137,13 +135,12 @@ namespace WebApiClientes.Services
                                               reader["idVendedor"].ToString()));
                 }
 
-                conn.Close();
                 return vendedores;
 
             }
-            catch
+            catch (Exception ex)
             {
-                return null!;
+                throw new Exception(ex.Message);
             }
             finally
             {
@@ -193,9 +190,9 @@ namespace WebApiClientes.Services
                     return null!;
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                return null!;
+                throw new Exception(ex.Message);
             }
             finally
             {
@@ -246,9 +243,9 @@ namespace WebApiClientes.Services
                     return null!;
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                return null!;
+                throw new Exception(ex.Message);
             }
             finally
             {
@@ -321,13 +318,12 @@ namespace WebApiClientes.Services
                                               reader["idVendedor"].ToString()));
                 }
 
-                conn.Close();
                 return vendedores;
 
             }
-            catch
+            catch (Exception ex)
             {
-                return null!;
+                throw new Exception(ex.Message);
             }
             finally
             {

@@ -1,7 +1,7 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
 
-namespace WebApiClientes.Services
+namespace BlazorClientes.Shared.Utils
 {
     /// <summary>
     /// Serviço Destinado a fazer o Hash e verificar o Hash

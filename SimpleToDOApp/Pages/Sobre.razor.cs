@@ -7,12 +7,12 @@ namespace SimpleToDOApp.Pages
     {
         [CascadingParameter]
         protected UITheming? Theme { get; set; }
-        [Inject] private NavigationManager? nav { get; set; }
+        [Inject] private NavigationManager? Nav { get; set; }
 
         protected int Ano = DateTime.Now.Year;
         protected void Voltar()
         {
-            nav.NavigateTo("/", false);
+            Nav!.NavigateTo("/", false);
         }
     }
 }

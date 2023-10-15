@@ -19,7 +19,7 @@ namespace WebApiClientes.Services.Interfaces
         /// </summary>
         /// <param name="id">id</param>
         /// <returns>Retorna Produto</returns>
-        public Task<Produtos> GetProduto(string id);
+        public Task<Produtos?> GetProduto(string id);
 
         /// <summary>
         /// Insere novo Produto

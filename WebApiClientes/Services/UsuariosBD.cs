@@ -115,7 +115,6 @@ namespace WebApiClientes.Services
                                             reader["Senha"].ToString()!,
                                             reader["TipoConta"].ToString()!);
                 }
-                conn.Close();
 
                 return usuario;
             }
@@ -149,9 +148,9 @@ namespace WebApiClientes.Services
                     return true;
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                return false!;
+                throw new Exception(ex.Message);
             }
             finally
             {
@@ -226,7 +225,6 @@ namespace WebApiClientes.Services
                         Pais = reader["Pais"].ToString()
                     };
                 }
-                conn.Close();
 
                 return usuario;
             }
@@ -269,9 +267,9 @@ namespace WebApiClientes.Services
                     return false; 
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                return false;
+                throw new Exception(ex.Message);
             }
             finally
             {
@@ -308,9 +306,9 @@ namespace WebApiClientes.Services
                     return false;
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                return false;
+                throw new Exception(ex.Message);
             }
             finally
             {

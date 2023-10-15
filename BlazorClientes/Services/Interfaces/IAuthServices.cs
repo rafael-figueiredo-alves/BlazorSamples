@@ -1,6 +1,6 @@
 ﻿using BlazorClientes.Shared.Entities;
 
-namespace BlazorClientes.Services
+namespace BlazorClientes.Services.Interfaces
 {
     public interface IAuthServices
     {

@@ -1,4 +1,4 @@
-﻿namespace BlazorClientes.Services
+﻿namespace BlazorClientes.Services.Interfaces
 {
     public interface IParamService
     {

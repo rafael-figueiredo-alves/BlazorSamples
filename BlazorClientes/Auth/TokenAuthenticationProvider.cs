@@ -1,4 +1,4 @@
-﻿using BlazorClientes.Services;
+﻿using BlazorClientes.Services.Interfaces;
 using Microsoft.AspNetCore.Components.Authorization;
 using System.Net.Http.Headers;
 using System.Security.Claims;

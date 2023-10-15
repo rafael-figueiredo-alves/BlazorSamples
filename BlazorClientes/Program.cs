@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Blazored.Toast;
+using BlazorClientes.Services.Interfaces;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -30,5 +31,8 @@ builder.Services.AddScoped<ILocalStorage, LocalStorage>();
 builder.Services.AddBlazoredToast();
 
 builder.Services.AddScoped<IParamService, ParamService>();
+
+//Serviços relacionados a API
+builder.Services.AddScoped<IClientes, ClientesService>();
 
 await builder.Build().RunAsync();

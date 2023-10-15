@@ -40,13 +40,12 @@ namespace WebApiClientes.Services
                 sql = "delete from pedidos where idPedido = @id";
                 cmd.CommandText = sql;
                 var ResultSet_Pedidos = await cmd.ExecuteNonQueryAsync();
-                conn.Close();
 
                 return ((!ResultSet_ItensPedido.Equals(0)) && (!ResultSet_Pedidos.Equals(0)));
             }
-            catch
+            catch (Exception ex)
             {
-                return false;
+                throw new Exception(ex.Message);
             }
             finally
             {
@@ -59,12 +58,12 @@ namespace WebApiClientes.Services
         /// </summary>
         /// <param name="id"></param>
         /// <returns>Pedido</returns>
-        public async Task<Pedidos> GetPedido(string id)
+        public async Task<Pedidos?> GetPedido(string id)
         {
             MySqlConnection? conn = null;
             try
             {
-                Pedidos pedido;
+                Pedidos? pedido;
 
                 conn = new MySqlConnection(Conn);
                 conn.Open();
@@ -74,7 +73,7 @@ namespace WebApiClientes.Services
                 var reader = await cmd.ExecuteReaderAsync();
                 if (!reader.HasRows)
                 {
-                    pedido = new Pedidos();
+                    pedido = null;
                 }
                 else
                 {
@@ -111,13 +110,12 @@ namespace WebApiClientes.Services
                             ));
                     }
                 }
-                conn.Close();
 
                 return pedido;
             }
-            catch
+            catch (Exception ex)
             {
-                return null!;
+                throw new Exception(ex.Message);
             }
             finally
             {
@@ -197,7 +195,6 @@ namespace WebApiClientes.Services
                     pedidos.Add(pedido);
                 }
 
-                conn.Close();
                 return pedidos;
 
             }
@@ -205,9 +202,9 @@ namespace WebApiClientes.Services
             {
                 return pedidos;
             }
-            catch
+            catch (Exception ex)
             {
-                return null!;
+                throw new Exception(ex.Message);
             }
             finally
             {
@@ -256,9 +253,9 @@ namespace WebApiClientes.Services
                 
                 return await GetPedido(pedido.idCliente!);
             }
-            catch
+            catch (Exception ex)
             {
-                return null!;
+                throw new Exception(ex.Message);
             }
             finally
             {
@@ -323,9 +320,9 @@ namespace WebApiClientes.Services
 
                 return await GetPedido(pedido.idCliente!);
             }
-            catch
+            catch (Exception ex)
             {
-                return null!;
+                throw new Exception(ex.Message);
             }
             finally
             {
@@ -364,13 +361,11 @@ namespace WebApiClientes.Services
                     var ResultSet = await cmd.ExecuteNonQueryAsync();
                 }
 
-                conn.Close();
-
                 return await GetPedido(ID);
             }
-            catch
+            catch (Exception ex)
             {
-                return null!;
+                throw new Exception(ex.Message);
             }
             finally
             {
@@ -454,7 +449,6 @@ namespace WebApiClientes.Services
                     pedidos.Add(pedido);
                 }
 
-                conn.Close();
                 return pedidos;
 
             }
@@ -462,9 +456,9 @@ namespace WebApiClientes.Services
             {
                 return pedidos;
             }
-            catch
+            catch (Exception ex)
             {
-                return null!;
+                throw new Exception(ex.Message);
             }
             finally
             {
@@ -546,7 +540,6 @@ namespace WebApiClientes.Services
                     pedidos.Add(pedido);
                 }
 
-                conn.Close();
                 return pedidos;
 
             }
@@ -554,9 +547,9 @@ namespace WebApiClientes.Services
             {
                 return pedidos;
             }
-            catch
+            catch (Exception ex)
             {
-                return null!;
+                throw new Exception(ex.Message);
             }
             finally
             {
@@ -639,7 +632,6 @@ namespace WebApiClientes.Services
                     pedidos.Add(pedido);
                 }
 
-                conn.Close();
                 return pedidos;
 
             }
@@ -647,9 +639,9 @@ namespace WebApiClientes.Services
             {
                 return pedidos;
             }
-            catch
+            catch (Exception ex)
             {
-                return null!;
+                throw new Exception(ex.Message);
             }
             finally
             {

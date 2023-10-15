@@ -1,4 +1,6 @@
-﻿namespace BlazorClientes.Services
+﻿using BlazorClientes.Services.Interfaces;
+
+namespace BlazorClientes.Services
 {
     public class ParamService : IParamService
     {

@@ -1,8 +1,8 @@
 ﻿using BlazorClientes.Auth;
 using BlazorClientes.Shared.Entities;
-using BlazorClientes.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
+using BlazorClientes.Services.Interfaces;
 
 namespace BlazorClientes.Shared.Components
 {

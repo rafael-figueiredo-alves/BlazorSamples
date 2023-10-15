@@ -37,13 +37,12 @@ namespace WebApiClientes.Services
                 var cmd = new MySqlCommand(sql, conn);
                 cmd.Parameters.Add(new MySqlParameter("id", id));
                 var ResultSet = await cmd.ExecuteNonQueryAsync();
-                conn.Close();
 
                 return (!ResultSet.Equals(0));
             }
-            catch
+            catch (Exception ex)
             {
-                return false;
+                throw new Exception(ex.Message);
             }
             finally
             {
@@ -56,12 +55,12 @@ namespace WebApiClientes.Services
         /// </summary>
         /// <param name="id"></param>
         /// <returns>Produto</returns>
-        public async Task<Produtos> GetProduto(string id)
+        public async Task<Produtos?> GetProduto(string id)
         {
             MySqlConnection? conn = null;
             try
             {
-                Produtos produto;
+                Produtos? produto;
 
                 conn = new MySqlConnection(Conn);
                 conn.Open();
@@ -71,7 +70,7 @@ namespace WebApiClientes.Services
                 var reader = await cmd.ExecuteReaderAsync();
                 if (!reader.HasRows)
                 {
-                    produto = new Produtos();
+                    produto = null;
                 }
                 else
                 {
@@ -83,13 +82,12 @@ namespace WebApiClientes.Services
                                             reader["Barcode"].ToString()!,
                                             reader["idProduto"].ToString());
                 }
-                conn.Close();
 
                 return produto;
             }
-            catch
+            catch (Exception ex)
             {
-                return null!;
+                throw new Exception(ex.Message);
             }
             finally
             {
@@ -141,13 +139,12 @@ namespace WebApiClientes.Services
                                               reader["idProduto"].ToString()));
                 }
 
-                conn.Close();
                 return produtos;
 
             }
-            catch
+            catch (Exception ex)
             {
-                return null!;
+                throw new Exception(ex.Message);
             }
             finally
             {
@@ -201,9 +198,9 @@ namespace WebApiClientes.Services
                     return null!;
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                return null!;
+                throw new Exception(ex.Message);
             }
             finally
             {
@@ -258,9 +255,9 @@ namespace WebApiClientes.Services
                     return null!;
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                return null!;
+                throw new Exception(ex.Message);
             }
             finally
             {
@@ -340,13 +337,12 @@ namespace WebApiClientes.Services
                                               reader["idProduto"].ToString()));
                 }
 
-                conn.Close();
                 return produtos;
 
             }
-            catch
+            catch (Exception ex)
             {
-                return null!;
+                throw new Exception(ex.Message);
             }
             finally
             {

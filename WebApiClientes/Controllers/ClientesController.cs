@@ -1,4 +1,5 @@
 ﻿using BlazorClientes.Shared.Entities;
+using BlazorClientes.Shared.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Mime;
@@ -19,6 +20,7 @@ namespace WebApiClientes.Controllers
     {
         private readonly IClientes fclientes = new ClientesBD();
 
+        #region Read endpoints
         /// <summary>
         /// Retorna uma lista com todos os clientes cadastrados no sistema
         /// </summary>
@@ -139,43 +141,57 @@ namespace WebApiClientes.Controllers
         {
             string dataHash;
 
-            var clientes = await fclientes.GetCliente(id);
-
-            dataHash = HashMD5.Hash(JsonSerializer.Serialize(clientes));
-
-            if ((!string.IsNullOrEmpty(Request.Headers.IfNoneMatch)) && (HashMD5.VerifyETag(Request.Headers.IfNoneMatch!, dataHash)))
+            try
             {
-                return StatusCode(StatusCodes.Status304NotModified, null);
-            }
-            else
-            {
-                try
+                var clientes = await fclientes.GetCliente(id);
+
+                if(clientes == null)
                 {
-                    if (clientes != null)
+                    return NotFound(new Erro("Cliente não encontrado.", "Cliente solicitado não foi encontrado na base de dados."));
+                }
+
+                dataHash = HashMD5.Hash(JsonSerializer.Serialize(clientes));
+
+                if ((!string.IsNullOrEmpty(Request.Headers.IfNoneMatch)) && (HashMD5.VerifyETag(Request.Headers.IfNoneMatch!, dataHash)))
+                {
+                    return StatusCode(StatusCodes.Status304NotModified, null);
+                }
+                else
+                {
+                    try
                     {
-                        if ((clientes.Nome != null) && (clientes.Endereco != null) && (clientes.Telefone != null)
-                             && (clientes.Celular != null) && (clientes.Email != null))
+                        if (clientes != null)
                         {
-                            return Ok(clientes);
+                            if ((clientes.Nome != null) && (clientes.Endereco != null) && (clientes.Telefone != null)
+                                 && (clientes.Celular != null) && (clientes.Email != null))
+                            {
+                                return Ok(clientes);
+                            }
+                            else
+                            {
+                                return NotFound(new Erro("Nenhum cliente encontrado", "O ID informado não retornou cliente algum. Tente um outro ID."));
+                            }
                         }
                         else
                         {
-                            return NotFound(new Erro("Nenhum cliente encontrado", "O ID informado não retornou cliente algum. Tente um outro ID."));
+                            return StatusCode(500, new Erro("Houve um erro interno com o servidor",
+                                                            "Ocorreu um problema inesperado em nosso servidor, tente acessar nossa API mais tarde."));
                         }
                     }
-                    else
+                    catch (Exception ex)
                     {
-                        return StatusCode(500, new Erro("Houve um erro interno com o servidor",
-                                                        "Ocorreu um problema inesperado em nosso servidor, tente acessar nossa API mais tarde."));
+                        return StatusCode(500, new Erro("Houve um erro interno com o servidor", ex.Message));
                     }
                 }
-                catch (Exception ex)
-                {
-                    return StatusCode(500, new Erro("Houve um erro interno com o servidor", ex.Message));
-                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new Erro("Houve um erro interno com o servidor", ex.Message));
             }
         }
+        #endregion
 
+        #region Insert/Update/Delete Endpoints
         /// <summary>
         /// Utilize este Endpoint para criar um novo cliente
         /// </summary>
@@ -223,6 +239,7 @@ namespace WebApiClientes.Controllers
         /// <returns>Dados do cliente atualizado</returns>
         /// <response code="200">Dados atualizados com sucesso</response>
         /// <response code="400">Ocorreu um erro com os dados informados que não são válidos</response>
+        /// <response code="412">Entidade informada não corresponde a entidade encontrada no banco de dados</response>
         /// <response code="500">Ocorreu um erro inesperado no servidor</response>
         [HttpPut("{id}")]
         [Consumes(MediaTypeNames.Application.Json)]
@@ -230,9 +247,30 @@ namespace WebApiClientes.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesErrorResponseType(typeof(Erro))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status412PreconditionFailed)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<Clientes>> PutCliente(string id, [FromBody]Clientes cliente)
         {
+            if (!string.IsNullOrEmpty(Request.Headers.IfMatch))
+            {
+                string dataHash;
+
+                var Clientes = await fclientes.GetCliente(id);
+
+                if (Clientes == null)
+                {
+                    return NotFound(new Erro("Cliente não encontrado!", "Cliente que foi solicitado alteração não foi encontrado na base de dados."));
+                }
+
+                dataHash = HashMD5.Hash(JsonSerializer.Serialize(Clientes));
+
+                if ((!string.IsNullOrEmpty(Request.Headers.IfMatch)) && (!HashMD5.VerifyETag(Request.Headers.IfMatch!, dataHash)))
+                {
+                    return StatusCode(StatusCodes.Status412PreconditionFailed, new Erro("Não foi possível alterar cliente", "O cliente que foi solicitado alteração não corresponde com a entidade encontrada no banco de dados. Não é possível alterar cliente."));
+                }
+            }
+
+
             var clientes = await fclientes.PutCliente(cliente, id);
             try
             {
@@ -259,6 +297,7 @@ namespace WebApiClientes.Controllers
         /// <returns>Não retorna conteúdo, apenas status code = 204</returns>
         /// <response code="204">Cliente apagado com sucesso</response>
         /// <response code="400">Ocorreu um erro com os dados informados que não são válidos</response>
+        /// <response code="412">Entidade encontrada nãom corresponde com entidade informada</response>
         /// <response code="500">Ocorreu um erro inesperado no servidor</response>
         [HttpDelete("{id}")]
         [Consumes(MediaTypeNames.Application.Json)]
@@ -266,9 +305,29 @@ namespace WebApiClientes.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesErrorResponseType(typeof(Erro))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status412PreconditionFailed)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> DeleteCliente(string id)
         {
+            if(!string.IsNullOrEmpty(Request.Headers.IfMatch))
+            {
+                string dataHash;
+
+                var clientes = await fclientes.GetCliente(id);
+
+                if(clientes == null)
+                {
+                    return NotFound(new Erro("Cliente não encontrado!", "Cliente que foi solicitado remoção não foi encontrado na base de dados."));
+                }
+
+                dataHash = HashMD5.Hash(JsonSerializer.Serialize(clientes));
+
+                if ((!string.IsNullOrEmpty(Request.Headers.IfMatch)) && (!HashMD5.VerifyETag(Request.Headers.IfMatch!, dataHash)))
+                {
+                    return StatusCode(StatusCodes.Status412PreconditionFailed, new Erro("Não foi possível apagar cliente", "O cliente que foi solicitada remoção não corresponde com a entidade encontrada no banco de dados. Não é possível apagar cliente."));
+                }
+            }
+
             bool Apagou = await fclientes.DeleteCliente(id);
             try
             {
@@ -286,5 +345,6 @@ namespace WebApiClientes.Controllers
                 return StatusCode(500, new Erro("Houve um erro interno com o servidor", ex.Message));
             }
         }
+        #endregion
     }
 }

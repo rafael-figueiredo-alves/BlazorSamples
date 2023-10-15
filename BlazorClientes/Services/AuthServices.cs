@@ -1,4 +1,5 @@
 ﻿using BlazorClientes.Auth;
+using BlazorClientes.Services.Interfaces;
 using BlazorClientes.Shared.Entities;
 using Blazored.Toast.Services;
 using Microsoft.AspNetCore.Components;
@@ -274,9 +275,9 @@ namespace BlazorClientes.Services
                     Toast.ShowError(jsonResult!.Info!);
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                Toast.ShowError("Ocorreu um erro inesperado! Tente novamente.");
+                Toast.ShowError("Ocorreu um erro inesperado! Tente novamente." + Environment.NewLine + ex.Message);
             }
         }
     }

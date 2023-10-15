@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using BlazorClientes.Shared.Entities;
-using BlazorClientes.Services;
+using BlazorClientes.Services.Interfaces;
 
 namespace BlazorClientes.Pages.Account
 {

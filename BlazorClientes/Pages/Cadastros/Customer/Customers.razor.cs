@@ -1,4 +1,4 @@
-﻿using BlazorClientes.Services;
+﻿using BlazorClientes.Services.Interfaces;
 using BlazorClientes.Shared.Entities;
 using Microsoft.AspNetCore.Components;
 

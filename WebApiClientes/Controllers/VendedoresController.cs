@@ -1,4 +1,5 @@
 ﻿using BlazorClientes.Shared.Entities;
+using BlazorClientes.Shared.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Mime;
@@ -19,6 +20,7 @@ namespace WebApiClientes.Controllers
     {
         private readonly IVendedores fvendedores = new VendedoresBD();
 
+        #region Read Endpoints
         /// <summary>
         /// Retorna uma lista com todos os vendedores cadastrados no sistema
         /// </summary>
@@ -209,6 +211,7 @@ namespace WebApiClientes.Controllers
         /// <returns>Dados do vendedor atualizado</returns>
         /// <response code="200">Dados atualizados com sucesso</response>
         /// <response code="400">Ocorreu um erro com os dados informados que não são válidos</response>
+        /// <response code="412">Vendedor informado não corresponde a entidade encontrada</response>
         /// <response code="500">Ocorreu um erro inesperado no servidor</response>
         [HttpPut("{id}")]
         [Consumes(MediaTypeNames.Application.Json)]
@@ -216,9 +219,29 @@ namespace WebApiClientes.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesErrorResponseType(typeof(Erro))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status412PreconditionFailed)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<Vendedores>> PutVendedor(string id, [FromBody] Vendedores vendedor)
         {
+            if (!string.IsNullOrEmpty(Request.Headers.IfMatch))
+            {
+                string dataHash;
+
+                var Vendedor = await fvendedores.GetVendedor(id);
+
+                if (Vendedor == null)
+                {
+                    return NotFound(new Erro("Vendedor não encontrado!", "Vendedor que foi solicitado alteração não foi encontrado na base de dados."));
+                }
+
+                dataHash = HashMD5.Hash(JsonSerializer.Serialize(Vendedor));
+
+                if ((!string.IsNullOrEmpty(Request.Headers.IfMatch)) && (!HashMD5.VerifyETag(Request.Headers.IfMatch!, dataHash)))
+                {
+                    return StatusCode(StatusCodes.Status412PreconditionFailed, new Erro("Não foi possível alterar vendedor", "O venbdedor que foi solicitado alteração não corresponde com a entidade encontrada no banco de dados. Não é possível alterar vendedor."));
+                }
+            }
+
             var vendedores = await fvendedores.PutVendedor(vendedor, id);
             try
             {
@@ -245,6 +268,7 @@ namespace WebApiClientes.Controllers
         /// <returns>Não retorna conteúdo, apenas status code = 204</returns>
         /// <response code="204">Vendedor apagado com sucesso</response>
         /// <response code="400">Ocorreu um erro com os dados informados que não são válidos</response>
+        /// <response code="412">Vendedor informado não corresponde a entidade encontrada</response>
         /// <response code="500">Ocorreu um erro inesperado no servidor</response>
         [HttpDelete("{id}")]
         [Consumes(MediaTypeNames.Application.Json)]
@@ -252,9 +276,29 @@ namespace WebApiClientes.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesErrorResponseType(typeof(Erro))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status412PreconditionFailed)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> DeleteVendedor(string id)
         {
+            if (!string.IsNullOrEmpty(Request.Headers.IfMatch))
+            {
+                string dataHash;
+
+                var Vendedor = await fvendedores.GetVendedor(id);
+
+                if (Vendedor == null)
+                {
+                    return NotFound(new Erro("Vendedor não encontrado!", "Vendedor que foi solicitado remoção não foi encontrado na base de dados."));
+                }
+
+                dataHash = HashMD5.Hash(JsonSerializer.Serialize(Vendedor));
+
+                if ((!string.IsNullOrEmpty(Request.Headers.IfMatch)) && (!HashMD5.VerifyETag(Request.Headers.IfMatch!, dataHash)))
+                {
+                    return StatusCode(StatusCodes.Status412PreconditionFailed, new Erro("Não foi possível apagar vendedor", "O vendedor que foi solicitada remoção não corresponde com a entidade encontrada no banco de dados. Não é possível apagar vendedor."));
+                }
+            }
+
             bool Apagou = await fvendedores.DeleteVendedor(id);
             try
             {
