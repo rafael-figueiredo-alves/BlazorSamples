@@ -270,10 +270,9 @@ namespace WebApiClientes.Controllers
                 }
             }
 
-
-            var clientes = await fclientes.PutCliente(cliente, id);
             try
             {
+                var clientes = await fclientes.PutCliente(cliente, id);
                 if (clientes != null)
                 {
                     return Ok(clientes);
@@ -328,9 +327,10 @@ namespace WebApiClientes.Controllers
                 }
             }
 
-            bool Apagou = await fclientes.DeleteCliente(id);
+            
             try
             {
+                bool Apagou = await fclientes.DeleteCliente(id);
                 if (Apagou)
                 {
                     return NoContent();

@@ -20,6 +20,7 @@ namespace WebApiClientes.Controllers
     {
         private readonly IProdutos fprodutos = new ProdutosBD();
 
+        #region Read Endpoints
         /// <summary>
         /// Retorna uma lista com todos os produtos cadastrados no sistema
         /// </summary>
@@ -162,7 +163,9 @@ namespace WebApiClientes.Controllers
                 return StatusCode(500, new Erro("Houve um erro interno com o servidor", ex.Message));
             }
         }
+        #endregion
 
+        #region Insert/Update/Delete endpoints
         /// <summary>
         /// Utilize este Endpoint para criar um novo produto
         /// </summary>
@@ -210,6 +213,7 @@ namespace WebApiClientes.Controllers
         /// <returns>Dados do produto atualizado</returns>
         /// <response code="200">Dados atualizados com sucesso</response>
         /// <response code="400">Ocorreu um erro com os dados informados que não são válidos</response>
+        /// <response code="412">Produto informado não corresponde a entidade encontrada</response>
         /// <response code="500">Ocorreu um erro inesperado no servidor</response>
         [HttpPut("{id}")]
         [Consumes(MediaTypeNames.Application.Json)]
@@ -217,12 +221,32 @@ namespace WebApiClientes.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesErrorResponseType(typeof(Erro))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status412PreconditionFailed)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<Produtos>> PutProduto(string id, [FromBody] Produtos produto)
         {
-            var produtos = await fprodutos.PutProduto(produto, id);
+            if (!string.IsNullOrEmpty(Request.Headers.IfMatch))
+            {
+                string dataHash;
+
+                var Produto = await fprodutos.GetProduto(id);
+
+                if (Produto == null)
+                {
+                    return NotFound(new Erro("Produto não encontrado!", "Produto que foi solicitado alteração não foi encontrado na base de dados."));
+                }
+
+                dataHash = HashMD5.Hash(JsonSerializer.Serialize(Produto));
+
+                if ((!string.IsNullOrEmpty(Request.Headers.IfMatch)) && (!HashMD5.VerifyETag(Request.Headers.IfMatch!, dataHash)))
+                {
+                    return StatusCode(StatusCodes.Status412PreconditionFailed, new Erro("Não foi possível alterar produto", "O produto que foi solicitado alteração não corresponde com a entidade encontrada no banco de dados. Não é possível alterar produto."));
+                }
+            }
+            
             try
             {
+                var produtos = await fprodutos.PutProduto(produto, id);
                 if (produtos != null)
                 {
                     return Ok(produtos);
@@ -246,6 +270,7 @@ namespace WebApiClientes.Controllers
         /// <returns>Não retorna conteúdo, apenas status code = 204</returns>
         /// <response code="204">Produto apagado com sucesso</response>
         /// <response code="400">Ocorreu um erro com os dados informados que não são válidos</response>
+        /// <response code="412">Produto informado não corresponde a entidade encontrada</response>
         /// <response code="500">Ocorreu um erro inesperado no servidor</response>
         [HttpDelete("{id}")]
         [Consumes(MediaTypeNames.Application.Json)]
@@ -253,12 +278,33 @@ namespace WebApiClientes.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesErrorResponseType(typeof(Erro))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status412PreconditionFailed)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> DeleteProduto(string id)
         {
-            bool Apagou = await fprodutos.DeleteProduto(id);
+            if (!string.IsNullOrEmpty(Request.Headers.IfMatch))
+            {
+                string dataHash;
+
+                var Produto = await fprodutos.GetProduto(id);
+
+                if (Produto == null)
+                {
+                    return NotFound(new Erro("Produto não encontrado!", "Produto que foi solicitado remoção não foi encontrado na base de dados."));
+                }
+
+                dataHash = HashMD5.Hash(JsonSerializer.Serialize(Produto));
+
+                if ((!string.IsNullOrEmpty(Request.Headers.IfMatch)) && (!HashMD5.VerifyETag(Request.Headers.IfMatch!, dataHash)))
+                {
+                    return StatusCode(StatusCodes.Status412PreconditionFailed, new Erro("Não foi possível apagar produto", "O produto que foi solicitada remoção não corresponde com a entidade encontrada no banco de dados. Não é possível apagar produto."));
+                }
+            }
+
+            
             try
             {
+                bool Apagou = await fprodutos.DeleteProduto(id);
                 if (Apagou)
                 {
                     return NoContent();
@@ -273,5 +319,6 @@ namespace WebApiClientes.Controllers
                 return StatusCode(500, new Erro("Houve um erro interno com o servidor", ex.Message));
             }
         }
+        #endregion
     }
 }

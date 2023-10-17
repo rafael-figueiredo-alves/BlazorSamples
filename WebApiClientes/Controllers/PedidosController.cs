@@ -20,6 +20,7 @@ namespace WebApiClientes.Controllers
     {
         private readonly IPedidos fpedidos = new PedidosBD();
 
+        #region Read Endpoints
         /// <summary>
         /// Retorna uma lista com todos os pedidos cadastrados no sistema
         /// </summary>
@@ -172,7 +173,9 @@ namespace WebApiClientes.Controllers
                 return StatusCode(500, new Erro("Houve um erro interno com o servidor", ex.Message));
             }
         }
+        #endregion
 
+        #region Insert/Update/Delete endpoints
         /// <summary>
         /// Utilize este Endpoint para criar um novo pedido
         /// </summary>
@@ -220,6 +223,7 @@ namespace WebApiClientes.Controllers
         /// <returns>Dados do pedido atualizado</returns>
         /// <response code="200">Dados atualizados com sucesso</response>
         /// <response code="400">Ocorreu um erro com os dados informados que não são válidos</response>
+        /// <response code="412">Pedido informado não corresponde a entidade encontrada</response>
         /// <response code="500">Ocorreu um erro inesperado no servidor</response>
         [HttpPut("{id}")]
         [Consumes(MediaTypeNames.Application.Json)]
@@ -227,12 +231,32 @@ namespace WebApiClientes.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesErrorResponseType(typeof(Erro))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status412PreconditionFailed)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<Pedidos>> PutPedido(string id, [FromBody] Pedidos pedido)
         {
-            var pedidos = await fpedidos.PutPedido(pedido, id);
+            if (!string.IsNullOrEmpty(Request.Headers.IfMatch))
+            {
+                string dataHash;
+
+                var Pedido = await fpedidos.GetPedido(id);
+
+                if (Pedido == null)
+                {
+                    return NotFound(new Erro("Pedido não encontrado!", "Pedido que foi solicitado alteração não foi encontrado na base de dados."));
+                }
+
+                dataHash = HashMD5.Hash(JsonSerializer.Serialize(Pedido));
+
+                if ((!string.IsNullOrEmpty(Request.Headers.IfMatch)) && (!HashMD5.VerifyETag(Request.Headers.IfMatch!, dataHash)))
+                {
+                    return StatusCode(StatusCodes.Status412PreconditionFailed, new Erro("Não foi possível alterar pedido", "O pedido que foi solicitado alteração não corresponde com a entidade encontrada no banco de dados. Não é possível alterar pedido."));
+                }
+            }
+
             try
             {
+                var pedidos = await fpedidos.PutPedido(pedido, id);
                 if (pedidos != null)
                 {
                     if (pedidos.isNewRecord)
@@ -268,12 +292,33 @@ namespace WebApiClientes.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesErrorResponseType(typeof(Erro))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status412PreconditionFailed)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> DeletePedido(string id)
         {
-            bool Apagou = await fpedidos.DeletePedido(id);
+            if (!string.IsNullOrEmpty(Request.Headers.IfMatch))
+            {
+                string dataHash;
+
+                var Pedido = await fpedidos.GetPedido(id);
+
+                if (Pedido == null)
+                {
+                    return NotFound(new Erro("Pedido não encontrado!", "Pedido que foi solicitado alteração não foi encontrado na base de dados."));
+                }
+
+                dataHash = HashMD5.Hash(JsonSerializer.Serialize(Pedido));
+
+                if ((!string.IsNullOrEmpty(Request.Headers.IfMatch)) && (!HashMD5.VerifyETag(Request.Headers.IfMatch!, dataHash)))
+                {
+                    return StatusCode(StatusCodes.Status412PreconditionFailed, new Erro("Não foi possível alterar pedido", "O pedido que foi solicitado alteração não corresponde com a entidade encontrada no banco de dados. Não é possível alterar pedido."));
+                }
+            }
+
+            
             try
             {
+                bool Apagou = await fpedidos.DeletePedido(id);
                 if (Apagou)
                 {
                     return NoContent();
@@ -304,12 +349,33 @@ namespace WebApiClientes.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesErrorResponseType(typeof(Erro))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status412PreconditionFailed)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<Pedidos>> PutPedido([FromQuery] string id, string pedidoStatus)
         {
-            var pedidos = await fpedidos.SetPedidoStatus(id, pedidoStatus);
+            if (!string.IsNullOrEmpty(Request.Headers.IfMatch))
+            {
+                string dataHash;
+
+                var Pedido = await fpedidos.GetPedido(id);
+
+                if (Pedido == null)
+                {
+                    return NotFound(new Erro("Pedido não encontrado!", "Pedido que foi solicitado alteração não foi encontrado na base de dados."));
+                }
+
+                dataHash = HashMD5.Hash(JsonSerializer.Serialize(Pedido));
+
+                if ((!string.IsNullOrEmpty(Request.Headers.IfMatch)) && (!HashMD5.VerifyETag(Request.Headers.IfMatch!, dataHash)))
+                {
+                    return StatusCode(StatusCodes.Status412PreconditionFailed, new Erro("Não foi possível alterar pedido", "O pedido que foi solicitado alteração não corresponde com a entidade encontrada no banco de dados. Não é possível alterar pedido."));
+                }
+            }
+
+            
             try
             {
+                var pedidos = await fpedidos.SetPedidoStatus(id, pedidoStatus);
                 if (pedidos != null)
                 {
                     if(pedidos.isNewRecord)
@@ -330,5 +396,6 @@ namespace WebApiClientes.Controllers
                 return StatusCode(500, new Erro("Houve um erro interno com o servidor", ex.Message));
             }
         }
+        #endregion
     }
 }

@@ -163,7 +163,9 @@ namespace WebApiClientes.Controllers
                 return StatusCode(500, new Erro("Houve um erro interno com o servidor", ex.Message));
             }
         }
+        #endregion
 
+        #region Insert/Update/Delete Endpoints
         /// <summary>
         /// Utilize este Endpoint para criar um novo vendedor
         /// </summary>
@@ -242,9 +244,10 @@ namespace WebApiClientes.Controllers
                 }
             }
 
-            var vendedores = await fvendedores.PutVendedor(vendedor, id);
+            
             try
             {
+                var vendedores = await fvendedores.PutVendedor(vendedor, id);
                 if (vendedores != null)
                 {
                     return Ok(vendedores);
@@ -299,9 +302,10 @@ namespace WebApiClientes.Controllers
                 }
             }
 
-            bool Apagou = await fvendedores.DeleteVendedor(id);
+            
             try
             {
+                bool Apagou = await fvendedores.DeleteVendedor(id);
                 if (Apagou)
                 {
                     return NoContent();
@@ -316,5 +320,6 @@ namespace WebApiClientes.Controllers
                 return StatusCode(500, new Erro("Houve um erro interno com o servidor", ex.Message));
             }
         }
+        #endregion
     }
 }
