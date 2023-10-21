@@ -44,6 +44,7 @@ namespace WebApiClientes.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<List<Clientes>>> Get([FromQuery] FiltrosCliente? FiltrarPor, string? Termo, int? Pagina, int? QtdRegistrosPorPagina)
         {
+            Response.Headers.Add("Access-Control-Expose-Headers", "ETag,AppName,Version,PageNumber,PageSize,TotalRecords,TotalPages");
             Response.Headers.Add("AppName", "Web Api Clientes");
             Response.Headers.Add("Version", "1.0.0");
 
@@ -82,7 +83,9 @@ namespace WebApiClientes.Controllers
                 Response.Headers.Add("TotalRecords", Page.TotalRecords.ToString());
                 Response.Headers.Add("TotalPages", Page.TotalPages.ToString());
                 //Serializar e enviar o Hash no etag
-                Response.Headers.ETag = dataHash;
+                HttpContext.Response.Headers.ETag = dataHash;
+
+                //HttpContext.Response.Headers.Add("Access-Control-Expose-Headers", "PageNumber,PageSize,TotalRecords,TotalPages");
                 return StatusCode(StatusCodes.Status304NotModified, null);
             }
             else

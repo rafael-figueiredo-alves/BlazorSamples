@@ -1,11 +1,9 @@
-﻿using BlazorClientes.Auth;
-using BlazorClientes.Services.Interfaces;
+﻿using BlazorClientes.Services.Interfaces;
 using BlazorClientes.Shared.Entities;
+using BlazorClientes.Shared.Entities.PageResults;
 using Blazored.Toast.Services;
 using Microsoft.AspNetCore.Components;
-using static System.Net.WebRequestMethods;
 using System.Text.Json;
-using BlazorClientes.Shared.Entities.PageResults;
 
 namespace BlazorClientes.Services
 {
@@ -43,7 +41,8 @@ namespace BlazorClientes.Services
         {
             try
             {
-                var httpResponse = await Http!.GetAsync("api/v1/Clientes", HttpCompletionOption.ResponseContentRead);
+                Http!.DefaultRequestHeaders.Add("Access-Control-Allow-Headers", "*");
+                var httpResponse = await Http!.GetAsync("api/v1/Clientes?Pagina=" + Pagina.ToString() + "&QtdRegistrosPorPagina=" + QtdRegistrosPorPagina.ToString(), HttpCompletionOption.ResponseHeadersRead);
 
                 if (httpResponse.IsSuccessStatusCode)
                 {
@@ -52,11 +51,14 @@ namespace BlazorClientes.Services
                     var jsonResult = JsonSerializer.Deserialize<List<Clientes>?>(ResponseString, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
                     PageClientes? PageResult = new();
-                    var teste = httpResponse.Content.Headers.ToString();
+                    
                     PageResult.Clientes = jsonResult;
                     PageResult.Pagina = Pagina;
-                    PageResult.TotalPaginas = Convert.ToInt32(httpResponse.Headers.GetValues("TotalPages").First());
-                    PageResult.TotalRecords = Convert.ToInt32(httpResponse.Headers.GetValues("TotalRecords").First());
+                    var TotalPages = httpResponse.Headers.GetValues("TotalPages").First() ?? "0";
+                    var TotalRecords = httpResponse.Headers.GetValues("TotalRecords").First() ?? "0";
+                    PageResult.TotalPaginas = Convert.ToInt32(TotalPages);
+                    PageResult.TotalRecords = Convert.ToInt32(TotalRecords);
+                    PageResult.ETag = httpResponse.Headers.GetValues("ETag").First();
                     PageResult.Endpoint = Http!.BaseAddress!.ToString() + "api/v1/Clientes";
                     
 

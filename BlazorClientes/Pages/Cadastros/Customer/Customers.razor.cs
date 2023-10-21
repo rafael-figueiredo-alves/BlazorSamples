@@ -27,9 +27,7 @@ namespace BlazorClientes.Pages.Cadastros
             //Lista.Add(new Clientes("Jailza Alves", "Rua B, 16", "(11) 2309-0123", "(11) 95044-5876", "teacherdesk6@gmail.com"));
             //Lista.Add(new Clientes("Rafaela Alves", "Rua c, 16", "(11) 2309-0123", "(11) 95044-5876", "teacherdesk6@gmail.com"));
             //Lista.Add(new Clientes("Davi Alves", "Rua Francisco, 15", "(11) 2309-0123", "(11) 95044-5876", "teacherdesk6@gmail.com"));
-            PageClientes? Pagina = await Clientes!.GetClientes();
-            Lista = Pagina!.Clientes;
-            StateHasChanged();
+            GetPage(PaginaAtual);
         }
         
         protected void UpdateCliente(Clientes cliente)
@@ -40,6 +38,15 @@ namespace BlazorClientes.Pages.Cadastros
         protected void DeleteCliente(string? idCliente)
         {
 
+        }
+
+        protected async void GetPage(int Page)
+        {
+            PageClientes? Pagina = await Clientes!.GetClientes(Page, 1);
+            Lista = Pagina!.Clientes;
+            PaginaAtual = Page;
+            QuantidadeTotalPaginas = (int)Pagina!.TotalPaginas!;
+            StateHasChanged();
         }
     }
 }

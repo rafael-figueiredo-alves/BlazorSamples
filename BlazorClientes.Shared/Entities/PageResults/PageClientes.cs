@@ -12,6 +12,7 @@ namespace BlazorClientes.Shared.Entities.PageResults
         public int? Pagina { get; set; }
         public int? TotalPaginas { get; set;}
         public int? TotalRecords { get; set; }
+        public string? ETag { get; set; }
         public List<Clientes>? Clientes { get; set;}
     }
 }
