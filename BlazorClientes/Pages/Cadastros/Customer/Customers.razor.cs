@@ -17,16 +17,17 @@ namespace BlazorClientes.Pages.Cadastros
         [Inject] protected IClientes? Clientes { get; set; }
         #endregion
 
+        #region Variables
         protected List<Clientes>? Lista { get; set; } = new();
         protected int PaginaAtual { get; set; } = 1;
         protected int QuantidadeTotalPaginas { get; set; } = 1;
+        protected int ItensPorPagina { get; set; } = 10;
+        protected int Teste { get; set; } = 0;
+        #endregion
 
-        protected async override void OnInitialized()
+        #region Methods
+        protected override void OnInitialized()
         {
-            //Lista.Add(new Clientes("Rafael Alves", "Rua A, 16", "(11) 2309-0123", "(11) 95044-5876", "teacherdesk6@gmail.com"));
-            //Lista.Add(new Clientes("Jailza Alves", "Rua B, 16", "(11) 2309-0123", "(11) 95044-5876", "teacherdesk6@gmail.com"));
-            //Lista.Add(new Clientes("Rafaela Alves", "Rua c, 16", "(11) 2309-0123", "(11) 95044-5876", "teacherdesk6@gmail.com"));
-            //Lista.Add(new Clientes("Davi Alves", "Rua Francisco, 15", "(11) 2309-0123", "(11) 95044-5876", "teacherdesk6@gmail.com"));
             GetPage(PaginaAtual);
         }
         
@@ -35,18 +36,31 @@ namespace BlazorClientes.Pages.Cadastros
             ParamService!.setParam(cliente);
             NavigationManager!.NavigateTo("editcustomer");
         }
+
         protected void DeleteCliente(string? idCliente)
         {
 
         }
 
+        protected void onChange(ChangeEventArgs args)
+        {
+            Teste = Convert.ToInt32(args.Value!);
+        }
+
+        protected void OnChangeQtdItensPorPagina(ChangeEventArgs args)
+        {
+            ItensPorPagina = Convert.ToInt32(args.Value);
+            GetPage(PaginaAtual);
+        }
+
         protected async void GetPage(int Page)
         {
-            PageClientes? Pagina = await Clientes!.GetClientes(Page, 1);
+            PageClientes? Pagina = await Clientes!.GetClientes(Page, ItensPorPagina);
             Lista = Pagina!.Clientes;
             PaginaAtual = Page;
             QuantidadeTotalPaginas = (int)Pagina!.TotalPaginas!;
             StateHasChanged();
         }
+        #endregion
     }
 }

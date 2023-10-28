@@ -10,7 +10,9 @@ namespace BlazorClientes.Shared.Components
         [Parameter] public int PaginaAtual { get; set; } = 1;
         [Parameter] public int QuantidadeTotalPaginas { get; set; }
         [Parameter] public int Raio { get; set; } = 3;
+        [Parameter] public int QtdItensPorPagina { get; set; } = 10;
         [Parameter] public EventCallback<int> PaginaSelecionadaClick { get; set; }
+        [Parameter] public EventCallback<ChangeEventArgs> OnChangeQtdItensPorPagina { get; set; }
 
         protected List<LinkModel>? Links { get; set; }
 
@@ -33,6 +35,11 @@ namespace BlazorClientes.Shared.Components
             public int Page { get; set; }
             public bool Enabled { get; set; } = true;
             public bool Active { get; set; } = false;
+        }
+
+        protected async Task OnChangePageItens(ChangeEventArgs args)
+        {
+            await OnChangeQtdItensPorPagina.InvokeAsync(args);
         }
 
         protected async Task PaginaSelecionadaLink(LinkModel link)

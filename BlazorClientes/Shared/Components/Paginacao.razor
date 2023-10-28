@@ -1,7 +1,69 @@
 ﻿@inherits PaginacaoBase
 
-<nav aria-label="Paginacao" class="@Theme!.ColorClass">
-    <ul class="pagination justify-content-end @Theme!.ColorClass">
+<nav aria-label="Paginacao justify-content-end" class="@Theme!.ColorClass">
+
+    <div class="row">
+
+        <div class="col-3 col-sm-1  justify-content-end">
+        <select class="form-select" aria-label="Default select example" @onchange="@((ChangeEventArgs args) => OnChangePageItens(args))">
+            @if(QtdItensPorPagina == 5)
+            {
+                <option value=5 selected>5</option>           
+            }
+            else
+            {
+                <option value=5>5</option>
+            };
+
+            @if (QtdItensPorPagina == 10)
+            {
+                <option value=10 selected>10</option>
+            }
+            else
+            {
+                <option value=10>10</option>
+            };
+
+            @if(QtdItensPorPagina == 15)
+            {
+                <option value=15 selected>15</option>           
+            }
+            else
+            {
+                <option value=15>15</option>
+            };
+
+            @if(QtdItensPorPagina == 20)
+            {
+                <option value=20 selected>20</option>           
+            }
+            else
+            {
+                <option value=20>20</option>
+            };
+
+            @if(QtdItensPorPagina == 50)
+            {
+                <option value=50 selected>50</option>           
+            }
+            else
+            {
+                <option value=50>50</option>
+            };
+
+            @if(QtdItensPorPagina == 100)
+            {
+                <option value=100 selected>100</option>           
+            }
+            else
+            {
+                <option value=100>100</option>
+            };
+        </select>
+    </div>
+        <div class="col-6 col-sm-7"></div>
+    <div class="col-3 col-sm-4">
+    <ul class="pagination align-middle justify-content-end @Theme!.ColorClass">
         @foreach (LinkModel link in Links!)
         {
             <li @onclick="@(() => PaginaSelecionadaLink(link))"
@@ -11,4 +73,6 @@
             </li>
         }
     </ul>
+    </div>
+    </div>
 </nav>
