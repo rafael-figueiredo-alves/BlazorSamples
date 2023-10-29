@@ -42,11 +42,6 @@ namespace BlazorClientes.Pages.Cadastros
 
         }
 
-        protected void onChange(ChangeEventArgs args)
-        {
-            Teste = Convert.ToInt32(args.Value!);
-        }
-
         protected void OnChangeQtdItensPorPagina(ChangeEventArgs args)
         {
             ItensPorPagina = Convert.ToInt32(args.Value);

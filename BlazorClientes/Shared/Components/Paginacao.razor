@@ -4,7 +4,7 @@
 
     <div class="row">
 
-        <div class="col-3 col-sm-1  justify-content-end">
+        <div class="col-2">
         <select class="form-select" aria-label="Default select example" @onchange="@((ChangeEventArgs args) => OnChangePageItens(args))">
             @if(QtdItensPorPagina == 5)
             {
@@ -61,8 +61,8 @@
             };
         </select>
     </div>
-        <div class="col-6 col-sm-7"></div>
-    <div class="col-3 col-sm-4">
+        <div class="col-5"></div>
+    <div class="col-5">
     <ul class="pagination align-middle justify-content-end @Theme!.ColorClass">
         @foreach (LinkModel link in Links!)
         {
