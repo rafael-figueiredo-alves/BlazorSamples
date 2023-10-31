@@ -1,4 +1,5 @@
 ﻿using BlazorClientes.Services.Interfaces;
+using BlazorClientes.Shared.Components;
 using BlazorClientes.Shared.Entities;
 using BlazorClientes.Shared.Entities.PageResults;
 using Microsoft.AspNetCore.Components;
@@ -23,6 +24,7 @@ namespace BlazorClientes.Pages.Cadastros
         protected int QuantidadeTotalPaginas { get; set; } = 1;
         protected int ItensPorPagina { get; set; } = 10;
         protected int Teste { get; set; } = 0;
+        protected ConfirmDlg? MsgDelete { get; set; }
         #endregion
 
         #region Methods
@@ -37,7 +39,12 @@ namespace BlazorClientes.Pages.Cadastros
             NavigationManager!.NavigateTo("editcustomer");
         }
 
-        protected void DeleteCliente(string? idCliente)
+        protected void DeleteCliente(Clientes Cliente)
+        {
+            MsgDelete!.Exibe();
+        }
+
+        protected void ConfirmDeleteCliente()
         {
 
         }

@@ -3,6 +3,7 @@ using BlazorClientes.Shared.Entities;
 using BlazorClientes.Shared.Entities.PageResults;
 using Blazored.Toast.Services;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Http;
 using System.Text.Json;
 
 namespace BlazorClientes.Services
@@ -64,6 +65,21 @@ namespace BlazorClientes.Services
 
                     return PageResult;
                 }
+                else if (httpResponse.StatusCode.Equals(StatusCodes.Status304NotModified))
+                {
+                    PageClientes? PageResult = new();
+
+                    PageResult.Pagina = Pagina;
+                    var TotalPages = httpResponse.Headers.GetValues("TotalPages").First() ?? "0";
+                    var TotalRecords = httpResponse.Headers.GetValues("TotalRecords").First() ?? "0";
+                    PageResult.TotalPaginas = Convert.ToInt32(TotalPages);
+                    PageResult.TotalRecords = Convert.ToInt32(TotalRecords);
+                    PageResult.ETag = httpResponse.Headers.GetValues("ETag").First();
+                    PageResult.Endpoint = Http!.BaseAddress!.ToString() + "api/v1/Clientes";
+
+
+                    return PageResult;
+                }
                 else
                 {
                     var ResponseString = await httpResponse.Content.ReadAsStringAsync();
@@ -73,9 +89,7 @@ namespace BlazorClientes.Services
             }
             catch (Exception ex)
             {
-                var Teste = ex;
-                var Teste1 = ex.Message;
-                throw new Exception("Ocorreu um erro inesperado! Tente novamente.");
+                throw new Exception("Ocorreu um erro inesperado! Tente novamente. Detalhes: " + ex.Message);
             }
         }
 

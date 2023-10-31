@@ -1,14 +1,12 @@
 ﻿@inherits PaginacaoBase
 
 <nav aria-label="Paginacao justify-content-end" class="@Theme!.ColorClass">
-
-    <div class="row">
-
-        <div class="col-2">
-        <select class="form-select" aria-label="Default select example" @onchange="@((ChangeEventArgs args) => OnChangePageItens(args))">
-            @if(QtdItensPorPagina == 5)
+    <ul class="pagination align-middle justify-content-end @Theme!.ColorClass">
+            
+        <select class="form-select ms-5  me-3" aria-label="Default select example" @onchange="@((ChangeEventArgs args) => OnChangePageItens(args))" style="width: 80px;">
+            @if (QtdItensPorPagina == 5)
             {
-                <option value=5 selected>5</option>           
+                <option value=5 selected>5</option>
             }
             else
             {
@@ -24,46 +22,43 @@
                 <option value=10>10</option>
             };
 
-            @if(QtdItensPorPagina == 15)
+            @if (QtdItensPorPagina == 15)
             {
-                <option value=15 selected>15</option>           
+                <option value=15 selected>15</option>
             }
             else
             {
                 <option value=15>15</option>
             };
 
-            @if(QtdItensPorPagina == 20)
+            @if (QtdItensPorPagina == 20)
             {
-                <option value=20 selected>20</option>           
+                <option value=20 selected>20</option>
             }
             else
             {
                 <option value=20>20</option>
             };
 
-            @if(QtdItensPorPagina == 50)
+            @if (QtdItensPorPagina == 50)
             {
-                <option value=50 selected>50</option>           
+                <option value=50 selected>50</option>
             }
             else
             {
                 <option value=50>50</option>
             };
 
-            @if(QtdItensPorPagina == 100)
+            @if (QtdItensPorPagina == 100)
             {
-                <option value=100 selected>100</option>           
+                <option value=100 selected>100</option>
             }
             else
             {
                 <option value=100>100</option>
             };
         </select>
-    </div>
-        <div class="col-5"></div>
-    <div class="col-5">
-    <ul class="pagination align-middle justify-content-end @Theme!.ColorClass">
+
         @foreach (LinkModel link in Links!)
         {
             <li @onclick="@(() => PaginaSelecionadaLink(link))"
@@ -72,7 +67,6 @@
                 <span class="page-link @Theme!.ColorClass" href="#">@link.Text</span>
             </li>
         }
+
     </ul>
-    </div>
-    </div>
 </nav>

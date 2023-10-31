@@ -39,7 +39,7 @@ else
                     <td class="col-4 col-md-2">
                         <div class="d-inline align-content-end">
                             <a class="btn btn-primary rounded-circle" @onclick="@(()=> UpdateCliente(cliente))"><span class="oi oi-pencil" /></a>
-                            <a class="btn btn-danger rounded-circle" @onclick="@(()=> DeleteCliente(cliente.idCliente))"><span class="oi oi-trash" /></a>
+                            <a class="btn btn-danger rounded-circle" @onclick="@(()=> DeleteCliente(cliente))"><span class="oi oi-trash" /></a>
                         </div>
                     </td>
                 </tr>
@@ -48,7 +48,13 @@ else
     </table>
 }
 
+<ConfirmDlg Titulo="Remover cliente?" @ref="MsgDelete" OnYesClick="ConfirmDeleteCliente">
+    <p>Deseja realmente apagar os dados do cliente selecionado?</p>
+</ConfirmDlg>
+
 <Paginacao QuantidadeTotalPaginas="QuantidadeTotalPaginas" PaginaAtual="PaginaAtual"
            Raio="2" PaginaSelecionadaClick="GetPage" QtdItensPorPagina="ItensPorPagina" 
            OnChangeQtdItensPorPagina="OnChangeQtdItensPorPagina" />
+
+<div class="container" style="height: 20px" />
 
