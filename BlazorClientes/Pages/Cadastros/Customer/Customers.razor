@@ -7,6 +7,20 @@
     <h3>Clientes</h3>
 </SearchInput>
 
+<div class="container-fluid mt-1 mb-1 border-bottom border-top">
+    <div class="row">
+        <div class="col-6 pt-3 text-start align-middle">
+            <p class="text-start">@InfoPaginasERegistros</p>
+        </div>
+        <div class="col-6 pt-2 pb-2 justify-content-end text-end">
+            <button class="btn btn-success d-none d-sm-inline"><span class="oi oi-plus" /> Novo cliente</button>
+            <button class="btn btn-success d-sm-none rounded-circle"><span class="oi oi-plus" /></button>
+            <button class="btn btn-primary d-none d-sm-inline"><span class="oi oi-print" /> Imprimir</button>
+            <button class="btn btn-primary d-sm-none rounded-circle"><span class="oi oi-print" /></button>
+        </div>
+    </div>
+</div>
+
 @if (Lista == null)
 {
     <p>Carregando clientes...</p>

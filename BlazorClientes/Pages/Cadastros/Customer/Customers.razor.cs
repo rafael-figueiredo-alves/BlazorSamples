@@ -23,7 +23,9 @@ namespace BlazorClientes.Pages.Cadastros
         protected int PaginaAtual { get; set; } = 1;
         protected int QuantidadeTotalPaginas { get; set; } = 1;
         protected int ItensPorPagina { get; set; } = 10;
+        protected int TotalDeRegistros { get; set; } = 0;
         protected int Teste { get; set; } = 0;
+        protected string InfoPaginasERegistros { get; set; } = string.Empty;
         protected ConfirmDlg? MsgDelete { get; set; }
         #endregion
 
@@ -61,6 +63,8 @@ namespace BlazorClientes.Pages.Cadastros
             Lista = Pagina!.Clientes;
             PaginaAtual = Page;
             QuantidadeTotalPaginas = (int)Pagina!.TotalPaginas!;
+            TotalDeRegistros = (int)Pagina!.TotalRecords!;
+            InfoPaginasERegistros = $"{TotalDeRegistros} clientes encontrados";
             StateHasChanged();
         }
         #endregion
