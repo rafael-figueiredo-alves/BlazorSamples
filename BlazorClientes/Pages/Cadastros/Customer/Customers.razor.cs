@@ -34,6 +34,13 @@ namespace BlazorClientes.Pages.Cadastros
         {
             GetPage(PaginaAtual);
         }
+
+        protected void InsertCliente()
+        {
+            Clientes NovoCliente = new();
+            ParamService!.setParam(NovoCliente);
+            NavigationManager!.NavigateTo("editcustomer");
+        }
         
         protected void UpdateCliente(Clientes cliente)
         {
@@ -47,6 +54,11 @@ namespace BlazorClientes.Pages.Cadastros
         }
 
         protected void ConfirmDeleteCliente()
+        {
+
+        }
+
+        protected void PrintClientes()
         {
 
         }

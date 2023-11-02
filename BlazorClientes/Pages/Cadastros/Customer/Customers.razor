@@ -13,10 +13,10 @@
             <p class="text-start">@InfoPaginasERegistros</p>
         </div>
         <div class="col-6 pt-2 pb-2 justify-content-end text-end">
-            <button class="btn btn-success d-none d-sm-inline"><span class="oi oi-plus" /> Novo cliente</button>
-            <button class="btn btn-success d-sm-none rounded-circle"><span class="oi oi-plus" /></button>
-            <button class="btn btn-primary d-none d-sm-inline"><span class="oi oi-print" /> Imprimir</button>
-            <button class="btn btn-primary d-sm-none rounded-circle"><span class="oi oi-print" /></button>
+            <button class="btn btn-primary d-none d-sm-inline" style="width: 150px"><span class="oi oi-print" @onclick="PrintClientes" /> Imprimir</button>
+            <button class="btn btn-primary d-sm-none rounded-circle"><span class="oi oi-print" @onclick="PrintClientes" /></button>
+            <button class="btn btn-success d-none d-sm-inline" style="width: 150px"><span class="oi oi-plus" @onclick="InsertCliente" /> Novo cliente</button>
+            <button class="btn btn-success d-sm-none rounded-circle"><span class="oi oi-plus" @onclick="InsertCliente" /></button>
         </div>
     </div>
 </div>
