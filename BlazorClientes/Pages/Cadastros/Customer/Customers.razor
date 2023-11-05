@@ -64,6 +64,7 @@ else
 
 <ConfirmDlg Titulo="Remover cliente?" @ref="MsgDelete" OnYesClick="ConfirmDeleteCliente">
     <p>Deseja realmente apagar os dados do cliente selecionado?</p>
+    <p><strong>Cliente:</strong> @SelectedCliente!.Nome</p>
 </ConfirmDlg>
 
 <Paginacao QuantidadeTotalPaginas="QuantidadeTotalPaginas" PaginaAtual="PaginaAtual"

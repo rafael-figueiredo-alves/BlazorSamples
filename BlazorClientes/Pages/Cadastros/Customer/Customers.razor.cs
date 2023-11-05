@@ -24,9 +24,9 @@ namespace BlazorClientes.Pages.Cadastros
         protected int QuantidadeTotalPaginas { get; set; } = 1;
         protected int ItensPorPagina { get; set; } = 10;
         protected int TotalDeRegistros { get; set; } = 0;
-        protected int Teste { get; set; } = 0;
         protected string InfoPaginasERegistros { get; set; } = string.Empty;
         protected ConfirmDlg? MsgDelete { get; set; }
+        protected Clientes? SelectedCliente { get; set; } = null;
         #endregion
 
         #region Methods
@@ -50,6 +50,7 @@ namespace BlazorClientes.Pages.Cadastros
 
         protected void DeleteCliente(Clientes Cliente)
         {
+            SelectedCliente = Cliente;
             MsgDelete!.Exibe();
         }
 
