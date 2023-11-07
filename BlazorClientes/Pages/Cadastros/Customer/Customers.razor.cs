@@ -2,6 +2,7 @@
 using BlazorClientes.Shared.Components;
 using BlazorClientes.Shared.Entities;
 using BlazorClientes.Shared.Entities.PageResults;
+using Blazored.Toast.Services;
 using Microsoft.AspNetCore.Components;
 
 namespace BlazorClientes.Pages.Cadastros
@@ -56,12 +57,12 @@ namespace BlazorClientes.Pages.Cadastros
 
         protected void ConfirmDeleteCliente()
         {
-
+            MsgDelete!.Oculta();
         }
 
         protected void PrintClientes()
         {
-
+            //Implementar Impressão básica da lista de clientes
         }
 
         protected void OnChangeQtdItensPorPagina(ChangeEventArgs args)

@@ -1,7 +1,29 @@
 ﻿@page "/editcustomer"
+@inherits EditCustomerBase
 
-<h3>EditCustomer</h3>
 
-@code {
+<PageTitle>BlazorClientes | @TituloPagina</PageTitle>
 
-}
+
+<div class="container-fluid align-middle">
+    <svg width="40px" height="40px" viewBox="0 0 24.00 24.00" fill="none" xmlns="http://www.w3.org/2000/svg" style="cursor:pointer;margin-bottom: 8px;" @onclick="GoBack">
+            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+            <g id="SVGRepo_iconCarrier">
+                <rect width="24" height="24" fill="none"></rect>
+                @if (Theme!.IsDark)
+                {
+                    <path d="M18 12L6 12M6 12L11 17M6 12L11 7" stroke="#ffffff" stroke-linecap="round" stroke-linejoin="round"></path>
+                }
+                else
+                {
+                    <path d="M18 12L6 12M6 12L11 17M6 12L11 7" stroke="#000000" stroke-linecap="round" stroke-linejoin="round"></path>
+                }
+            </g>
+        </svg>
+    <h3 style="display:inline-block;">
+            @TituloPagina
+    </h3>
+    
+</div>
+
