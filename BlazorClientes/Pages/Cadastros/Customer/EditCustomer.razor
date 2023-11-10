@@ -4,68 +4,75 @@
 
 <PageTitle>BlazorClientes | @TituloPagina</PageTitle>
 
-    <EditForm Model="Cliente">
-        <DataAnnotationsValidator />
+<EditForm Model="Cliente">
+    <DataAnnotationsValidator />
 
-        <div class="card">
-            <div class="card-header">
+    <div class="card">
+        <div class="card-header" style="height: 56.8px;padding-left:4px;padding-right:4px">
             <div class="container-fluid align-middle">
-                <svg width="40px" height="40px" viewBox="0 0 24.00 24.00" fill="none" xmlns="http://www.w3.org/2000/svg" style="cursor:pointer;margin-bottom: 8px;" @onclick="GoBack">
-                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                    <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-                    <g id="SVGRepo_iconCarrier">
-                        <rect width="24" height="24" fill="none"></rect>
-                        <path d="M18 12L6 12M6 12L11 17M6 12L11 7" stroke="@(Theme!.IsDark ? "#ffffff" : "#000000")" stroke-linecap="round" stroke-linejoin="round"></path>
-                    </g>
-                </svg>
-                <h3 style="display:inline-block;">
-                    @TituloPagina
-                </h3>
-                <div class="d-inline-flex justify-content-end text-end">
-                    <button class="btn btn-success" type="submit">Salvar</button>
-                </div>
-                </div>
-            </div>
-            <div class="card-body">
-                @if (!Cliente!.isNewRecord)
-                {
-                    <div class="form-group p-3">
-                        <label for="IDCliente">ID do Cliente</label>
-                        <p><strong>@Cliente!.idCliente</strong></p>
+                <div class="row">
+                    <div class="col-8 col-md-6 text-start align-middle">
+                        <svg width="40px" height="40px" viewBox="0 0 24.00 24.00" fill="none" xmlns="http://www.w3.org/2000/svg" style="cursor:pointer;margin-bottom: 8px;" @onclick="GoBack">
+                            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                            <g id="SVGRepo_iconCarrier">
+                                <rect width="24" height="24" fill="none"></rect>
+                                <path d="M18 12L6 12M6 12L11 17M6 12L11 7" stroke="@(Theme!.IsDark ? "#ffffff" : "#000000")" stroke-linecap="round" stroke-linejoin="round"></path>
+                            </g>
+                        </svg>
+                        <h3 style="display:inline-block;">
+                            @TituloPagina
+                        </h3>
                     </div>
-                }
-
-                <div class="form-group p-3">
-                    <label for="NomeCliente">Nome do Cliente</label>
-                    <InputText class="form-control" id="NomeCliente" aria-describedby="Nome do Cliente" placeholder="informe o nome do cliente" @bind-Value="@Cliente.Nome" />
-                    <ValidationMessage For="@(() => Cliente.Nome)" />
+                    <div class="col-4 col-md-6 justify-content-end text-end">
+                            <button class="btn btn-primary d-none d-sm-inline" style="width: 120px;" type="submit"><span class="oi oi-print" />  Imprimir</button>
+                            <button class="btn btn-primary d-sm-none rounded-circle" type="submit"><span class="oi oi-print" /></button>
+                            <button class="btn btn-success d-none d-sm-inline" style="width: 120px;" type="submit"><span class="oi oi-check" />  Salvar</button>
+                            <button class="btn btn-success d-sm-none rounded-circle" type="submit"><span class="oi oi-check" /></button>
+                    </div>
                 </div>
-
-                <div class="form-group p-3">
-                    <label for="EnderecoCliente">Endereço Físico do Cliente</label>
-                    <InputText class="form-control" id="EnderecoCliente" aria-describedby="Endereço do Cliente" placeholder="Informe o endereço físico do cliente" @bind-Value="@Cliente.Endereco" />
-                    <ValidationMessage For="@(() => Cliente.Endereco)" />
-                </div>
-
-                <div class="form-group p-3">
-                    <label for="EmailCliente">Endereço de email do cliente</label>
-                    <InputText type="email" class="form-control" id="EmailCliente" aria-describedby="Email do Cliente" placeholder="Informe o email do cliente" @bind-Value="@Cliente.Email" />
-                    <ValidationMessage For="@(() => Cliente.Email)" />
-                </div>
-
-                <div class="form-group p-3">
-                    <label for="FoneCliente">Telefone Fixo do Cliente</label>
-                    <InputText class="form-control" id="FoneCliente" aria-describedby="Telefone do Cliente" placeholder="Informe o telefone fixo do cliente" @bind-Value="@Cliente.Telefone" data-mask="(00) 0000-0000" />
-                    <ValidationMessage For="@(() => Cliente.Telefone)" />
-                </div>
-
-                <div class="form-group p-3">
-                    <label for="CelularCliente">Celular do Cliente</label>
-                    <InputText class="form-control" id="CelularCliente" aria-describedby="Celular do Cliente" placeholder="Informe o celular do cliente" @bind-Value="@Cliente.Celular" />
-                    <ValidationMessage For="@(() => Cliente.Celular)" />
-                </div>
-               
             </div>
         </div>
-    </EditForm>
+        <div class="card-body">
+            @if (!Cliente!.isNewRecord)
+            {
+                <div class="form-group p-3">
+                    <label for="IDCliente">ID do Cliente</label>
+                    <p><strong>@Cliente!.idCliente</strong></p>
+                </div>
+            }
+
+            <div class="form-group p-3">
+                <label for="NomeCliente">Nome do Cliente</label>
+                <InputText class="form-control" id="NomeCliente" aria-describedby="Nome do Cliente" placeholder="informe o nome do cliente" @bind-Value="@Cliente.Nome" />
+                <ValidationMessage For="@(() => Cliente.Nome)" />
+            </div>
+
+            <div class="form-group p-3">
+                <label for="EnderecoCliente">Endereço Físico do Cliente</label>
+                <InputText class="form-control" id="EnderecoCliente" aria-describedby="Endereço do Cliente" placeholder="Informe o endereço físico do cliente" @bind-Value="@Cliente.Endereco" />
+                <ValidationMessage For="@(() => Cliente.Endereco)" />
+            </div>
+
+            <div class="form-group p-3">
+                <label for="EmailCliente">Endereço de email do cliente</label>
+                <InputText type="email" class="form-control" id="EmailCliente" aria-describedby="Email do Cliente" placeholder="Informe o email do cliente" @bind-Value="@Cliente.Email" />
+                <ValidationMessage For="@(() => Cliente.Email)" />
+            </div>
+
+            <div class="form-group p-3">
+                <label for="FoneCliente">Telefone Fixo do Cliente</label>
+                <InputText class="form-control" id="FoneCliente" aria-describedby="Telefone do Cliente" placeholder="Informe o telefone fixo do cliente" @bind-Value="@Cliente.Telefone" data-mask="(00) 0000-0000" />
+                <ValidationMessage For="@(() => Cliente.Telefone)" />
+            </div>
+
+            <div class="form-group p-3">
+                <label for="CelularCliente">Celular do Cliente</label>
+                <InputText class="form-control" id="CelularCliente" aria-describedby="Celular do Cliente" placeholder="Informe o celular do cliente" @bind-Value="@Cliente.Celular" />
+                <ValidationMessage For="@(() => Cliente.Celular)" />
+            </div>
+
+        </div>
+    </div>
+</EditForm>
 

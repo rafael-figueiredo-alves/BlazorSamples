@@ -31,7 +31,7 @@ namespace BlazorClientes.Pages.Cadastros.Customer
                 }
                 else
                 {
-                    TituloPagina = "Alterando Cliente";
+                    TituloPagina = "Editando Cliente";
                 }
             }
         }
