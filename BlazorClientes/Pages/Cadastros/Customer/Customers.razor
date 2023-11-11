@@ -32,14 +32,15 @@ if (!Lista.Any())
 }
 else
 {
+    <div style="height:60vh;overflow:auto;">
     <table class="table table-hover @Theme!.ColorClass" style="color: @Theme!.ColorFontStyle" data-bs-theme="@Theme.DataBsTheme">
-        <thead>
+        <thead style="position: sticky;z-index: 10;top: 0;">
             <tr>
-                <th scope="col">Cliente</th>
-                <th scope="col">Celular</th>
-                <th scope="col" class="d-none d-md-table-cell">Telefone</th>
-                <th scope="col" class="d-none d-md-table-cell">E-mail</th>
-                <th scope="col">Ações</th>
+                <th scope="col" style="position: sticky;z-index: 10;">Cliente</th>
+                <th scope="col" style="position: sticky;z-index: 10;">Celular</th>
+                <th scope="col" class="d-none d-md-table-cell" style="position: sticky;z-index: 10;">Telefone</th>
+                <th scope="col" class="d-none d-md-table-cell" style="position: sticky;z-index: 10;">E-mail</th>
+                <th scope="col" style="position: sticky;z-index: 10;">Ações</th>
             </tr>
         </thead>
         <tbody>
@@ -60,6 +61,7 @@ else
             }
         </tbody>
     </table>
+    </div>
 }
 
 <ConfirmDlg Titulo="Remover cliente?" @ref="MsgDelete" OnYesClick="ConfirmDeleteCliente">
@@ -67,9 +69,11 @@ else
     <p><strong>Cliente:</strong> @SelectedCliente!.Nome</p>
 </ConfirmDlg>
 
+<div class="fixed-bottom" style="z-index: 100">
 <Paginacao QuantidadeTotalPaginas="QuantidadeTotalPaginas" PaginaAtual="PaginaAtual"
            Raio="2" PaginaSelecionadaClick="GetPage" QtdItensPorPagina="ItensPorPagina" 
            OnChangeQtdItensPorPagina="OnChangeQtdItensPorPagina" />
+</div>
 
 <div class="container" style="height: 20px" />
 

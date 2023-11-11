@@ -49,11 +49,22 @@ namespace BlazorClientes.Services
                 {
                     var ResponseString = await httpResponse.Content.ReadAsStringAsync();
 
-                    var jsonResult = JsonSerializer.Deserialize<List<Clientes>?>(ResponseString, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                    var jsonResult = JsonSerializer.Deserialize<List<ClientesDTO>?>(ResponseString, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+                    List<Clientes>? ListaClientes = null;
+
+                    if (jsonResult != null)
+                    {
+                        ListaClientes = new();
+                        foreach (var cliente in jsonResult)
+                        {
+                            ListaClientes.Add(new Clientes(cliente.Nome!, cliente.Endereco!, cliente.Telefone!, cliente.Celular!, cliente.Email!, cliente.idCliente));
+                        }
+                    }
 
                     PageClientes? PageResult = new();
                     
-                    PageResult.Clientes = jsonResult;
+                    PageResult.Clientes = ListaClientes;
                     PageResult.Pagina = Pagina;
                     var TotalPages = httpResponse.Headers.GetValues("TotalPages").First() ?? "0";
                     var TotalRecords = httpResponse.Headers.GetValues("TotalRecords").First() ?? "0";

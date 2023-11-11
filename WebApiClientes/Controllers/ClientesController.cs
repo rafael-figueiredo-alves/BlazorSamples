@@ -29,7 +29,6 @@ namespace WebApiClientes.Controllers
         /// Obtenha uma relação com todos os dados de todos os clientes
         /// </remarks>
         /// <response code="200">Sucesso ao obter lista de clientes</response>
-        /// <response code="404">Não foram encontrados clientes</response>
         /// <response code="304">Não houve mudanças nos dados, portanto o cache pode ser utilizado porque se encontra atualizado</response>
         /// <response code="401">Acesso não autorizado. Você precisa se autenticar para poder acessar este endpoint</response>
         /// <response code="403">Recurso só disponível para usuários autenticados com um determinado tipo de conta</response>
@@ -37,7 +36,6 @@ namespace WebApiClientes.Controllers
         [HttpGet]
         [Produces(MediaTypeNames.Application.Json)] //Informa qual formato de retorno
         [ProducesResponseType(StatusCodes.Status200OK)] //Informa status codes retornáveis
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status304NotModified)]
@@ -107,7 +105,14 @@ namespace WebApiClientes.Controllers
                         }
                         else
                         {
-                            return NotFound(clientes);
+                            //Os comandos abaixo adicionam Headers personalizados
+                            Response.Headers.Add("PageNumber", Page.Page.ToString());
+                            Response.Headers.Add("PageSize", Page.PageSize.ToString());
+                            Response.Headers.Add("TotalRecords", Page.TotalRecords.ToString());
+                            Response.Headers.Add("TotalPages", Page.TotalPages.ToString());
+                            //Serializar e enviar o Hash no etag
+                            Response.Headers.ETag = dataHash;
+                            return Ok(clientes);
                         }
                     }
                     else

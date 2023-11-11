@@ -11,7 +11,7 @@ namespace BlazorClientes.Shared.Entities
         /// <summary>
         /// Campo Id do tipo GUID
         /// </summary>
-        public string idCliente { get; set; }
+        public string idCliente { get; private set; }
         
         /// <summary>
         /// Campo nome
@@ -83,7 +83,7 @@ namespace BlazorClientes.Shared.Entities
         /// </summary>
         public Clientes()
         {
-            //idCliente = Guid.NewGuid().ToString();
+            idCliente = Guid.NewGuid().ToString();
         }
     }
 
@@ -91,5 +91,15 @@ namespace BlazorClientes.Shared.Entities
     {
         PorNome,
         PorEndereco
+    }
+
+    public class ClientesDTO : Clientes
+    {
+        /// <summary>
+        /// Campo Id do tipo GUID
+        /// </summary>
+        public new string? idCliente { get; set; }
+
+        public ClientesDTO() { }
     }
 }
