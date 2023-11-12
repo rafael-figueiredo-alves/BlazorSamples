@@ -25,8 +25,11 @@
                         </h3>
                     </div>
                     <div class="col-4 col-md-6 justify-content-end text-end">
-                            <button class="btn btn-primary d-none d-sm-inline" style="width: 120px;" type="submit"><span class="oi oi-print" />  Imprimir</button>
-                            <button class="btn btn-primary d-sm-none rounded-circle" type="submit"><span class="oi oi-print" /></button>
+                            @if(!Cliente!.isNewRecord)
+                            {
+                                <button class="btn btn-primary d-none d-sm-inline" style="width: 120px;" type="submit"><span class="oi oi-print" />  Imprimir</button>
+                                <button class="btn btn-primary d-sm-none rounded-circle" type="submit"><span class="oi oi-print" /></button>
+                            }
                             <button class="btn btn-success d-none d-sm-inline" style="width: 120px;" type="submit"><span class="oi oi-check" />  Salvar</button>
                             <button class="btn btn-success d-sm-none rounded-circle" type="submit"><span class="oi oi-check" /></button>
                     </div>

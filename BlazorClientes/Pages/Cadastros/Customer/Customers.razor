@@ -13,8 +13,11 @@
             <p class="text-start">@InfoPaginasERegistros</p>
         </div>
         <div class="col-6 pt-2 pb-2 justify-content-end text-end">
-            <button class="btn btn-primary d-none d-sm-inline" style="width: 150px" @onclick="PrintClientes"><span class="oi oi-print" /> Imprimir</button>
-            <button class="btn btn-primary d-sm-none rounded-circle" @onclick="PrintClientes"><span class="oi oi-print" /></button>
+            @if (Lista!.Any())
+            {
+                <button class="btn btn-primary d-none d-sm-inline" style="width: 150px" @onclick="PrintClientes"><span class="oi oi-print" /> Imprimir</button>
+                <button class="btn btn-primary d-sm-none rounded-circle" @onclick="PrintClientes"><span class="oi oi-print" /></button>
+            }
             <button class="btn btn-success d-none d-sm-inline" style="width: 150px" @onclick="InsertCliente"><span class="oi oi-plus" /> Novo cliente</button>
             <button class="btn btn-success d-sm-none rounded-circle" @onclick="InsertCliente"><span class="oi oi-plus" /></button>
         </div>
@@ -64,12 +67,14 @@ else
     </div>
 }
 
+<div class="container" style="height: 20px" />
+
 <ConfirmDlg Titulo="Remover cliente?" @ref="MsgDelete" OnYesClick="ConfirmDeleteCliente">
     <p>Deseja realmente apagar os dados do cliente selecionado?</p>
     <p><strong>Cliente:</strong> @SelectedCliente!.Nome</p>
 </ConfirmDlg>
 
-<div class="fixed-bottom" style="z-index: 100">
+<div class="fixed-bottom pe-5 ps-3 pt-2 @Theme!.ColorClass" style="z-index: 100">
 <Paginacao QuantidadeTotalPaginas="QuantidadeTotalPaginas" PaginaAtual="PaginaAtual"
            Raio="2" PaginaSelecionadaClick="GetPage" QtdItensPorPagina="ItensPorPagina" 
            OnChangeQtdItensPorPagina="OnChangeQtdItensPorPagina" />

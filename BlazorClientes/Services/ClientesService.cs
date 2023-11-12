@@ -28,7 +28,7 @@ namespace BlazorClientes.Services
         #endregion
 
         #region Methods
-        public Task<bool> DeleteCliente(string ID)
+        public Task<bool> DeleteCliente(Clientes Cliente)
         {
             throw new NotImplementedException();
         }
