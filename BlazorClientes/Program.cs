@@ -31,6 +31,7 @@ builder.Services.AddScoped<ILocalStorage, LocalStorage>();
 builder.Services.AddBlazoredToast();
 
 builder.Services.AddScoped<IParamService, ParamService>();
+builder.Services.AddSingleton<IUserData,  UserData>();
 
 //Serviços relacionados a API
 builder.Services.AddScoped<IClientes, ClientesService>();

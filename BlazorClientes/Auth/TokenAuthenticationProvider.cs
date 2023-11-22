@@ -1,4 +1,5 @@
 ﻿using BlazorClientes.Services.Interfaces;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using System.Net.Http.Headers;
 using System.Security.Claims;
@@ -11,12 +12,16 @@ namespace BlazorClientes.Auth
         public static readonly string tokenKey = "BlazorClientesToken";
         private readonly HttpClient http;
         private readonly ILocalStorage Ls;
+        private readonly NavigationManager Nav;
+        public IUserData UserData { get;  set; }
         private static AuthenticationState NotAuthenticate => new(new ClaimsPrincipal(new ClaimsIdentity()));
         //---------------------------------------------------------------------------------
-        public TokenAuthenticationProvider(HttpClient _http, ILocalStorage _Ls)
+        public TokenAuthenticationProvider(HttpClient _http, ILocalStorage _Ls, IUserData _UserData, NavigationManager _Nav)
         {
             http = _http;
             Ls   = _Ls;
+            UserData = _UserData;
+            Nav = _Nav;
         }
         //---------------------------------------------------------------------------------
         //                    Métodos de suporte
@@ -80,10 +85,22 @@ namespace BlazorClientes.Auth
         public async override Task<AuthenticationState> GetAuthenticationStateAsync()
         {
             var token = await Ls.GetValue(tokenKey);
-            
+
             if (string.IsNullOrEmpty(token))
             {
                 return NotAuthenticate;
+            }
+            else
+            {
+                IEnumerable<Claim> claims = ParseClaimsFromJwt(token);
+                DateTime exp = DateTimeOffset.FromUnixTimeSeconds(long.Parse(claims.Where(x => x.Type == "exp")!.First().Value)).UtcDateTime;
+
+                if (exp < DateTime.UtcNow)
+                {
+                    await Ls.DeleteValue(tokenKey);
+                    Nav.NavigateTo("login");
+                    return NotAuthenticate;
+                }
             }
 
             return CreateAuthenticationState(token);
@@ -135,32 +152,62 @@ namespace BlazorClientes.Auth
 
         public async Task<string> GetUsername()
         {
-            var fUser = (await GetAuthenticationStateAsync()).User;
-            return fUser.FindFirst(c => c.Type.Contains("Username"))?.Value ?? "Unknown";
+            var token = await Ls.GetValue(tokenKey);
+            if(!string.IsNullOrEmpty(token))
+            {
+                IEnumerable<Claim> claims = ParseClaimsFromJwt(token);
+                return claims.Where(c => c.Type.Contains("Username"))!.First().Value ?? "Unknown";
+            }
+            else
+                return "Unknown";
         }
 
         public async Task<string> GetEmail()
         {
-            var fUser = (await GetAuthenticationStateAsync()).User;
-            return fUser.FindFirst(c => c.Type.Contains("Email"))?.Value ?? "Unknown";
+            var token = await Ls.GetValue(tokenKey);
+            if (!string.IsNullOrEmpty(token))
+            {
+                IEnumerable<Claim> claims = ParseClaimsFromJwt(token);
+                return claims.Where(c => c.Type.Contains("Email"))!.First().Value ?? "Unknown";
+            }
+            else
+                return "Unknown";
         }
 
         public async Task<string> GetUserID()
         {
-            var fUser = (await GetAuthenticationStateAsync()).User;
-            return fUser.FindFirst(c => c.Type.Contains("uID"))?.Value ?? "-1";
+            var token = await Ls.GetValue(tokenKey);
+            if (!string.IsNullOrEmpty(token))
+            {
+                IEnumerable<Claim> claims = ParseClaimsFromJwt(token);
+                return claims.Where(c => c.Type.Contains("uID"))!.First().Value ?? "-1";
+            }
+            else
+                return "-1";
         }
 
         public async Task<DateTime> GetExpiration()
         {
-            var fUser = (await GetAuthenticationStateAsync()).User;
-            return DateTimeOffset.FromUnixTimeSeconds(long.Parse(fUser.FindFirst(x => x.Type == "exp")!.Value)).UtcDateTime;
+            var token = await Ls.GetValue(tokenKey);
+            if (!string.IsNullOrEmpty(token))
+            {
+                IEnumerable<Claim> claims = ParseClaimsFromJwt(token);
+                return DateTimeOffset.FromUnixTimeSeconds(long.Parse(claims.Where(x => x.Type == "exp")!.First().Value)).UtcDateTime; ;
+            }
+            else
+                return DateTime.UtcNow.AddDays(-1);
         }
 
         public async Task<string> GetRole()
         {
-            var fUser = (await GetAuthenticationStateAsync()).User;
-            return fUser.FindFirst(c => c.Type == ClaimTypes.Role)?.Value ?? string.Empty;
+            var token = await Ls.GetValue(tokenKey);
+            if (!string.IsNullOrEmpty(token))
+            {
+                IEnumerable<Claim> claims = ParseClaimsFromJwt(token);
+                return claims.Where(c => c.Type == ClaimTypes.Role)!.First().Value ?? string.Empty;
+            }
+            else
+                return string.Empty;
         }
     }
 }

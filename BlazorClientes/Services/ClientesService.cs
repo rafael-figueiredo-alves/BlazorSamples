@@ -4,6 +4,7 @@ using BlazorClientes.Shared.Entities.PageResults;
 using Blazored.Toast.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Http;
+using System.Net;
 using System.Text.Json;
 
 namespace BlazorClientes.Services
@@ -43,6 +44,8 @@ namespace BlazorClientes.Services
             try
             {
                 Http!.DefaultRequestHeaders.Add("Access-Control-Allow-Headers", "*");
+                Http!.DefaultRequestHeaders.Remove("If-None-Match");
+                Http!.DefaultRequestHeaders.TryAddWithoutValidation("If-None-Match", "a4122bcc139bec3e4a0ed4be7a33a2b5");
                 var httpResponse = await Http!.GetAsync("api/v1/Clientes?Pagina=" + Pagina.ToString() + "&QtdRegistrosPorPagina=" + QtdRegistrosPorPagina.ToString(), HttpCompletionOption.ResponseHeadersRead);
 
                 if (httpResponse.IsSuccessStatusCode)
@@ -76,7 +79,7 @@ namespace BlazorClientes.Services
 
                     return PageResult;
                 }
-                else if (httpResponse.StatusCode.Equals(StatusCodes.Status304NotModified))
+                else if (httpResponse.StatusCode == HttpStatusCode.NotModified)
                 {
                     PageClientes? PageResult = new();
 

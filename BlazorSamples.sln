@@ -10,11 +10,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApiClientes", "WebApiClientes\WebApiClientes.csproj", "{00830976-F8AD-4516-BB66-6FE8195A0990}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorClientes", "BlazorClientes\BlazorClientes.csproj", "{762D44AB-7DBF-4E0C-927B-8E43F5AD5D9A}"
-	ProjectSection(ProjectDependencies) = postProject
-		{04B877DE-6F22-4F67-AEE1-3C08D6BBF03F} = {04B877DE-6F22-4F67-AEE1-3C08D6BBF03F}
-	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorClientes.Shared", "BlazorClientes.Shared\BlazorClientes.Shared.csproj", "{B6B835AD-78F3-4589-B94D-2F37602AF430}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorClientes.Shared", "BlazorClientes.Shared\BlazorClientes.Shared.csproj", "{B6B835AD-78F3-4589-B94D-2F37602AF430}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
