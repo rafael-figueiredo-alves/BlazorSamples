@@ -4,7 +4,7 @@ namespace BlazorClientes.Shared.Entities
 {
     public class UserDB
     {
-        public string? teste { get; set; }
+        public string? teste { get; set; } = "Olá mundo";
         public List<PageClientes>? Clientes { get; set; }
         public List<PagePedidos>? Pedidos { get; set; }
         public List<PageProdutos>? Produtos { get; set; }

@@ -6,5 +6,7 @@ namespace BlazorClientes.Pages
 {
     public class GuideBase : ComponentBase
     {
+        [Inject] protected IUserData? Data {  get; set; }
+        protected void GravarValorTeste() => Data!.SaveData();
     }
 }

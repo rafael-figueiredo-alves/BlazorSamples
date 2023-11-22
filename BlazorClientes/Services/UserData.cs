@@ -1,18 +1,21 @@
 ﻿using BlazorClientes.Services.Interfaces;
 using BlazorClientes.Shared.Entities;
 using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
 using System.Text.Json;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace BlazorClientes.Services
 {
     public class UserData : IUserData
     {
-        [Inject] private ILocalStorage? LocalStorage { get; set; }
+        private readonly ILocalStorage? LocalStorage;
         private UserDB Dados {  get; set; }
         private string? DataKey { get; set; } = null;
 
-        public UserData() 
+        public UserData(IJSRuntime JS) 
         {
+            LocalStorage = new LocalStorage(JS);
             Dados = new UserDB();
         }
 
@@ -21,7 +24,7 @@ namespace BlazorClientes.Services
             return Dados; 
         }
 
-        public async Task<IUserData> ReadData(string UserID)
+        public async Task<IUserData> ReadData(string? UserID = null)
         {
             string? Data = null;
 
@@ -42,8 +45,13 @@ namespace BlazorClientes.Services
 
             return this;
         }
-        public async Task<IUserData> SaveData()
+        public async Task<IUserData> SaveData(string? UserID = null)
         {
+            if (UserID != null)
+            {
+                DataKey = UserID;
+            }
+
             if (DataKey != null)
             {
                 string DadosToSave = JsonSerializer.Serialize<UserDB>(Dados).ToString();
