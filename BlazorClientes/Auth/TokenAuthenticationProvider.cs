@@ -152,7 +152,9 @@ namespace BlazorClientes.Auth
         {
             try
             {
-                await Ls.DeleteValue(await GetUserID());
+                var uID = await GetUserID();
+                await Ls.DeleteValue(uID);
+                UserData!.CleanCache();
                 await Ls.DeleteValue(tokenKey);
                 http.DefaultRequestHeaders.Authorization = null;
                 NotifyAuthenticationStateChanged(Task.FromResult(NotAuthenticate));

@@ -28,7 +28,7 @@ namespace BlazorClientes.Services
         {
             string? Data = null;
 
-            if (UserID != null)
+            if ((UserID != null) && (UserID != "-1"))
             {
                 DataKey = UserID;
                 Data = await LocalStorage!.GetValue(DataKey);
@@ -47,7 +47,7 @@ namespace BlazorClientes.Services
         }
         public async Task<IUserData> SaveData(string? UserID = null)
         {
-            if (UserID != null)
+            if ((UserID != null) && (UserID != "-1"))
             {
                 DataKey = UserID;
             }
@@ -59,6 +59,12 @@ namespace BlazorClientes.Services
             }
 
             return this;
+        }
+
+        public void CleanCache()
+        {
+            DataKey = null;
+            Dados = new();
         }
     }
 }

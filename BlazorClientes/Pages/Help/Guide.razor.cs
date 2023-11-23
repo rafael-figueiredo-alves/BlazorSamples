@@ -6,7 +6,12 @@ namespace BlazorClientes.Pages
 {
     public class GuideBase : ComponentBase
     {
-        [Inject] protected IUserData? Data {  get; set; }
-        protected void GravarValorTeste() => Data!.SaveData();
+        public List<Teste>? Lista { get; set; } = new() { Teste.None, Teste.All };
+    }
+
+    public enum Teste
+    {
+        None = 0,
+        All = 1
     }
 }

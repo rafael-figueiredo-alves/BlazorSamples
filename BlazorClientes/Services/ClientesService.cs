@@ -13,16 +13,16 @@ namespace BlazorClientes.Services
     {
         #region Private Variables
         private readonly HttpClient? Http;
-        private readonly ILocalStorage? Ls;
         private readonly NavigationManager Nav;
         private readonly IToastService Toast;
+        private readonly IUserData UserData;
         #endregion
 
         #region Constructor
-        public ClientesService(HttpClient? http, ILocalStorage? ls, NavigationManager nav, IToastService toast)
+        public ClientesService(HttpClient? http, IUserData _UserData, NavigationManager nav, IToastService toast)
         {
             Http = http;
-            Ls = ls;
+            UserData = _UserData;
             Nav = nav;
             Toast = toast;
         }
@@ -34,19 +34,39 @@ namespace BlazorClientes.Services
             throw new NotImplementedException();
         }
 
-        public Task<Clientes> GetCliente(string ID)
+        public Task<Clientes?> GetCliente(string ID)
         {
             throw new NotImplementedException();
         }
 
         public async Task<PageClientes?> GetClientes(int? Pagina = 1, int? QtdRegistrosPorPagina = 10, FiltrosCliente? FiltrarPor = null, string? Termo = null)
         {
+            string Endpoint = "api/v1/Clientes?Pagina=" + Pagina.ToString() + "&QtdRegistrosPorPagina=" + QtdRegistrosPorPagina.ToString();
+
+            if((FiltrarPor != null) && (!string.IsNullOrEmpty(Termo)))
+            {
+                Endpoint += "&FiltrarPor=" + FiltrarPor + "&Termo=" + Termo;
+            }
+
             try
             {
                 Http!.DefaultRequestHeaders.Add("Access-Control-Allow-Headers", "*");
-                Http!.DefaultRequestHeaders.Remove("If-None-Match");
-                Http!.DefaultRequestHeaders.TryAddWithoutValidation("If-None-Match", "a4122bcc139bec3e4a0ed4be7a33a2b5");
-                var httpResponse = await Http!.GetAsync("api/v1/Clientes?Pagina=" + Pagina.ToString() + "&QtdRegistrosPorPagina=" + QtdRegistrosPorPagina.ToString(), HttpCompletionOption.ResponseHeadersRead);
+
+                if(UserData.UserDB().Clientes != null)
+                {
+                    if (UserData!.UserDB().Clientes!.Where(x => x.Endpoint == Endpoint).Any())
+                    {
+                        var ETag = UserData!.UserDB().Clientes!.Where(x => x.Endpoint == Endpoint).First().ETag;
+                        Http!.DefaultRequestHeaders.Remove("If-None-Match");
+                        Http!.DefaultRequestHeaders.TryAddWithoutValidation("If-None-Match", ETag);
+                    }
+                }
+                else
+                {
+                    UserData.UserDB().Clientes = new();
+                }
+
+                var httpResponse = await Http!.GetAsync(Endpoint, HttpCompletionOption.ResponseHeadersRead);
 
                 if (httpResponse.IsSuccessStatusCode)
                 {
@@ -74,14 +94,21 @@ namespace BlazorClientes.Services
                     PageResult.TotalPaginas = Convert.ToInt32(TotalPages);
                     PageResult.TotalRecords = Convert.ToInt32(TotalRecords);
                     PageResult.ETag = httpResponse.Headers.GetValues("ETag").First();
-                    PageResult.Endpoint = Http!.BaseAddress!.ToString() + "api/v1/Clientes";
-                    
+                    PageResult.Endpoint = Endpoint;
+
+                    if (UserData!.UserDB().Clientes!.Where(x => x.Endpoint == Endpoint).Any())
+                    {
+                        UserData!.UserDB().Clientes!.Remove(UserData!.UserDB().Clientes!.Where(x => x.Endpoint == Endpoint).First());
+                    }
+
+                    UserData!.UserDB().Clientes!.Add(PageResult);
+                    await UserData!.SaveData();
 
                     return PageResult;
                 }
                 else if (httpResponse.StatusCode == HttpStatusCode.NotModified)
                 {
-                    PageClientes? PageResult = new();
+                    PageClientes? PageResult = UserData!.UserDB().Clientes!.Where(x => x.Endpoint == Endpoint).First();
 
                     PageResult.Pagina = Pagina;
                     var TotalPages = httpResponse.Headers.GetValues("TotalPages").First() ?? "0";
@@ -89,8 +116,7 @@ namespace BlazorClientes.Services
                     PageResult.TotalPaginas = Convert.ToInt32(TotalPages);
                     PageResult.TotalRecords = Convert.ToInt32(TotalRecords);
                     PageResult.ETag = httpResponse.Headers.GetValues("ETag").First();
-                    PageResult.Endpoint = Http!.BaseAddress!.ToString() + "api/v1/Clientes";
-
+                    PageResult.Endpoint = Endpoint;
 
                     return PageResult;
                 }

@@ -7,5 +7,6 @@ namespace BlazorClientes.Services.Interfaces
         UserDB UserDB();
         Task<IUserData> ReadData(string? UserID = null);
         Task<IUserData> SaveData(string? UserID = null);
+        void CleanCache();
     }
 }

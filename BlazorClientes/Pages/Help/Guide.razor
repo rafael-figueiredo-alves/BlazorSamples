@@ -3,4 +3,18 @@
 
 <h3>Guide</h3>
 
-<button @onclick="GravarValorTeste">Gravar</button>
+@if((Lista != null) && (Lista!.Any()))
+{
+    <div class="dropdown">
+        <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">
+            Dropdown button
+        </button>
+        <ul class="dropdown-menu">
+            @foreach(var Item in Lista!)
+            {
+                <li><a class="dropdown-item" style="cursor: pointer">@Item.ToString()</a></li>
+            }
+        </ul>
+    </div>
+}
+
