@@ -2,23 +2,36 @@
 
 <div class="container-fluid @Theme!.ColorClass" style="color: @Theme!.ColorFontStyle" data-bs-theme="@Theme.DataBsTheme">
     <div class="row">
-        <div class="d-none d-md-table-cell col-8 align-middle">
+        <div class="d-none d-md-table-cell col-6 align-middle">
            @ChildContent
         </div>
         <div class="col justify-content-end">
             <div class="input-group mb-3">
-                <div class="dropdown">
-                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Dropdown button
-                    </button>
-                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                        <a class="dropdown-item" href="#">Action</a>
-                        <a class="dropdown-item" href="#">Another action</a>
-                        <a class="dropdown-item" href="#">Something else here</a>
-                    </div>
-                </div>
+                @if((Filtros != null) && (Filtros.Any()))
+                {
+                    @if (Theme!.IsDark)
+                    {
+                        <button type="button" class="btn btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown" style="color: whitesmoke">
+                            <svg style="margin-bottom: 5px" xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24" fill="whitesmoke"><path d="M440-160q-17 0-28.5-11.5T400-200v-240L168-736q-15-20-4.5-42t36.5-22h560q26 0 36.5 22t-4.5 42L560-440v240q0 17-11.5 28.5T520-160h-80Zm40-308 198-252H282l198 252Zm0 0Z" /></svg>
+                            @FiltroSelecionado.Filtro
+                        </button>
+                    }
+                    else
+                    {
+                        <button type="button" class="btn btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown" style="color: black">
+                            <svg style="margin-bottom: 5px" xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24" fill="black"><path d="M440-160q-17 0-28.5-11.5T400-200v-240L168-736q-15-20-4.5-42t36.5-22h560q26 0 36.5 22t-4.5 42L560-440v240q0 17-11.5 28.5T520-160h-80Zm40-308 198-252H282l198 252Zm0 0Z" /></svg>
+                            @FiltroSelecionado.Filtro
+                        </button>
+                    }
+                    <ul class="dropdown-menu">
+                        @foreach (var Item in Filtros!)
+                        {
+                            <li><a class="dropdown-item" style="cursor: pointer" onclick="@(() => TrocarFiltro(Item.Key, Item.Value))">@Item.Key</a></li>
+                        }
+                    </ul>
+                }
                 <input type="text" class="form-control @Theme!.ColorClass" style="color: @Theme.ColorFontStyle" @bind-value="TermoPesquisa" placeholder="Pesquisar..." aria-label="Pesquisar" aria-describedby="Pesquisar">
-                <button class="btn btn-primary" type="button" id="button-addon2" @onclick="@(() => Pesquisar())">
+                <button class="btn btn-primary" type="button" id="button-addon2" @onclick="@(() => Pesquisar())" @onkeypress="@((KeyboardEventArgs args) => OnKeyPress(args))">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
                         <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
                     </svg>

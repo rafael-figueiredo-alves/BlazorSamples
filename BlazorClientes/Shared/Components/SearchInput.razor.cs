@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using BlazorClientes.Shared.Entities;
+using Microsoft.AspNetCore.Components.Web;
 
 namespace BlazorClientes.Shared.Components
 {
@@ -8,24 +9,35 @@ namespace BlazorClientes.Shared.Components
         [CascadingParameter]
         protected UITheming? Theme { get; set; }
         public string? TermoPesquisa { get; set; }
-        [Parameter] public EventCallback<string> SearchClick { get; set; }
+        [Parameter] public EventCallback<(string?, int?)> SearchClick { get; set; }
         [Parameter] public EventCallback ClearClick { get; set; }
         [Parameter] public RenderFragment? ChildContent { get; set; }
+        [Parameter] public Dictionary<string, int>? Filtros { get; set; } = null;
+        [Parameter] public (string? Filtro, int? FiltroIndice) FiltroSelecionado { get; set; } = (null, null);
 
         protected async Task Pesquisar()
         {
-            if (TermoPesquisa == null)
-            {
-                return;
-            }
-
-            await SearchClick.InvokeAsync(TermoPesquisa);
+            await SearchClick.InvokeAsync((TermoPesquisa, FiltroSelecionado.FiltroIndice));
         }
 
         protected async Task LimparFiltro()
         {
             TermoPesquisa = null;
             await ClearClick.InvokeAsync();
+        }
+
+        protected void TrocarFiltro(string Filtro, int indice)
+        {
+            FiltroSelecionado = (Filtro, indice);
+            StateHasChanged();
+        }
+
+        protected async Task OnKeyPress(KeyboardEventArgs args)
+        {
+            if (args.Code == "13")
+            {
+                await Pesquisar();
+            }
         }
     }
 }

@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Components;
 
 namespace BlazorClientes.Pages.Cadastros
 {
-    public class CustomersBase :  ComponentBase
+    public class CustomersBase : ComponentBase
     {
         #region Parameters
         [CascadingParameter] protected UITheming? Theme { get; set; }
@@ -21,6 +21,8 @@ namespace BlazorClientes.Pages.Cadastros
 
         #region Variables
         protected List<Clientes>? Lista { get; set; } = new();
+        protected Dictionary<string, int>? Filtros { get; set; } = null;
+        protected (string? Filtro, int? FiltroIndice) FiltroSelecionado { get; set; }
         protected int PaginaAtual { get; set; } = 1;
         protected int QuantidadeTotalPaginas { get; set; } = 1;
         protected int ItensPorPagina { get; set; } = 10;
@@ -33,6 +35,10 @@ namespace BlazorClientes.Pages.Cadastros
         #region Methods
         protected override void OnInitialized()
         {
+            Filtros = new();
+            Filtros.Add("Nome", 0);
+            Filtros.Add("Endereço", 1);
+            FiltroSelecionado = ("Nome", 0);
             GetPage(PaginaAtual);
         }
 
@@ -80,6 +86,12 @@ namespace BlazorClientes.Pages.Cadastros
             TotalDeRegistros = (int)Pagina!.TotalRecords!;
             InfoPaginasERegistros = $"{TotalDeRegistros} clientes encontrados";
             StateHasChanged();
+        }
+
+        protected void SearchClick((string? Termo, int? Filtro))
+        {
+            string teste = 
+            //implementar
         }
         #endregion
     }
