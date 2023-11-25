@@ -34,7 +34,7 @@ namespace BlazorClientes.Shared.Components
 
         protected async Task OnKeyPress(KeyboardEventArgs args)
         {
-            if (args.Code == "13")
+            if (args.Key == "Enter" || args.Key == "NumpadEnter")
             {
                 await Pesquisar();
             }

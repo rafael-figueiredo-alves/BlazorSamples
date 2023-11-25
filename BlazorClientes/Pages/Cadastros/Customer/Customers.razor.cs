@@ -42,6 +42,11 @@ namespace BlazorClientes.Pages.Cadastros
             GetPage(PaginaAtual);
         }
 
+        protected void GetPageClick(int page)
+        {
+            GetPage(page);
+        }
+
         protected void InsertCliente()
         {
             Clientes NovoCliente = new();
@@ -77,21 +82,21 @@ namespace BlazorClientes.Pages.Cadastros
             GetPage(PaginaAtual);
         }
 
-        protected async void GetPage(int Page)
+        protected async void GetPage(int Page, FiltrosCliente? Filtro = null, string? Termo = null)
         {
-            PageClientes? Pagina = await Clientes!.GetClientes(Page, ItensPorPagina);
+            PageClientes? Pagina = await Clientes!.GetClientes(Page, ItensPorPagina, Filtro, Termo);
             Lista = Pagina!.Clientes;
             PaginaAtual = Page;
             QuantidadeTotalPaginas = (int)Pagina!.TotalPaginas!;
             TotalDeRegistros = (int)Pagina!.TotalRecords!;
-            InfoPaginasERegistros = $"{TotalDeRegistros} clientes encontrados";
+            InfoPaginasERegistros = TotalDeRegistros.ToString() + (TotalDeRegistros == 0 ? "Nenhum cliente encontrado" : (TotalDeRegistros == 1 ? " cliente encontrado" : " clientes encontrados"));
             StateHasChanged();
         }
 
-        protected void SearchClick((string? Termo, int? Filtro))
+        protected void SearchClick((string? Termo, int? Filtro) args)
         {
-            string teste = 
-            //implementar
+            if(args.Filtro != null)
+                GetPage(PaginaAtual, (FiltrosCliente)args.Filtro, args.Termo);
         }
         #endregion
     }
