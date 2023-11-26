@@ -89,7 +89,7 @@ namespace BlazorClientes.Pages.Cadastros
             PaginaAtual = Page;
             QuantidadeTotalPaginas = (int)Pagina!.TotalPaginas!;
             TotalDeRegistros = (int)Pagina!.TotalRecords!;
-            InfoPaginasERegistros = TotalDeRegistros.ToString() + (TotalDeRegistros == 0 ? "Nenhum cliente encontrado" : (TotalDeRegistros == 1 ? " cliente encontrado" : " clientes encontrados"));
+            InfoPaginasERegistros = (TotalDeRegistros == 0 ? "Nenhum cliente encontrado" : (TotalDeRegistros == 1 ? $"{TotalDeRegistros} cliente encontrado" : $"{TotalDeRegistros} clientes encontrados"));
             StateHasChanged();
         }
 

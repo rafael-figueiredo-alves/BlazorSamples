@@ -10,7 +10,6 @@ namespace BlazorClientes.Shared.Components
         protected UITheming? Theme { get; set; }
         public string? TermoPesquisa { get; set; }
         [Parameter] public EventCallback<(string?, int?)> SearchClick { get; set; }
-        [Parameter] public EventCallback ClearClick { get; set; }
         [Parameter] public RenderFragment? ChildContent { get; set; }
         [Parameter] public Dictionary<string, int>? Filtros { get; set; } = null;
         [Parameter] public (string? Filtro, int? FiltroIndice) FiltroSelecionado { get; set; } = (null, null);
@@ -23,7 +22,7 @@ namespace BlazorClientes.Shared.Components
         protected async Task LimparFiltro()
         {
             TermoPesquisa = null;
-            await ClearClick.InvokeAsync();
+            await Pesquisar();
         }
 
         protected void TrocarFiltro(string Filtro, int indice)
@@ -32,10 +31,10 @@ namespace BlazorClientes.Shared.Components
             StateHasChanged();
         }
 
-        protected async Task OnKeyPress(KeyboardEventArgs args)
+        protected async Task OnKeyUp(KeyboardEventArgs args)
         {
-            if (args.Key == "Enter" || args.Key == "NumpadEnter")
-            {
+            if (args.Key == "Enter")
+            { 
                 await Pesquisar();
             }
         }
