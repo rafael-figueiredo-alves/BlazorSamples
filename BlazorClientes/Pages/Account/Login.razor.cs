@@ -16,11 +16,9 @@ namespace BlazorClientes.Pages.Account
         public LoginUser _loginUser = new();
         public int AnoCopyright { get; set; }
 
-        protected async override void OnInitialized()
+        protected override void OnInitialized()
         {
             AnoCopyright = DateTime.Now.Year;
-
-            await Auth!.IsLogged();
         }
 
         public async void OnValidate()

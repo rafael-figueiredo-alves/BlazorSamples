@@ -44,16 +44,6 @@ namespace BlazorClientes.Services
             return authToken!.GetUserID();
         }
 
-        public async Task IsLogged()
-        {
-            var Token = await Ls!.GetValue("BlazorClientesToken");
-
-            if (!string.IsNullOrEmpty(Token))
-            {
-                Nav!.NavigateTo("/");
-            }
-        }
-
         public async Task Logout()
         {
             await authToken!.Logout();
@@ -149,7 +139,25 @@ namespace BlazorClientes.Services
         {
             var Token = await Ls!.GetValue("BlazorClientesToken");
 
-            return !string.IsNullOrEmpty(Token);
+            if (!string.IsNullOrEmpty(Token))
+            {
+                DateTime ExpiraEm = await authToken!.GetExpiration();
+
+                if (ExpiraEm < DateTime.Now)
+                {
+                    await authToken!.Logout();
+                    return false;
+                }
+                else
+                {
+                    Nav!.NavigateTo("/");
+                    return true;
+                }
+            }
+            else
+            {
+                return false;
+            }
         }
 
         public async Task<UserProfile> SaveProfile(UserProfile _UserProfile)

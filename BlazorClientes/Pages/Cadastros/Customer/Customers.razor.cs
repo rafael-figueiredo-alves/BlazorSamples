@@ -30,6 +30,7 @@ namespace BlazorClientes.Pages.Cadastros
         protected string InfoPaginasERegistros { get; set; } = string.Empty;
         protected ConfirmDlg? MsgDelete { get; set; }
         protected Clientes? SelectedCliente { get; set; } = null;
+        protected string? TermoBusca { get; set; } = null;
         #endregion
 
         #region Methods
@@ -44,7 +45,14 @@ namespace BlazorClientes.Pages.Cadastros
 
         protected void GetPageClick(int page)
         {
-            GetPage(page);
+            if (!string.IsNullOrEmpty(TermoBusca))
+            {
+                GetPage(page, (FiltrosCliente)FiltroSelecionado.FiltroIndice!, TermoBusca);
+            }
+            else
+            {
+                GetPage(page);
+            }
         }
 
         protected void InsertCliente()
@@ -79,7 +87,14 @@ namespace BlazorClientes.Pages.Cadastros
         protected void OnChangeQtdItensPorPagina(ChangeEventArgs args)
         {
             ItensPorPagina = Convert.ToInt32(args.Value);
-            GetPage(PaginaAtual);
+            if (!string.IsNullOrEmpty(TermoBusca))
+            {
+                GetPage(PaginaAtual, (FiltrosCliente)FiltroSelecionado.FiltroIndice!, TermoBusca);
+            }
+            else
+            {
+                GetPage(PaginaAtual);
+            }
         }
 
         protected async void GetPage(int Page, FiltrosCliente? Filtro = null, string? Termo = null)
@@ -95,8 +110,15 @@ namespace BlazorClientes.Pages.Cadastros
 
         protected void SearchClick((string? Termo, int? Filtro) args)
         {
+            TermoBusca = null;
+            FiltroSelecionado = (Filtros!.Where(x => x.Value == args.Filtro).FirstOrDefault().Key, args.Filtro);
+
             if(args.Filtro != null)
+            {
                 GetPage(PaginaAtual, (FiltrosCliente)args.Filtro, args.Termo);
+                TermoBusca = args.Termo;
+            }
+                
         }
         #endregion
     }

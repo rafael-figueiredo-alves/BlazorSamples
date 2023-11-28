@@ -24,11 +24,9 @@ namespace BlazorClientes.Pages.Account
         [Required(ErrorMessage = "É necessário aceitar os termos de serviço para criar a conta.")]
         public bool AcceptTerms { get; set; } = true;
 
-        protected async override void OnInitialized()
+        protected override void OnInitialized()
         {
             AnoCopyright = DateTime.Now.Year;
-
-            await Auth!.IsLogged();
         }
         public async void OnValidate()
         {

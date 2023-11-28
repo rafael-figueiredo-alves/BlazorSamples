@@ -3,8 +3,7 @@
 namespace BlazorClientes.Services.Interfaces
 {
     public interface IAuthServices
-    {
-        Task IsLogged();
+    { 
         Task SignIn(LoginUser loginUser);
         Task SignUp(usuarios usuario);
         Task Logout();

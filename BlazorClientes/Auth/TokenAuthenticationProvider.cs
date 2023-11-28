@@ -91,21 +91,6 @@ namespace BlazorClientes.Auth
             {
                 return NotAuthenticate;
             }
-            else
-            {
-                DateTime exp = GetExpirationFromToken(token);
-                string? uID = GetuID(token);
-
-                if (exp < DateTime.UtcNow)
-                {
-                    await Ls.DeleteValue(tokenKey);
-                    await Ls.DeleteValue(uID);
-                    Nav.NavigateTo("login");
-                    return NotAuthenticate;
-                }
-
-                await UserData!.ReadData(uID);
-            }
 
             return CreateAuthenticationState(token);
         }

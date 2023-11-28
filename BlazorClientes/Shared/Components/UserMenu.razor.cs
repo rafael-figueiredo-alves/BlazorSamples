@@ -16,23 +16,18 @@ namespace BlazorClientes.Shared.Components
 
         protected int uID { get; set; } = 0;
 
-        protected async override void OnInitialized()
+        protected override async Task OnInitializedAsync()
         {
             if (auth != null)
             {
                 bool logado = await auth!.IsLoggedIn();
                 if (logado)
                 {
-                    DateTime ExpiraEm = await auth!.GetExpiration();
                     UsuarioLogado = await auth!.GetUserName();
                     EmailUsuario = await auth!.GetEmail();
                     uID = Convert.ToInt16(await auth!.GetUserID());
                     Conta = await auth!.GetRole();
                     StateHasChanged();
-                    if (ExpiraEm < DateTime.Now)
-                    {
-                        await auth!.Logout();
-                    }
                 }
             }
         }
