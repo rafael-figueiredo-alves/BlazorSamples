@@ -1,6 +1,7 @@
 ﻿using BlazorClientes.Services.Interfaces;
 using BlazorClientes.Shared.Entities;
 using BlazorClientes.Shared.Entities.PageResults;
+using BlazorClientes.Shared.Utils;
 using Blazored.Toast.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Http;
@@ -29,9 +30,44 @@ namespace BlazorClientes.Services
         #endregion
 
         #region Methods
-        public Task<bool> DeleteCliente(Clientes Cliente)
+        public async Task<bool> DeleteCliente(Clientes Cliente)
         {
-            throw new NotImplementedException();
+            Http!.DefaultRequestHeaders.Remove("If-Match");
+
+            string Endpoint = "api/v1/Clientes/" + Cliente.idCliente;
+
+            try
+            {
+                Http!.DefaultRequestHeaders.Add("Access-Control-Allow-Headers", "*");
+
+                Http!.DefaultRequestHeaders.Remove("If-Match");
+                Http!.DefaultRequestHeaders.TryAddWithoutValidation("If-Match", Cliente.ETag);
+
+                var httpResponse = await Http!.DeleteAsync(Endpoint);
+
+                if (httpResponse.IsSuccessStatusCode)
+                {
+                    Toast!.ShowSuccess("Cliente foi removido com sucesso!");
+                    return true;
+                }
+                else if ((httpResponse.StatusCode == HttpStatusCode.BadRequest) || (httpResponse.StatusCode == HttpStatusCode.PreconditionFailed))
+                {
+                    Toast!.ShowWarning("Não foi possível remover cliente informado pois registro não foi encontrado ou ele não corresponde com o registrado na base de dados.");
+                    return false;
+                }
+                else
+                {
+                    var ResponseString = await httpResponse.Content.ReadAsStringAsync();
+                    var jsonResult = JsonSerializer.Deserialize<Erro>(ResponseString, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                    Toast!.ShowError("Ocorreu um erro inesperado! Informações: " + jsonResult!.Info);
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                Toast!.ShowError("Ocorreu um erro inesperado! Informações: " + ex.Message);
+                return false;
+            }
         }
 
         public Task<Clientes?> GetCliente(string ID)
@@ -41,6 +77,8 @@ namespace BlazorClientes.Services
 
         public async Task<PageClientes?> GetClientes(int? Pagina = 1, int? QtdRegistrosPorPagina = 10, FiltrosCliente? FiltrarPor = null, string? Termo = null)
         {
+            Http!.DefaultRequestHeaders.Remove("If-None-Match");
+
             string Endpoint = "api/v1/Clientes?Pagina=" + Pagina.ToString() + "&QtdRegistrosPorPagina=" + QtdRegistrosPorPagina.ToString();
 
             if((FiltrarPor != null) && (!string.IsNullOrEmpty(Termo)))
@@ -81,13 +119,21 @@ namespace BlazorClientes.Services
                         ListaClientes = new();
                         foreach (var cliente in jsonResult)
                         {
-                            ListaClientes.Add(new Clientes(cliente.Nome!, cliente.Endereco!, cliente.Telefone!, cliente.Celular!, cliente.Email!, cliente.idCliente));
+                            ListaClientes.Add(new Clientes(cliente.Nome!, cliente.Endereco!, cliente.Telefone!, cliente.Celular!, cliente.Email!, cliente.ETag, cliente.idCliente));
                         }
                     }
 
                     PageClientes? PageResult = new();
                     
-                    PageResult.Clientes = ListaClientes;
+                    if(ListaClientes != null)
+                    {
+                        PageResult.Clientes = new();
+                        foreach (var cliente in ListaClientes)
+                        {
+                            PageResult.Clientes.Add(new ClientesDTO(cliente.Nome!, cliente.Endereco!, cliente.Telefone!, cliente.Celular!, cliente.Email!, cliente.ETag, cliente.idCliente));
+                        }
+                    }
+
                     PageResult.Pagina = Pagina;
                     var TotalPages = httpResponse.Headers.GetValues("TotalPages").First() ?? "0";
                     var TotalRecords = httpResponse.Headers.GetValues("TotalRecords").First() ?? "0";

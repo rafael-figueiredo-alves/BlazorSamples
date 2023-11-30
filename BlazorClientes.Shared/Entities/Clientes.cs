@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using BlazorClientes.Shared.Utils;
+using System.ComponentModel.DataAnnotations;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace BlazorClientes.Shared.Entities
@@ -51,6 +53,8 @@ namespace BlazorClientes.Shared.Entities
         /// </summary>
         public bool isNewRecord { get; set; } = true;
 
+        public string? ETag { get; set; }
+
         /// <summary>
         /// Método construtor da classe/entidade
         /// </summary>
@@ -76,6 +80,27 @@ namespace BlazorClientes.Shared.Entities
             Telefone = _telefone;
             Celular = _celular;
             Email = _email;
+            ETag = HashMD5.Hash(JsonSerializer.Serialize(this));
+        }
+
+        public Clientes(string _nome, string _endereco, string _telefone, string _celular, string _email, string? _Etag = null, string? id = null)
+        {
+            if (id != null)
+            {
+                idCliente = id!;
+                isNewRecord = false;
+            }
+            else
+            {
+                idCliente = Guid.NewGuid().ToString();
+            }
+
+            Nome = _nome;
+            Endereco = _endereco;
+            Telefone = _telefone;
+            Celular = _celular;
+            Email = _email;
+            ETag = _Etag;
         }
 
         /// <summary>
@@ -101,5 +126,25 @@ namespace BlazorClientes.Shared.Entities
         public new string? idCliente { get; set; }
 
         public ClientesDTO() { }
+
+        public ClientesDTO(string _nome, string _endereco, string _telefone, string _celular, string _email, string? _Etag = null, string? id = null)
+        {
+            if (id != null)
+            {
+                idCliente = id!;
+                isNewRecord = false;
+            }
+            else
+            {
+                idCliente = Guid.NewGuid().ToString();
+            }
+
+            Nome = _nome;
+            Endereco = _endereco;
+            Telefone = _telefone;
+            Celular = _celular;
+            Email = _email;
+            ETag = _Etag;
+        }
     }
 }

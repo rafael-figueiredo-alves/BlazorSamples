@@ -74,9 +74,23 @@ namespace BlazorClientes.Pages.Cadastros
             MsgDelete!.Exibe();
         }
 
-        protected void ConfirmDeleteCliente()
+        protected async Task ConfirmDeleteCliente()
         {
             MsgDelete!.Oculta();
+
+            bool Result = await Clientes!.DeleteCliente(SelectedCliente!);
+
+            if (Result)
+            {
+                if (!string.IsNullOrEmpty(TermoBusca))
+                {
+                    GetPage(PaginaAtual, (FiltrosCliente)FiltroSelecionado.FiltroIndice!, TermoBusca);
+                }
+                else
+                {
+                    GetPage(PaginaAtual);
+                }
+            }
         }
 
         protected void PrintClientes()
@@ -100,7 +114,20 @@ namespace BlazorClientes.Pages.Cadastros
         protected async void GetPage(int Page, FiltrosCliente? Filtro = null, string? Termo = null)
         {
             PageClientes? Pagina = await Clientes!.GetClientes(Page, ItensPorPagina, Filtro, Termo);
-            Lista = Pagina!.Clientes;
+
+            if (Pagina!.Clientes != null)
+            {
+                Lista = new();
+                foreach (var cliente in Pagina!.Clientes)
+                {
+                    Lista.Add(new Clientes(cliente.Nome!, cliente.Endereco!, cliente.Telefone!, cliente.Celular!, cliente.Email!, cliente.ETag, cliente.idCliente));
+                }
+            }
+            else
+            {
+                Lista = null;
+            }
+
             PaginaAtual = Page;
             QuantidadeTotalPaginas = (int)Pagina!.TotalPaginas!;
             TotalDeRegistros = (int)Pagina!.TotalRecords!;
@@ -117,8 +144,7 @@ namespace BlazorClientes.Pages.Cadastros
             {
                 GetPage(PaginaAtual, (FiltrosCliente)args.Filtro, args.Termo);
                 TermoBusca = args.Termo;
-            }
-                
+            }     
         }
         #endregion
     }

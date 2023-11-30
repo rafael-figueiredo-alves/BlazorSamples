@@ -301,6 +301,7 @@ namespace WebApiClientes.Controllers
         /// Utilize este método para apagar um cliente
         /// </summary>
         /// <param name="id">ID do cliente</param>
+        /// <param name="cliente">Cliente para gerar hash</param>
         /// <returns>Não retorna conteúdo, apenas status code = 204</returns>
         /// <response code="204">Cliente apagado com sucesso</response>
         /// <response code="400">Ocorreu um erro com os dados informados que não são válidos</response>
@@ -327,6 +328,7 @@ namespace WebApiClientes.Controllers
                     return NotFound(new Erro("Cliente não encontrado!", "Cliente que foi solicitado remoção não foi encontrado na base de dados."));
                 }
 
+                clientes.ETag = null;
                 dataHash = HashMD5.Hash(JsonSerializer.Serialize(clientes));
 
                 if ((!string.IsNullOrEmpty(Request.Headers.IfMatch)) && (!HashMD5.VerifyETag(Request.Headers.IfMatch!, dataHash)))
