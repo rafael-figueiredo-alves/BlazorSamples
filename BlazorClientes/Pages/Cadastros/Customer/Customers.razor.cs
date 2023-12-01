@@ -113,6 +113,8 @@ namespace BlazorClientes.Pages.Cadastros
 
         protected async void GetPage(int Page, FiltrosCliente? Filtro = null, string? Termo = null)
         {
+            GetPageBeginning:
+
             PageClientes? Pagina = await Clientes!.GetClientes(Page, ItensPorPagina, Filtro, Termo);
 
             if (Pagina!.Clientes != null)
@@ -132,6 +134,13 @@ namespace BlazorClientes.Pages.Cadastros
             QuantidadeTotalPaginas = (int)Pagina!.TotalPaginas!;
             TotalDeRegistros = (int)Pagina!.TotalRecords!;
             InfoPaginasERegistros = (TotalDeRegistros == 0 ? "Nenhum cliente encontrado" : (TotalDeRegistros == 1 ? $"{TotalDeRegistros} cliente encontrado" : $"{TotalDeRegistros} clientes encontrados"));
+            
+            if((PaginaAtual > 1) && ((Lista == null) || (!Lista!.Any()) ))
+            {
+                Page--;
+                goto GetPageBeginning;
+            }
+
             StateHasChanged();
         }
 
