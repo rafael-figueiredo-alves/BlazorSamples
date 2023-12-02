@@ -249,7 +249,7 @@ namespace WebApiClientes.Services
                                               reader["Telefone"].ToString()!,
                                               reader["Celular"].ToString()!,
                                               reader["Email"].ToString()!,
-                                              reader["idClientes"].ToString());
+                                              reader["idCliente"].ToString());
                     }
                     else
                     {

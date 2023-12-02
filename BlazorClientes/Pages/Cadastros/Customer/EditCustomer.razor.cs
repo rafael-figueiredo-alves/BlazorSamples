@@ -12,7 +12,7 @@ namespace BlazorClientes.Pages.Cadastros.Customer
 
         [Inject] protected IParamService? ParamService { get; set; }
         [Inject] protected NavigationManager? Nav {  get; set; }
-
+        [Inject] protected IClientes? Clientes { get; set; }
         protected Clientes? Cliente { get; set; }
         protected string TituloPagina { get; set; } = string.Empty;
 
@@ -39,6 +39,11 @@ namespace BlazorClientes.Pages.Cadastros.Customer
         protected void GoBack()
         {
             Nav!.NavigateTo("customers");
+        }
+
+        protected async Task SubmitCustomer()
+        {
+            await Clientes!.InsertOrUpdateCliente(Cliente!);
         }
     }
 }

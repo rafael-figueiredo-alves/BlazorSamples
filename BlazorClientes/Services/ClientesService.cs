@@ -6,6 +6,7 @@ using Blazored.Toast.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Http;
 using System.Net;
+using System.Net.Http.Json;
 using System.Text.Json;
 
 namespace BlazorClientes.Services
@@ -68,11 +69,6 @@ namespace BlazorClientes.Services
                 Toast!.ShowError("Ocorreu um erro inesperado! Informações: " + ex.Message);
                 return false;
             }
-        }
-
-        public Task<Clientes?> GetCliente(string ID)
-        {
-            throw new NotImplementedException();
         }
 
         public async Task<PageClientes?> GetClientes(int? Pagina = 1, int? QtdRegistrosPorPagina = 10, FiltrosCliente? FiltrarPor = null, string? Termo = null)
@@ -179,9 +175,85 @@ namespace BlazorClientes.Services
             }
         }
 
-        public Task<Clientes> InsertOrUpdateCliente(Clientes cliente)
+        public async Task<Clientes?> InsertOrUpdateCliente(Clientes cliente)
         {
-            throw new NotImplementedException();
+            if (cliente.isNewRecord)
+            {
+                Http!.DefaultRequestHeaders.Remove("If-Match");
+
+                string Endpoint = "api/v1/Clientes";
+
+                try
+                {
+                    Http!.DefaultRequestHeaders.Add("Access-Control-Allow-Headers", "*");
+
+                    var httpResponse = await Http!.PostAsJsonAsync(Endpoint, cliente);
+
+                    if (httpResponse.IsSuccessStatusCode)
+                    {
+                        Toast!.ShowSuccess("Novo cliente cadastrado com sucesso!");
+                        Nav!.NavigateTo("customers");
+                        return await httpResponse.Content.ReadFromJsonAsync<Clientes>();
+                    }
+                    else
+                    {
+                        var ResponseString = await httpResponse.Content.ReadAsStringAsync();
+                        var jsonResult = JsonSerializer.Deserialize<Erro>(ResponseString, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                        Toast!.ShowError("Ocorreu um erro inesperado! Informações: " + jsonResult!.Info);
+                        Nav!.NavigateTo("customers");
+                        return null;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Toast!.ShowError("Ocorreu um erro inesperado! Informações: " + ex.Message);
+                    Nav!.NavigateTo("customers");
+                    return null;
+                }
+            }
+            else
+            {
+                Http!.DefaultRequestHeaders.Remove("If-Match");
+
+                string Endpoint = "api/v1/Clientes/" + cliente.idCliente;
+
+                try
+                {
+                    Http!.DefaultRequestHeaders.Add("Access-Control-Allow-Headers", "*");
+
+                    Http!.DefaultRequestHeaders.Remove("If-Match");
+                    Http!.DefaultRequestHeaders.TryAddWithoutValidation("If-Match", cliente.ETag);
+
+                    var httpResponse = await Http!.PutAsJsonAsync(Endpoint, cliente);  
+
+                    if (httpResponse.IsSuccessStatusCode)
+                    {
+                        Toast!.ShowSuccess("Alterações das informações do cliente foram salvas com sucesso!");
+                        Nav!.NavigateTo("customers");
+                        return await httpResponse.Content.ReadFromJsonAsync<Clientes>();
+                    }
+                    else if ((httpResponse.StatusCode == HttpStatusCode.BadRequest) || (httpResponse.StatusCode == HttpStatusCode.PreconditionFailed))
+                    {
+                        Toast!.ShowWarning("Não foi possível salvar as alterações do cliente informado pois registro não foi encontrado ou ele não corresponde com o registrado na base de dados.");
+                        Nav!.NavigateTo("customers");
+                        return null;
+                    }
+                    else
+                    {
+                        var ResponseString = await httpResponse.Content.ReadAsStringAsync();
+                        var jsonResult = JsonSerializer.Deserialize<Erro>(ResponseString, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                        Toast!.ShowError("Ocorreu um erro inesperado! Informações: " + jsonResult!.Info);
+                        Nav!.NavigateTo("customers");
+                        return null;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Toast!.ShowError("Ocorreu um erro inesperado! Informações: " + ex.Message);
+                    Nav!.NavigateTo("customers");
+                    return null;
+                }
+            }
         }
         #endregion
     }
