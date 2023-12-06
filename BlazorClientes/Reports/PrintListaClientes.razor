@@ -1,0 +1,60 @@
+﻿@page "/printListaClientes"
+@* @layout BlankLayout *@
+
+@inject IClientes ClientesService
+@inject IJSRuntime JS;
+
+<body>
+    <br />
+    <br />
+    <h3>Relação de Clientes</h3>
+    <br />
+    <br />
+    @if (ListaClientes == null)
+    {
+
+    }
+    else
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nome</th>
+                    <th>Endereço</th>
+                    <th>Telefone</th>
+                    <th>Celular</th>
+                    <th>E-mail</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var Cliente in ListaClientes)
+                {
+                    <tr>
+                        <td>@Cliente.idCliente</td>
+                        <td>@Cliente.Nome</td>
+                        <td>@Cliente.Endereco</td>
+                        <td>@Cliente.Telefone</td>
+                        <td>@Cliente.Celular</td>
+                        <td>@Cliente.Email</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</body>
+
+@code {
+    List<Clientes>? ListaClientes;
+
+    protected override async Task OnInitializedAsync()
+    {
+        ListaClientes = await ClientesService.GetAllClientesToPrint();
+        // await Print();
+    }
+
+    protected async Task Print()
+    {
+        await JS.InvokeVoidAsync("print");
+    }
+}

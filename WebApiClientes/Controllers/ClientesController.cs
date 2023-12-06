@@ -130,6 +130,56 @@ namespace WebApiClientes.Controllers
         }
 
         /// <summary>
+        /// Retorna uma lista com todos os clientes cadastrados no sistema
+        /// </summary>
+        /// <returns>Retorna lista de clientes</returns>
+        /// <remarks>
+        /// Obtenha uma relação com todos os dados de todos os clientes
+        /// </remarks>
+        /// <response code="200">Sucesso ao obter lista de clientes</response>
+        /// <response code="401">Acesso não autorizado. Você precisa se autenticar para poder acessar este endpoint</response>
+        /// <response code="403">Recurso só disponível para usuários autenticados com um determinado tipo de conta</response>
+        /// <response code="500">Ocorreu um erro interno no servidor</response>
+        [HttpGet("print")]
+        [Produces(MediaTypeNames.Application.Json)] //Informa qual formato de retorno
+        [ProducesResponseType(StatusCodes.Status200OK)] //Informa status codes retornáveis
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<List<Clientes>>> GetClientesToPrint()
+        {
+            Response.Headers.Add("Access-Control-Expose-Headers", "ETag,AppName,Version,PageNumber,PageSize,TotalRecords,TotalPages");
+            Response.Headers.Add("AppName", "Web Api Clientes");
+            Response.Headers.Add("Version", "1.0.0");
+
+            List<Clientes> clientes = await fclientes.GetClientesToPrint();
+
+            try
+            {
+                if (clientes != null)
+                {
+                    if (clientes.Any())
+                    {
+                        return Ok(clientes);
+                    }
+                    else
+                    {
+                        return Ok(clientes);
+                    }
+                }
+                else
+                {
+                    return StatusCode(500, new Erro("Houve um erro interno com o servidor",
+                                                    "Ocorreu um problema inesperado em nosso servidor, tente acessar nossa API mais tarde."));
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new Erro("Houve um erro interno com o servidor", ex.Message));
+            }
+        }
+
+        /// <summary>
         /// Retorna dados do cliente com ID informado
         /// </summary>
         /// <returns>Retorna dados do cliente com ID informado</returns>

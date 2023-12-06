@@ -1,10 +1,8 @@
 ﻿using BlazorClientes.Services.Interfaces;
 using BlazorClientes.Shared.Entities;
 using BlazorClientes.Shared.Entities.PageResults;
-using BlazorClientes.Shared.Utils;
 using Blazored.Toast.Services;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Http;
 using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json;
@@ -253,6 +251,50 @@ namespace BlazorClientes.Services
                     Nav!.NavigateTo("customers");
                     return null;
                 }
+            }
+        }
+
+        public async Task<List<Clientes>?> GetAllClientesToPrint()
+        {
+            Http!.DefaultRequestHeaders.Remove("If-None-Match");
+
+            string Endpoint = "api/v1/Clientes/print";
+
+            try
+            {
+                Http!.DefaultRequestHeaders.Add("Access-Control-Allow-Headers", "*");
+
+                var httpResponse = await Http!.GetAsync(Endpoint, HttpCompletionOption.ResponseHeadersRead);
+
+                if (httpResponse.IsSuccessStatusCode)
+                {
+                    var ResponseString = await httpResponse.Content.ReadAsStringAsync();
+
+                    var jsonResult = JsonSerializer.Deserialize<List<ClientesDTO>?>(ResponseString, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+                    List<Clientes>? ListaClientes = null;
+
+                    if (jsonResult != null)
+                    {
+                        ListaClientes = new();
+                        foreach (var cliente in jsonResult)
+                        {
+                            ListaClientes.Add(new Clientes(cliente.Nome!, cliente.Endereco!, cliente.Telefone!, cliente.Celular!, cliente.Email!, cliente.ETag, cliente.idCliente));
+                        }
+                    }
+
+                    return ListaClientes;
+                }
+                else
+                {
+                    var ResponseString = await httpResponse.Content.ReadAsStringAsync();
+                    var jsonResult = JsonSerializer.Deserialize<Erro>(ResponseString, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                    throw new Exception(jsonResult!.Info);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Ocorreu um erro inesperado! Tente novamente. Detalhes: " + ex.Message);
             }
         }
         #endregion

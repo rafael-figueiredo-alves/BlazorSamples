@@ -4,6 +4,7 @@ using BlazorClientes.Shared.Entities;
 using BlazorClientes.Shared.Entities.PageResults;
 using Blazored.Toast.Services;
 using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
 
 namespace BlazorClientes.Pages.Cadastros
 {
@@ -17,6 +18,7 @@ namespace BlazorClientes.Pages.Cadastros
         [Inject] protected IParamService? ParamService { get; set; }
         [Inject] protected NavigationManager? NavigationManager { get; set; }
         [Inject] protected IClientes? Clientes { get; set; }
+        [Inject] protected IJSRuntime? JSRuntime { get; set; }
         #endregion
 
         #region Variables
@@ -36,9 +38,11 @@ namespace BlazorClientes.Pages.Cadastros
         #region Methods
         protected override void OnInitialized()
         {
-            Filtros = new();
-            Filtros.Add("Nome", 0);
-            Filtros.Add("Endereço", 1);
+            Filtros = new()
+            {
+                { "Nome", 0 },
+                { "Endereço", 1 }
+            };
             FiltroSelecionado = ("Nome", 0);
             GetPage(PaginaAtual);
         }
@@ -93,9 +97,9 @@ namespace BlazorClientes.Pages.Cadastros
             }
         }
 
-        protected void PrintClientes()
+        protected async Task PrintClientes()
         {
-            //Implementar Impressão básica da lista de clientes
+            await JSRuntime!.InvokeVoidAsync("open", new[] { "/printListaClientes", "_blank" });
         }
 
         protected void OnChangeQtdItensPorPagina(ChangeEventArgs args)

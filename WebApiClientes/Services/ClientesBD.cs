@@ -356,5 +356,47 @@ namespace WebApiClientes.Services
                 conn?.Close();
             }
         }
+
+        /// <summary>
+        /// Retorna lista de clientes
+        /// </summary>
+        /// <param name="Page">Informações para paginação</param>
+        /// <returns>Lista de clientes</returns>
+        public async Task<List<Clientes>> GetClientesToPrint()
+        {
+            var clientes = new List<Clientes>();
+
+            MySqlConnection? conn = null;
+            try
+            {
+                conn = new MySqlConnection(Conn);
+                conn.Open();
+
+                var sql = "select * from clientes";
+                var cmd = new MySqlCommand(sql, conn);
+                var reader = await cmd.ExecuteReaderAsync();
+                while (await reader.ReadAsync())
+                {
+                    clientes.Add(new Clientes(
+                                              reader["Nome"].ToString()!,
+                                              reader["Endereco"].ToString()!,
+                                              reader["Telefone"].ToString()!,
+                                              reader["Celular"].ToString()!,
+                                              reader["Email"].ToString()!,
+                                              reader["idCliente"].ToString()));
+                }
+
+                return clientes;
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            finally
+            {
+                conn?.Close();
+            }
+        }
     }
 }
