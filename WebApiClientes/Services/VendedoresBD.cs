@@ -1,6 +1,7 @@
 ﻿using MySql.Data.MySqlClient;
 using BlazorClientes.Shared.Entities;
 using WebApiClientes.Services.Interfaces;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace WebApiClientes.Services
 {
@@ -309,6 +310,44 @@ namespace WebApiClientes.Services
                 var cmd = new MySqlCommand(sql, conn);
                 cmd.Parameters.Add(new MySqlParameter("inicio", inicio));
                 cmd.Parameters.Add(new MySqlParameter("qtd", PageSize));
+                var reader = await cmd.ExecuteReaderAsync();
+                while (await reader.ReadAsync())
+                {
+                    vendedores.Add(new Vendedores(
+                                              reader["Vendedor"].ToString()!,
+                                              Convert.ToInt32(reader["pComissao"].ToString()!),
+                                              reader["idVendedor"].ToString()));
+                }
+
+                return vendedores;
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            finally
+            {
+                conn?.Close();
+            }
+        }
+
+        /// <summary>
+        /// Retorna lista completa de vendedores para imprimir
+        /// </summary>
+        /// <returns>Retorna lista completa de vendedores para imprimir</returns>
+        public async Task<List<Vendedores>> GetVendedoresToPrint()
+        {
+            var vendedores = new List<Vendedores>();
+
+            MySqlConnection? conn = null;
+            try
+            {
+                conn = new MySqlConnection(Conn);
+                conn.Open();
+
+                string sql = "select * from vendedores ";
+                var cmd = new MySqlCommand(sql, conn);
                 var reader = await cmd.ExecuteReaderAsync();
                 while (await reader.ReadAsync())
                 {

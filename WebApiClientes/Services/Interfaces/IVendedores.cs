@@ -51,5 +51,11 @@ namespace WebApiClientes.Services.Interfaces
         /// <param name="Page">Informações para paginação</param>
         /// <returns></returns>
         public Task<List<Vendedores>> GetVendedoresPorFiltro(PageInfo Page, FiltroVendedor FiltrarPor, string? TermoBusca);
+
+        /// <summary>
+        /// Retorna lista de vendedore para impressão
+        /// </summary>
+        /// <returns>Retorna lista de vendedores para impressão</returns>
+        public Task<List<Vendedores>> GetVendedoresToPrint();
     }
 }

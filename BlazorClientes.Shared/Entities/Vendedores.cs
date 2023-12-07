@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using BlazorClientes.Shared.Utils;
+using System.ComponentModel.DataAnnotations;
+using System.Text.Json;
 
 namespace BlazorClientes.Shared.Entities
 {
@@ -29,6 +31,8 @@ namespace BlazorClientes.Shared.Entities
         /// </summary>
         public bool isNewRecord { get; set; } = true;
 
+        public string? ETag { get; set; }
+
         /// <summary>
         /// Método construtor
         /// </summary>
@@ -49,6 +53,24 @@ namespace BlazorClientes.Shared.Entities
 
             Vendedor = vendedor;
             pComissao = _pComissao;
+            ETag = HashMD5.Hash(JsonSerializer.Serialize(this));
+        }
+
+        public Vendedores(string? vendedor, int _pComissao, string? _Etag = null, string? _idVendedor = null)
+        {
+            if (idVendedor != null)
+            {
+                idVendedor = _idVendedor!;
+                isNewRecord = false;
+            }
+            else
+            {
+                idVendedor = Guid.NewGuid().ToString();
+            }
+
+            Vendedor = vendedor;
+            pComissao = _pComissao;
+            ETag = _Etag;
         }
 
         /// <summary>
@@ -63,5 +85,32 @@ namespace BlazorClientes.Shared.Entities
     public enum FiltroVendedor
     {
         PorNome
+    }
+
+    public class VendedoresDTO : Vendedores
+    {
+        /// <summary>
+        /// Campo Id do tipo GUID
+        /// </summary>
+        public new string? idVendedor { get; private set; }
+
+        public VendedoresDTO() { }
+
+        public VendedoresDTO(string? vendedor, int _pComissao, string? _Etag = null, string? _idVendedor = null)
+        {
+            if (idVendedor != null)
+            {
+                idVendedor = _idVendedor!;
+                isNewRecord = false;
+            }
+            else
+            {
+                idVendedor = Guid.NewGuid().ToString();
+            }
+
+            Vendedor = vendedor;
+            pComissao = _pComissao;
+            ETag = _Etag;
+        }
     }
 }

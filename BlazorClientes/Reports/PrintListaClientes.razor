@@ -1,8 +1,9 @@
 ﻿@page "/printListaClientes"
-@* @layout BlankLayout *@
+@layout BlankLayout
 
 @inject IClientes ClientesService
 @inject IJSRuntime JS;
+@inject NavigationManager Nav
 
 <body>
     <br />
@@ -42,19 +43,27 @@
             </tbody>
         </table>
     }
+    <br />
+    @if (visibleButton)
+    {
+        <button @onclick="Print">Imprimir</button>
+    }
 </body>
 
 @code {
     List<Clientes>? ListaClientes;
+    protected bool visibleButton { get; set; } = true;
 
     protected override async Task OnInitializedAsync()
     {
         ListaClientes = await ClientesService.GetAllClientesToPrint();
-        // await Print();
     }
 
     protected async Task Print()
     {
+        visibleButton = false;
+        StateHasChanged();
         await JS.InvokeVoidAsync("print");
+        Nav.NavigateTo("customers");
     }
 }

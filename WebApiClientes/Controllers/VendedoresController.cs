@@ -44,6 +44,7 @@ namespace WebApiClientes.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<List<Vendedores>>> Get([FromQuery] FiltroVendedor? FiltrarPor, string? TermoBusca, int? Pagina, int? QtdRegistrosPorPagina)
         {
+            Response.Headers.Add("Access-Control-Expose-Headers", "ETag,AppName,Version,PageNumber,PageSize,TotalRecords,TotalPages");
             Response.Headers.Add("AppName", "Web Api Clientes");
             Response.Headers.Add("Version", "1.0.0");
 
@@ -104,7 +105,14 @@ namespace WebApiClientes.Controllers
                         }
                         else
                         {
-                            return NotFound(vendedores);
+                            //Os comandos abaixo adicionam Headers personalizados
+                            Response.Headers.Add("PageNumber", Page.Page.ToString());
+                            Response.Headers.Add("PageSize", Page.PageSize.ToString());
+                            Response.Headers.Add("TotalRecords", Page.TotalRecords.ToString());
+                            Response.Headers.Add("TotalPages", Page.TotalPages.ToString());
+                            //Serializar e enviar o Hash no etag
+                            Response.Headers.ETag = dataHash;
+                            return Ok(vendedores);
                         }
                     }
                     else
@@ -117,6 +125,56 @@ namespace WebApiClientes.Controllers
                 {
                     return StatusCode(500, new Erro("Houve um erro interno com o servidor", ex.Message));
                 }
+            }
+        }
+
+        /// <summary>
+        /// Retorna uma lista com todos os vendedores cadastrados no sistema
+        /// </summary>
+        /// <returns>Retorna lista de vendedores</returns>
+        /// <remarks>
+        /// Obtenha uma relação com todos os dados de todos os vendedores
+        /// </remarks>
+        /// <response code="200">Sucesso ao obter lista de vendedores</response>
+        /// <response code="401">Acesso não autorizado. Você precisa se autenticar para poder acessar este endpoint</response>
+        /// <response code="403">Recurso só disponível para usuários autenticados com um determinado tipo de conta</response>
+        /// <response code="500">Ocorreu um erro interno no servidor</response>
+        [HttpGet("print")]
+        [Produces(MediaTypeNames.Application.Json)] //Informa qual formato de retorno
+        [ProducesResponseType(StatusCodes.Status200OK)] //Informa status codes retornáveis
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<List<Vendedores>>> GetVendedoresToPrint()
+        {
+            Response.Headers.Add("Access-Control-Expose-Headers", "ETag,AppName,Version,PageNumber,PageSize,TotalRecords,TotalPages");
+            Response.Headers.Add("AppName", "Web Api Clientes");
+            Response.Headers.Add("Version", "1.0.0");
+
+            List<Vendedores> vendedores = await fvendedores.GetVendedoresToPrint();
+
+            try
+            {
+                if (vendedores != null)
+                {
+                    if (vendedores.Any())
+                    {
+                        return Ok(vendedores);
+                    }
+                    else
+                    {
+                        return Ok(vendedores);
+                    }
+                }
+                else
+                {
+                    return StatusCode(500, new Erro("Houve um erro interno com o servidor",
+                                                    "Ocorreu um problema inesperado em nosso servidor, tente acessar nossa API mais tarde."));
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new Erro("Houve um erro interno com o servidor", ex.Message));
             }
         }
 
@@ -236,6 +294,7 @@ namespace WebApiClientes.Controllers
                     return NotFound(new Erro("Vendedor não encontrado!", "Vendedor que foi solicitado alteração não foi encontrado na base de dados."));
                 }
 
+                Vendedor.ETag = null;
                 dataHash = HashMD5.Hash(JsonSerializer.Serialize(Vendedor));
 
                 if ((!string.IsNullOrEmpty(Request.Headers.IfMatch)) && (!HashMD5.VerifyETag(Request.Headers.IfMatch!, dataHash)))
@@ -294,6 +353,7 @@ namespace WebApiClientes.Controllers
                     return NotFound(new Erro("Vendedor não encontrado!", "Vendedor que foi solicitado remoção não foi encontrado na base de dados."));
                 }
 
+                Vendedor.ETag = null;
                 dataHash = HashMD5.Hash(JsonSerializer.Serialize(Vendedor));
 
                 if ((!string.IsNullOrEmpty(Request.Headers.IfMatch)) && (!HashMD5.VerifyETag(Request.Headers.IfMatch!, dataHash)))
