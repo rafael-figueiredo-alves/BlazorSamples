@@ -35,5 +35,6 @@ builder.Services.AddSingleton<IUserData,  UserData>();
 
 //Serviços relacionados a API
 builder.Services.AddScoped<IClientes, ClientesService>();
+builder.Services.AddScoped<IVendedores, VendedoresService>();
 
 await builder.Build().RunAsync();

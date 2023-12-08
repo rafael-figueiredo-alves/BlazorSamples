@@ -4,6 +4,7 @@ using BlazorClientes.Shared.Entities.PageResults;
 using Blazored.Toast.Services;
 using Microsoft.AspNetCore.Components;
 using System.Net;
+using System.Net.Http.Json;
 using System.Text.Json;
 
 namespace BlazorClientes.Services
@@ -147,7 +148,7 @@ namespace BlazorClientes.Services
                 }
                 else if (httpResponse.StatusCode == HttpStatusCode.NotModified)
                 {
-                    PageClientes? PageResult = UserData!.UserDB().Clientes!.Where(x => x.Endpoint == Endpoint).First();
+                    PageVendedores? PageResult = UserData!.UserDB().Vendedores!.Where(x => x.Endpoint == Endpoint).First();
 
                     PageResult.Pagina = Pagina;
                     var TotalPages = httpResponse.Headers.GetValues("TotalPages").First() ?? "0";
@@ -172,9 +173,129 @@ namespace BlazorClientes.Services
             }
         }
 
-        public Task<Vendedores> InsertOrUpdateVendedor(Vendedores Vendedor)
+        public async Task<Vendedores?> InsertOrUpdateVendedor(Vendedores Vendedor)
         {
-            throw new NotImplementedException();
+            if (Vendedor.isNewRecord)
+            {
+                Http!.DefaultRequestHeaders.Remove("If-Match");
+
+                string Endpoint = "api/v1/Vendedores";
+
+                try
+                {
+                    Http!.DefaultRequestHeaders.Add("Access-Control-Allow-Headers", "*");
+
+                    var httpResponse = await Http!.PostAsJsonAsync(Endpoint, Vendedor);
+
+                    if (httpResponse.IsSuccessStatusCode)
+                    {
+                        Toast!.ShowSuccess("Novo vendedor cadastrado com sucesso!");
+                        Nav!.NavigateTo("salespeople");
+                        return await httpResponse.Content.ReadFromJsonAsync<Vendedores>();
+                    }
+                    else
+                    {
+                        var ResponseString = await httpResponse.Content.ReadAsStringAsync();
+                        var jsonResult = JsonSerializer.Deserialize<Erro>(ResponseString, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                        Toast!.ShowError("Ocorreu um erro inesperado! Informações: " + jsonResult!.Info);
+                        Nav!.NavigateTo("salespeople");
+                        return null;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Toast!.ShowError("Ocorreu um erro inesperado! Informações: " + ex.Message);
+                    Nav!.NavigateTo("salespeople");
+                    return null;
+                }
+            }
+            else
+            {
+                Http!.DefaultRequestHeaders.Remove("If-Match");
+
+                string Endpoint = "api/v1/Vendedores/" + Vendedor.idVendedor;
+
+                try
+                {
+                    Http!.DefaultRequestHeaders.Add("Access-Control-Allow-Headers", "*");
+
+                    Http!.DefaultRequestHeaders.Remove("If-Match");
+                    Http!.DefaultRequestHeaders.TryAddWithoutValidation("If-Match", Vendedor.ETag);
+
+                    var httpResponse = await Http!.PutAsJsonAsync(Endpoint, Vendedor);
+
+                    if (httpResponse.IsSuccessStatusCode)
+                    {
+                        Toast!.ShowSuccess("Alterações das informações do vendedor foram salvas com sucesso!");
+                        Nav!.NavigateTo("salespeople");
+                        return await httpResponse.Content.ReadFromJsonAsync<Vendedores>();
+                    }
+                    else if ((httpResponse.StatusCode == HttpStatusCode.BadRequest) || (httpResponse.StatusCode == HttpStatusCode.PreconditionFailed))
+                    {
+                        Toast!.ShowWarning("Não foi possível salvar as alterações do vendedor informado pois registro não foi encontrado ou ele não corresponde com o registrado na base de dados.");
+                        Nav!.NavigateTo("salespeople");
+                        return null;
+                    }
+                    else
+                    {
+                        var ResponseString = await httpResponse.Content.ReadAsStringAsync();
+                        var jsonResult = JsonSerializer.Deserialize<Erro>(ResponseString, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                        Toast!.ShowError("Ocorreu um erro inesperado! Informações: " + jsonResult!.Info);
+                        Nav!.NavigateTo("salespeople");
+                        return null;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Toast!.ShowError("Ocorreu um erro inesperado! Informações: " + ex.Message);
+                    Nav!.NavigateTo("salespeople");
+                    return null;
+                }
+            }
+        }
+
+        public async Task<List<Vendedores>?> GetAllVendedoresToPrint()
+        {
+            Http!.DefaultRequestHeaders.Remove("If-None-Match");
+
+            string Endpoint = "api/v1/Vendedores/print";
+
+            try
+            {
+                Http!.DefaultRequestHeaders.Add("Access-Control-Allow-Headers", "*");
+
+                var httpResponse = await Http!.GetAsync(Endpoint, HttpCompletionOption.ResponseHeadersRead);
+
+                if (httpResponse.IsSuccessStatusCode)
+                {
+                    var ResponseString = await httpResponse.Content.ReadAsStringAsync();
+
+                    var jsonResult = JsonSerializer.Deserialize<List<VendedoresDTO>?>(ResponseString, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+                    List<Vendedores>? ListaVendedores = null;
+
+                    if (jsonResult != null)
+                    {
+                        ListaVendedores = new();
+                        foreach (var vendedor in jsonResult)
+                        {
+                            ListaVendedores.Add(new Vendedores(vendedor.Vendedor!, vendedor.pComissao!, vendedor.ETag!, vendedor.idVendedor!));
+                        }
+                    }
+
+                    return ListaVendedores;
+                }
+                else
+                {
+                    var ResponseString = await httpResponse.Content.ReadAsStringAsync();
+                    var jsonResult = JsonSerializer.Deserialize<Erro>(ResponseString, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                    throw new Exception(jsonResult!.Info);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Ocorreu um erro inesperado! Tente novamente. Detalhes: " + ex.Message);
+            }
         }
         #endregion
     }

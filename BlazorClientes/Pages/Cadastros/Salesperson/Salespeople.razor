@@ -3,8 +3,77 @@
 
 <PageTitle>BlazorClientes | Vendedores</PageTitle>
 
-<h3>Vendedores</h3>
+<SearchInput Filtros="Filtros" FiltroSelecionado="FiltroSelecionado" SearchClick="SearchClick">
+    <h3>Vendedores</h3>
+</SearchInput>
 
-@code {
+<div class="container-fluid mt-1 mb-1 border-bottom border-top">
+    <div class="row">
+        <div class="col-6 pt-3 text-start align-middle">
+            <p class="text-start">@InfoPaginasERegistros</p>
+        </div>
+        <div class="col-6 pt-2 pb-2 justify-content-end text-end">
+            @if (Lista!.Any())
+            {
+                <button class="btn btn-primary d-none d-sm-inline" style="width: 150px" @onclick="PrintVendedores"><span class="oi oi-print" /> Imprimir</button>
+                <button class="btn btn-primary d-sm-none rounded-circle" @onclick="PrintVendedores"><span class="oi oi-print" /></button>
+            }
+            <button class="btn btn-success d-none d-sm-inline" style="width: 150px" @onclick="InsertVendedor"><span class="oi oi-plus" /> Novo cliente</button>
+            <button class="btn btn-success d-sm-none rounded-circle" @onclick="InsertVendedor"><span class="oi oi-plus" /></button>
+        </div>
+    </div>
+</div>
 
+@if (Lista == null)
+{
+    <p>Carregando vendedores...</p>
 }
+else
+if (!Lista.Any())
+{
+    <p>Sem vendedores para listar</p>
+}
+else
+{
+    <div style="height:60vh;overflow:auto;">
+        <table class="table table-hover @Theme!.ColorClass" style="color: @Theme!.ColorFontStyle" data-bs-theme="@Theme.DataBsTheme">
+            <thead style="position: sticky;z-index: 10;top: 0;">
+                <tr>
+                    <th scope="col" style="position: sticky;z-index: 10;">Vendedor</th>
+                    <th scope="col" style="position: sticky;z-index: 10;">% Comissão</th>
+                    <th scope="col" style="position: sticky;z-index: 10;">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (Vendedores vendedor in Lista!)
+                {
+                    <tr>
+                        <td class="col-4 col-md-4 align-middle" style="color: @Theme!.ColorFontStyle!" data-bs-theme="@Theme.DataBsTheme">@vendedor.Vendedor</td>
+                        <td class="col-4 col-md-4 align-middle" style="color: @Theme!.ColorFontStyle" data-bs-theme="@Theme.DataBsTheme">@vendedor.pComissao</td>
+                        <td class="col-4 col-md-4">
+                            <div class="d-inline align-content-end">
+                                <a class="btn btn-primary rounded-circle" @onclick="@(()=> UpdateVendedor(vendedor))"><span class="oi oi-pencil" /></a>
+                                <a class="btn btn-danger rounded-circle" @onclick="@(()=> DeleteVendedor(vendedor))"><span class="oi oi-trash" /></a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+<div class="container" style="height: 20px" />
+
+<ConfirmDlg Titulo="Remover vendedor?" @ref="MsgDelete" OnYesClick="ConfirmDeleteVendedor">
+    <p>Deseja realmente apagar os dados do vendedor selecionado?</p>
+    <p><strong>Vendedor:</strong> @SelectedVendedor!.Vendedor</p>
+</ConfirmDlg>
+
+<div class="fixed-bottom pe-5 ps-3 pt-2 @Theme!.ColorClass" style="z-index: 100">
+    <Paginacao QuantidadeTotalPaginas="QuantidadeTotalPaginas" PaginaAtual="PaginaAtual"
+               Raio="2" PaginaSelecionadaClick="GetPageClick" QtdItensPorPagina="ItensPorPagina"
+               OnChangeQtdItensPorPagina="OnChangeQtdItensPorPagina" />
+</div>
+
+<div class="container" style="height: 20px" />
