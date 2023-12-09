@@ -42,7 +42,7 @@ namespace WebApiClientes.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status304NotModified)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<List<Vendedores>>> Get([FromQuery] FiltroVendedor? FiltrarPor, string? TermoBusca, int? Pagina, int? QtdRegistrosPorPagina)
+        public async Task<ActionResult<List<Vendedores>>> Get([FromQuery] FiltroVendedor? FiltrarPor, string? Termo, int? Pagina, int? QtdRegistrosPorPagina)
         {
             Response.Headers.Add("Access-Control-Expose-Headers", "ETag,AppName,Version,PageNumber,PageSize,TotalRecords,TotalPages");
             Response.Headers.Add("AppName", "Web Api Clientes");
@@ -64,13 +64,13 @@ namespace WebApiClientes.Controllers
                 Page.PageSize = QtdRegistrosPorPagina;
             }
 
-            if ((FiltrarPor == null) && (string.IsNullOrEmpty(TermoBusca)))
+            if ((FiltrarPor == null) && (string.IsNullOrEmpty(Termo)))
             {
                 vendedores = await fvendedores.GetVendedores(Page);
             }
             else
             {
-                vendedores = await fvendedores.GetVendedoresPorFiltro(Page, (FiltroVendedor)FiltrarPor!, TermoBusca);
+                vendedores = await fvendedores.GetVendedoresPorFiltro(Page, (FiltroVendedor)FiltrarPor!, Termo);
             }
 
             dataHash = HashMD5.Hash(JsonSerializer.Serialize(vendedores));

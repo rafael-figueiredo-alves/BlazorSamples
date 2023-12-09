@@ -286,8 +286,8 @@ namespace WebApiClientes.Services
                 switch (FiltrarPor)
                 {
                     case FiltroVendedor.PorNome:
-                        sql = "select * from vendedores where Vendedor like '" + TermoBusca + "%'";
-                        sql_counter = "select Count(*) AS Total from vendedores where Vendedor like '" + TermoBusca + "%'";
+                        sql = "select * from vendedores where Vendedor like '%" + TermoBusca + "%'";
+                        sql_counter = "select Count(*) AS Total from vendedores where Vendedor like '%" + TermoBusca + "%'";
                         break;
                     default:
                         sql = "select * from vendedores";

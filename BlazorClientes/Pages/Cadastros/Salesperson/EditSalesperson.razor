@@ -1,5 +1,62 @@
-﻿<h3>EditSalesperson</h3>
+﻿@page "/editsalesperson"
+@inherits EditSalespersonBase
 
-@code {
 
-}
+<PageTitle>BlazorClientes | @TituloPagina</PageTitle>
+
+    <EditForm Model="Vendedor" OnValidSubmit="SubmitVendedor">
+        <DataAnnotationsValidator />
+
+        <div class="card">
+            <div class="card-header" style="height: 56.8px;padding-left:4px;padding-right:4px">
+                <div class="container-fluid align-middle">
+                    <div class="row">
+                        <div class="col-8 col-md-6 text-start align-middle">
+                            <svg width="40px" height="40px" viewBox="0 0 24.00 24.00" fill="none" xmlns="http://www.w3.org/2000/svg" style="cursor:pointer;margin-bottom: 8px;" @onclick="GoBack">
+                                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                                <g id="SVGRepo_iconCarrier">
+                                    <rect width="24" height="24" fill="none"></rect>
+                                    <path d="M18 12L6 12M6 12L11 17M6 12L11 7" stroke="@(Theme!.IsDark ? "#ffffff" : "#000000")" stroke-linecap="round" stroke-linejoin="round"></path>
+                                </g>
+                            </svg>
+                            <h3 style="display:inline-block;">
+                                @TituloPagina
+                        </h3>
+                    </div>
+                    <div class="col-4 col-md-6 justify-content-end text-end">
+                        @if (!Vendedor!.isNewRecord)
+                        {
+                            <button class="btn btn-primary d-none d-sm-inline" style="width: 120px;" type="submit"><span class="oi oi-print" />  Imprimir</button>
+                            <button class="btn btn-primary d-sm-none rounded-circle" type="submit"><span class="oi oi-print" /></button>
+                        }
+                        <button class="btn btn-success d-none d-sm-inline" style="width: 120px;" type="submit"><span class="oi oi-check" />  Salvar</button>
+                        <button class="btn btn-success d-sm-none rounded-circle" type="submit"><span class="oi oi-check" /></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            @if (!Vendedor!.isNewRecord)
+            {
+                <div class="form-group p-3">
+                    <label for="IDVendedor">ID do Vendedor</label>
+                    <p><strong>@Vendedor!.idVendedor</strong></p>
+                </div>
+            }
+
+            <div class="form-group p-3">
+                <label for="NomeVendedor">Nome do Vendedor</label>
+                <InputText class="form-control" id="NomeCliente" aria-describedby="Nome do Vendedor" placeholder="informe o nome do Vendedor" @bind-Value="@Vendedor.Vendedor" />
+                <ValidationMessage For="@(() => Vendedor.Vendedor)" />
+            </div>
+
+            <div class="form-group p-3">
+                <label for="PercentualDeComissão">% de Comissão</label>
+                <InputNumber class="form-control" id="PercentualDeComissão" aria-describedby="% de Comissão" placeholder="Informe o percentual(%) de Comissão do vendedor" @bind-Value="@Vendedor.pComissao" />
+                <ValidationMessage For="@(() => Vendedor.pComissao)" />
+            </div>
+
+        </div>
+    </div>
+</EditForm>
