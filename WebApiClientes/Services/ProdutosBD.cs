@@ -1,4 +1,5 @@
 ﻿using BlazorClientes.Shared.Entities;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using MySql.Data.MySqlClient;
 using WebApiClientes.Services.Interfaces;
 
@@ -326,6 +327,47 @@ namespace WebApiClientes.Services
                 var cmd = new MySqlCommand(sql, conn);
                 cmd.Parameters.Add(new MySqlParameter("inicio", inicio));
                 cmd.Parameters.Add(new MySqlParameter("qtd", PageSize));
+                var reader = await cmd.ExecuteReaderAsync();
+                while (await reader.ReadAsync())
+                {
+                    produtos.Add(new Produtos(
+                                              reader["Produto"].ToString()!,
+                                              reader["Descricao"].ToString()!,
+                                              Convert.ToDecimal(reader["Valor"].ToString()!),
+                                              reader["Barcode"].ToString()!,
+                                              reader["idProduto"].ToString()));
+                }
+
+                return produtos;
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            finally
+            {
+                conn?.Close();
+            }
+        }
+
+        /// <summary>
+        /// Retorna Lista com todos os produtos para gerar impresssão
+        /// </summary>
+        /// <returns>Retorna Lista com todos os produtos para gerar impresssão</returns>
+        /// <exception cref="Exception">Caso algum erro ocorra ao buscar e montar lista</exception>
+        public async Task<List<Produtos>> GetAllProdutosToPrint()
+        {
+            var produtos = new List<Produtos>();
+
+            MySqlConnection? conn = null;
+            try
+            {
+                conn = new MySqlConnection(Conn);
+                conn.Open();
+
+                string sql = "select * from produtos ";
+                var cmd = new MySqlCommand(sql, conn);
                 var reader = await cmd.ExecuteReaderAsync();
                 while (await reader.ReadAsync())
                 {

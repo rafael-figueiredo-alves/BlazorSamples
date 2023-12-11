@@ -37,13 +37,13 @@ namespace WebApiClientes.Controllers
         [HttpGet]
         [Produces(MediaTypeNames.Application.Json)] //Informa qual formato de retorno
         [ProducesResponseType(StatusCodes.Status200OK)] //Informa status codes retornáveis
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status304NotModified)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<List<Produtos>>> Get([FromQuery] FiltroProdutos? FiltrarPor, string? termo, int? Pagina, int? QtdRegistrosPorPagina)
+        public async Task<ActionResult<List<Produtos>>> Get([FromQuery] FiltroProdutos? FiltrarPor, string? Termo, int? Pagina, int? QtdRegistrosPorPagina)
         {
+            Response.Headers.Add("Access-Control-Expose-Headers", "ETag,AppName,Version,PageNumber,PageSize,TotalRecords,TotalPages");
             Response.Headers.Add("AppName", "Web Api Clientes");
             Response.Headers.Add("Version", "1.0.0");
 
@@ -63,13 +63,13 @@ namespace WebApiClientes.Controllers
                 Page.PageSize = QtdRegistrosPorPagina;
             }
 
-            if ((FiltrarPor == null) && (string.IsNullOrEmpty(termo)))
+            if ((FiltrarPor == null) && (string.IsNullOrEmpty(Termo)))
             {
                 produtos = await fprodutos.GetProdutos(Page);
             }
             else
             {
-                produtos = await fprodutos.GetProdutosPorFiltro(Page, (FiltroProdutos)FiltrarPor!, termo);
+                produtos = await fprodutos.GetProdutosPorFiltro(Page, (FiltroProdutos)FiltrarPor!, Termo);
             }
 
             dataHash = HashMD5.Hash(JsonSerializer.Serialize(produtos));
@@ -104,7 +104,14 @@ namespace WebApiClientes.Controllers
                         }
                         else
                         {
-                            return NotFound(produtos);
+                            //Os comandos abaixo adicionam Headers personalizados
+                            Response.Headers.Add("PageNumber", Page.Page.ToString());
+                            Response.Headers.Add("PageSize", Page.PageSize.ToString());
+                            Response.Headers.Add("TotalRecords", Page.TotalRecords.ToString());
+                            Response.Headers.Add("TotalPages", Page.TotalPages.ToString());
+                            //Serializar e enviar o Hash no etag
+                            Response.Headers.ETag = dataHash;
+                            return Ok(produtos);
                         }
                     }
                     else
@@ -150,6 +157,56 @@ namespace WebApiClientes.Controllers
                     else
                     {
                         return NotFound(new Erro("Nenhum produto encontrado", "O ID informado não retornou produto algum. Tente um outro ID."));
+                    }
+                }
+                else
+                {
+                    return StatusCode(500, new Erro("Houve um erro interno com o servidor",
+                                                    "Ocorreu um problema inesperado em nosso servidor, tente acessar nossa API mais tarde."));
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new Erro("Houve um erro interno com o servidor", ex.Message));
+            }
+        }
+
+        /// <summary>
+        /// Retorna uma lista com todos os produtos cadastrados no sistema
+        /// </summary>
+        /// <returns>Retorna lista de produtos para imprimir</returns>
+        /// <remarks>
+        /// Obtenha uma relação com todos os dados de todos os produtos
+        /// </remarks>
+        /// <response code="200">Sucesso ao obter lista de produtos</response>
+        /// <response code="401">Acesso não autorizado. Você precisa se autenticar para poder acessar este endpoint</response>
+        /// <response code="403">Recurso só disponível para usuários autenticados com um determinado tipo de conta</response>
+        /// <response code="500">Ocorreu um erro interno no servidor</response>
+        [HttpGet("print")]
+        [Produces(MediaTypeNames.Application.Json)] //Informa qual formato de retorno
+        [ProducesResponseType(StatusCodes.Status200OK)] //Informa status codes retornáveis
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<List<Produtos>>> GetAllVendedoresToPrint()
+        {
+            Response.Headers.Add("Access-Control-Expose-Headers", "ETag,AppName,Version,PageNumber,PageSize,TotalRecords,TotalPages");
+            Response.Headers.Add("AppName", "Web Api Clientes");
+            Response.Headers.Add("Version", "1.0.0");
+
+            List<Produtos> produtos = await fprodutos.GetAllProdutosToPrint();
+
+            try
+            {
+                if (produtos != null)
+                {
+                    if (produtos.Any())
+                    {
+                        return Ok(produtos);
+                    }
+                    else
+                    {
+                        return Ok(produtos);
                     }
                 }
                 else
@@ -236,6 +293,7 @@ namespace WebApiClientes.Controllers
                     return NotFound(new Erro("Produto não encontrado!", "Produto que foi solicitado alteração não foi encontrado na base de dados."));
                 }
 
+                Produto.ETag = null;
                 dataHash = HashMD5.Hash(JsonSerializer.Serialize(Produto));
 
                 if ((!string.IsNullOrEmpty(Request.Headers.IfMatch)) && (!HashMD5.VerifyETag(Request.Headers.IfMatch!, dataHash)))
@@ -293,6 +351,7 @@ namespace WebApiClientes.Controllers
                     return NotFound(new Erro("Produto não encontrado!", "Produto que foi solicitado remoção não foi encontrado na base de dados."));
                 }
 
+                Produto.ETag = null;
                 dataHash = HashMD5.Hash(JsonSerializer.Serialize(Produto));
 
                 if ((!string.IsNullOrEmpty(Request.Headers.IfMatch)) && (!HashMD5.VerifyETag(Request.Headers.IfMatch!, dataHash)))

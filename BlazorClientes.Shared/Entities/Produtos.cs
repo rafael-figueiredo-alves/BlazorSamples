@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using BlazorClientes.Shared.Utils;
+using System.ComponentModel.DataAnnotations;
+using System.Text.Json;
 
 namespace BlazorClientes.Shared.Entities
 {
@@ -44,6 +46,8 @@ namespace BlazorClientes.Shared.Entities
         /// </summary>
         public bool isNewRecord { get; set; } = true;
 
+        public string? ETag { get; set; }
+
         /// <summary>
         /// Método Construtor
         /// </summary>
@@ -68,6 +72,35 @@ namespace BlazorClientes.Shared.Entities
             Descricao = descricao;
             Valor = valor;
             Barcode = barcode;
+            ETag = HashMD5.Hash(JsonSerializer.Serialize(this));
+        }
+
+        /// <summary>
+        /// Método Construtor
+        /// </summary>
+        /// <param name="produto">Produto</param>
+        /// <param name="descricao">Descrição</param>
+        /// <param name="valor">Valor</param>
+        /// <param name="barcode">Barcode</param>
+        /// <param name="_ETag">Etag</param>
+        /// <param name="_idProduto">Id do produto</param>
+        public Produtos(string? produto, string? descricao, decimal? valor, string? barcode, string? _ETag = null, string? _idProduto = null)
+        {
+            if (_idProduto != null)
+            {
+                idProduto = _idProduto;
+                isNewRecord = false;
+            }
+            else
+            {
+                idProduto = Guid.NewGuid().ToString();
+            }
+
+            Produto = produto;
+            Descricao = descricao;
+            Valor = valor;
+            Barcode = barcode;
+            ETag = _ETag;
         }
 
         /// <summary>
@@ -84,5 +117,34 @@ namespace BlazorClientes.Shared.Entities
         PorProduto,
         PorDescricao,
         PorBarcode
+    }
+
+    public class ProdutosDTO : Produtos
+    {
+        public new string? idProduto { get; private set; }
+
+        public ProdutosDTO()
+        {
+
+        }
+
+        public ProdutosDTO(string? produto, string? descricao, decimal? valor, string? barcode, string? _ETag = null, string? _idProduto = null)
+        {
+            if (_idProduto != null)
+            {
+                idProduto = _idProduto;
+                isNewRecord = false;
+            }
+            else
+            {
+                idProduto = Guid.NewGuid().ToString();
+            }
+
+            Produto = produto;
+            Descricao = descricao;
+            Valor = valor;
+            Barcode = barcode;
+            ETag = _ETag;
+        }
     }
 }
