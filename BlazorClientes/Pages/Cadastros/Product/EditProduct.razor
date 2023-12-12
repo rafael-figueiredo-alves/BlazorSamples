@@ -1,5 +1,74 @@
-﻿<h3>EditProduct</h3>
+﻿@page "/editproduct"
+@inherits EditProductBase
 
-@code {
 
-}
+<PageTitle>BlazorClientes | @TituloPagina</PageTitle>
+
+    <EditForm Model="Produto" OnValidSubmit="SubmitCustomer">
+        <DataAnnotationsValidator />
+
+        <div class="card">
+            <div class="card-header" style="height: 56.8px;padding-left:4px;padding-right:4px">
+                <div class="container-fluid align-middle">
+                    <div class="row">
+                        <div class="col-8 col-md-6 text-start align-middle">
+                            <svg width="40px" height="40px" viewBox="0 0 24.00 24.00" fill="none" xmlns="http://www.w3.org/2000/svg" style="cursor:pointer;margin-bottom: 8px;" @onclick="GoBack">
+                                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                                <g id="SVGRepo_iconCarrier">
+                                    <rect width="24" height="24" fill="none"></rect>
+                                    <path d="M18 12L6 12M6 12L11 17M6 12L11 7" stroke="@(Theme!.IsDark ? "#ffffff" : "#000000")" stroke-linecap="round" stroke-linejoin="round"></path>
+                                </g>
+                            </svg>
+                            <h3 style="display:inline-block;">
+                                @TituloPagina
+                        </h3>
+                    </div>
+                    <div class="col-4 col-md-6 justify-content-end text-end">
+                        @if (!Produto!.isNewRecord)
+                        {
+                            <button class="btn btn-primary d-none d-sm-inline" style="width: 120px;" type="submit"><span class="oi oi-print" />  Imprimir</button>
+                            <button class="btn btn-primary d-sm-none rounded-circle" type="submit"><span class="oi oi-print" /></button>
+                        }
+                        <button class="btn btn-success d-none d-sm-inline" style="width: 120px;" type="submit"><span class="oi oi-check" />  Salvar</button>
+                        <button class="btn btn-success d-sm-none rounded-circle" type="submit"><span class="oi oi-check" /></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            @if (!Produto!.isNewRecord)
+            {
+                <div class="form-group p-3">
+                    <label for="IDCliente">ID do Produto</label>
+                    <p><strong>@Produto!.idProduto</strong></p>
+                </div>
+            }
+
+            <div class="form-group p-3">
+                <label for="NomeProduto">Nome do Produto</label>
+                <InputText class="form-control" id="NomeProduto" aria-describedby="Nome do Produto" placeholder="informe o nome do produto" @bind-Value="@Produto.Produto" />
+                <ValidationMessage For="@(() => Produto.Produto)" />
+            </div>
+
+            <div class="form-group p-3">
+                <label for="DescricaoProduto">Descrição do Produto</label>
+                <InputText class="form-control" id="DescricaoProduto" aria-describedby="Descrição do Produto" placeholder="Informe a descrição do Produto" @bind-Value="@Produto.Descricao" />
+                <ValidationMessage For="@(() => Produto.Descricao)" />
+            </div>
+
+            <div class="form-group p-3">
+                <label for="BarCode">Barcode</label>
+                <InputText class="form-control" id="BarCode" aria-describedby="BarCode do Produto" placeholder="Informe o BarCode do Produto" @bind-Value="@Produto.Barcode" />
+                <ValidationMessage For="@(() => Produto.Barcode)" />
+            </div>
+
+            <div class="form-group p-3">
+                <label for="ValorProduto">Valor do Produto</label>
+                <InputNumber class="form-control" id="ValorProduto" aria-describedby="Valor do Produto" placeholder="Informe o valor do Produto" @bind-Value="@Produto.Valor" />
+                <ValidationMessage For="@(() => Produto.Valor)" />
+            </div>
+
+        </div>
+    </div>
+</EditForm>
