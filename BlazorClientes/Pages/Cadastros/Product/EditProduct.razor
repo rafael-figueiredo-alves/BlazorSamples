@@ -65,7 +65,7 @@
 
             <div class="form-group p-3">
                 <label for="ValorProduto">Valor do Produto</label>
-                <InputNumber class="form-control" id="ValorProduto" aria-describedby="Valor do Produto" placeholder="Informe o valor do Produto" @bind-Value="@Produto.Valor" />
+                <InputNumber class="form-control" id="ValorProduto" DisplayName="Preço" aria-describedby="Valor do Produto" placeholder="Informe o valor do Produto" @bind-Value="@Produto.Valor" @bind-Value:format="@{0:c}" />
                 <ValidationMessage For="@(() => Produto.Valor)" />
             </div>
 

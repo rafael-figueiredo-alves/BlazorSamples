@@ -39,10 +39,9 @@ else
         <table class="table table-hover @Theme!.ColorClass" style="color: @Theme!.ColorFontStyle" data-bs-theme="@Theme.DataBsTheme">
             <thead style="position: sticky;z-index: 10;top: 0;">
                 <tr>
-                    <th scope="col" style="position: sticky;z-index: 10;">Cliente</th>
-                    <th scope="col" style="position: sticky;z-index: 10;">Celular</th>
-                    <th scope="col" class="d-none d-md-table-cell" style="position: sticky;z-index: 10;">Telefone</th>
-                    <th scope="col" class="d-none d-md-table-cell" style="position: sticky;z-index: 10;">E-mail</th>
+                    <th scope="col" style="position: sticky;z-index: 10;">Produto</th>
+                    <th scope="col" style="position: sticky;z-index: 10;">Preço</th>
+                    <th scope="col" class="d-none d-md-table-cell" style="position: sticky;z-index: 10;">Barcode</th>
                     <th scope="col" style="position: sticky;z-index: 10;">Ações</th>
                 </tr>
             </thead>
@@ -51,7 +50,7 @@ else
                 {
                     <tr>
                         <td class="col-4 col-md-4 align-middle" style="color: @Theme!.ColorFontStyle!" data-bs-theme="@Theme.DataBsTheme">@produto.Produto</td>
-                        <td class="col-4 col-md-2 align-middle" style="color: @Theme!.ColorFontStyle" data-bs-theme="@Theme.DataBsTheme">@produto.Valor</td>
+                        <td class="col-4 col-md-2 align-middle" style="color: @Theme!.ColorFontStyle!" data-bs-theme="@Theme.DataBsTheme">@(string.Format("{0:c}", produto.Valor))</td>
                         <td class="d-none d-md-table-cell col-2 align-middle" style="color: @Theme!.ColorFontStyle!" data-bs-theme="@Theme.DataBsTheme">@produto.Barcode</td>
                         <td class="col-4 col-md-2">
                             <div class="d-inline align-content-end">
