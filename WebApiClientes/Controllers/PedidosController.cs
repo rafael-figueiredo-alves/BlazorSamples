@@ -2,6 +2,7 @@
 using BlazorClientes.Shared.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using MySqlX.XDevAPI;
 using System.Net.Mime;
 using System.Text.Json;
 using WebApiClientes.Services;
@@ -37,13 +38,13 @@ namespace WebApiClientes.Controllers
         [HttpGet]
         [Produces(MediaTypeNames.Application.Json)] //Informa qual formato de retorno
         [ProducesResponseType(StatusCodes.Status200OK)] //Informa status codes retornáveis
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status304NotModified)]
         public async Task<ActionResult<List<Pedidos>>> Get([FromQuery] FiltrosPedido? FiltrarPor, string? Termo1, string? Termo2, int? Pagina, int? QtdRegistrosPorPagina)
         {
+            Response.Headers.Add("Access-Control-Expose-Headers", "ETag,AppName,Version,PageNumber,PageSize,TotalRecords,TotalPages");
             Response.Headers.Add("AppName", "Web Api Clientes");
             Response.Headers.Add("Version", "1.0.0");
 
@@ -114,7 +115,14 @@ namespace WebApiClientes.Controllers
                         }
                         else
                         {
-                            return NotFound(pedidos);
+                            //Os comandos abaixo adicionam Headers personalizados
+                            Response.Headers.Add("PageNumber", Page.Page.ToString());
+                            Response.Headers.Add("PageSize", Page.PageSize.ToString());
+                            Response.Headers.Add("TotalRecords", Page.TotalRecords.ToString());
+                            Response.Headers.Add("TotalPages", Page.TotalPages.ToString());
+                            //Serializar e enviar o Hash no etag
+                            Response.Headers.ETag = dataHash;
+                            return Ok(pedidos);
                         }
                     }
                     else
@@ -139,38 +147,50 @@ namespace WebApiClientes.Controllers
         /// </remarks>
         /// <param name="id">Informe o ID do pedido que deseja consultar</param>
         /// <response code="200">Sucesso ao obter lista de pedidos</response>
-        /// <response code="404">Não foram encontrados pedidos</response>
+        /// <response code="304">Não há dados novos de pedidos</response>
         /// <response code="500">Ocorreu um erro interno no servidor</response>
         [HttpGet("{id}")]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status304NotModified)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<Pedidos>> GetPedido(string id)
         {
+            string dataHash;
+
             var pedidos = await fpedidos.GetPedido(id);
-            try
+
+            dataHash = HashMD5.Hash(JsonSerializer.Serialize(pedidos));
+
+            if ((!string.IsNullOrEmpty(Request.Headers.IfNoneMatch)) && (HashMD5.VerifyETag(Request.Headers.IfNoneMatch!, dataHash)))
             {
-                if (pedidos != null)
+                return StatusCode(StatusCodes.Status304NotModified, null);
+            }
+            else
+            {
+                try
                 {
-                    if ((pedidos.idPedido != null) && (pedidos.idCliente != null) && (pedidos.idVendedor != null))
+                    if (pedidos != null)
                     {
-                        return Ok(pedidos);
+                        if ((pedidos.idPedido != null) && (pedidos.idCliente != null) && (pedidos.idVendedor != null))
+                        {
+                            return Ok(pedidos);
+                        }
+                        else
+                        {
+                            return NotFound(new Erro("Nenhum pedido encontrado.", "O ID informado não retornou pedido algum. Tente um outro ID."));
+                        }
                     }
                     else
                     {
-                        return NotFound(new Erro("Nenhum pedido encontrado.", "O ID informado não retornou pedido algum. Tente um outro ID."));
+                        return StatusCode(500, new Erro("Houve um erro interno com o servidor",
+                                                        "Ocorreu um problema inesperado em nosso servidor, tente acessar nossa API mais tarde."));
                     }
                 }
-                else
+                catch (Exception ex)
                 {
-                    return StatusCode(500, new Erro("Houve um erro interno com o servidor",
-                                                    "Ocorreu um problema inesperado em nosso servidor, tente acessar nossa API mais tarde."));
+                    return StatusCode(500, new Erro("Houve um erro interno com o servidor", ex.Message));
                 }
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new Erro("Houve um erro interno com o servidor", ex.Message));
             }
         }
         #endregion
@@ -246,6 +266,7 @@ namespace WebApiClientes.Controllers
                     return NotFound(new Erro("Pedido não encontrado!", "Pedido que foi solicitado alteração não foi encontrado na base de dados."));
                 }
 
+                Pedido.ETag = null;
                 dataHash = HashMD5.Hash(JsonSerializer.Serialize(Pedido));
 
                 if ((!string.IsNullOrEmpty(Request.Headers.IfMatch)) && (!HashMD5.VerifyETag(Request.Headers.IfMatch!, dataHash)))
@@ -307,6 +328,7 @@ namespace WebApiClientes.Controllers
                     return NotFound(new Erro("Pedido não encontrado!", "Pedido que foi solicitado alteração não foi encontrado na base de dados."));
                 }
 
+                Pedido.ETag = null;
                 dataHash = HashMD5.Hash(JsonSerializer.Serialize(Pedido));
 
                 if ((!string.IsNullOrEmpty(Request.Headers.IfMatch)) && (!HashMD5.VerifyETag(Request.Headers.IfMatch!, dataHash)))
@@ -364,6 +386,7 @@ namespace WebApiClientes.Controllers
                     return NotFound(new Erro("Pedido não encontrado!", "Pedido que foi solicitado alteração não foi encontrado na base de dados."));
                 }
 
+                Pedido.ETag = null;
                 dataHash = HashMD5.Hash(JsonSerializer.Serialize(Pedido));
 
                 if ((!string.IsNullOrEmpty(Request.Headers.IfMatch)) && (!HashMD5.VerifyETag(Request.Headers.IfMatch!, dataHash)))

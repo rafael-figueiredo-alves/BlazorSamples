@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using BlazorClientes.Shared.Utils;
+using System.ComponentModel.DataAnnotations;
+using System.Text.Json;
 
 namespace BlazorClientes.Shared.Entities
 {
@@ -72,6 +74,8 @@ namespace BlazorClientes.Shared.Entities
         /// </summary>
         public bool isNewRecord { get; set; } = true;
 
+        public string? ETag { get; set; }
+
         /// <summary>
         /// Método Construtor
         /// </summary>
@@ -105,6 +109,45 @@ namespace BlazorClientes.Shared.Entities
             DataEmissao = dataEmissao;
             DataEntrega = dataEntrega;
             Status = status;
+            ETag = HashMD5.Hash(JsonSerializer.Serialize(this));
+            Itens = new List<ItensPedido>();
+        }
+
+        /// <summary>
+        /// Método Construtor
+        /// </summary>
+        /// <param name="_idCliente">id Cliente</param>
+        /// <param name="_idVendedor">Id VBendedor</param>
+        /// <param name="_vComissao">Valor Comissão</param>
+        /// <param name="valorTotal">Total do Pedido</param>
+        /// <param name="dataEmissao">Data de emissão do pedido</param>
+        /// <param name="dataEntrega">Data de entrega do pedido</param>
+        /// <param name="status">Status do Pedido</param>
+        /// <param name="_Etag">Etag do registro</param>
+        /// <param name="_idPedido">Id do Pedido</param>
+        public Pedidos(string _idCliente, string _idVendedor, decimal? _vComissao, int? _pComissao, decimal? valorTotal, DateTime dataEmissao, DateTime dataEntrega, string status, string? _Etag, string? _idPedido = null)
+        {
+            if (_idPedido != null)
+            {
+                idPedido = _idPedido;
+                isNewRecord = false;
+            }
+            else
+            {
+                idPedido = Guid.NewGuid().ToString();
+            }
+
+            idPedido = idPedido;
+            idCliente = _idCliente;
+            idVendedor = _idVendedor;
+            vComissao = _vComissao;
+            if (_pComissao != null)
+                pComissao = (int)_pComissao;
+            ValorTotal = valorTotal;
+            DataEmissao = dataEmissao;
+            DataEntrega = dataEntrega;
+            Status = status;
+            ETag = _Etag;
             Itens = new List<ItensPedido>();
         }
 
@@ -127,5 +170,59 @@ namespace BlazorClientes.Shared.Entities
         PorVendedorID,
         PorVendedorNome,
         PorStatus
+    }
+
+    public class PedidosDTO : Pedidos
+    {
+        /// <summary>
+        /// Campo Id do tipo GUID
+        /// </summary>
+        public new string? idPedido { get; private set; }
+
+        /// <summary>
+        /// Método Construtor
+        /// </summary>
+        /// <param name="_idCliente">id Cliente</param>
+        /// <param name="_idVendedor">Id VBendedor</param>
+        /// <param name="_vComissao">Valor Comissão</param>
+        /// <param name="valorTotal">Total do Pedido</param>
+        /// <param name="dataEmissao">Data de emissão do pedido</param>
+        /// <param name="dataEntrega">Data de entrega do pedido</param>
+        /// <param name="status">Status do Pedido</param>
+        /// <param name="_Etag">Etag do registro</param>
+        /// <param name="_idPedido">Id do Pedido</param>
+        public PedidosDTO(string _idCliente, string _idVendedor, decimal? _vComissao, int? _pComissao, decimal? valorTotal, DateTime dataEmissao, DateTime dataEntrega, string status, string? _Etag, string? _idPedido = null)
+        {
+            if (_idPedido != null)
+            {
+                idPedido = _idPedido;
+                isNewRecord = false;
+            }
+            else
+            {
+                idPedido = Guid.NewGuid().ToString();
+            }
+
+            idPedido = idPedido;
+            idCliente = _idCliente;
+            idVendedor = _idVendedor;
+            vComissao = _vComissao;
+            if (_pComissao != null)
+                pComissao = (int)_pComissao;
+            ValorTotal = valorTotal;
+            DataEmissao = dataEmissao;
+            DataEntrega = dataEntrega;
+            Status = status;
+            ETag = _Etag;
+            Itens = new List<ItensPedido>();
+        }
+
+        /// <summary>
+        /// Construtor
+        /// </summary>
+        public PedidosDTO()
+        {
+            Itens = new List<ItensPedido>();
+        }
     }
 }
