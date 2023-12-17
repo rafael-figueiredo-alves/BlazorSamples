@@ -67,7 +67,7 @@ namespace BlazorClientes.Shared.Entities
         /// <summary>
         /// Itens do Pedido
         /// </summary>
-        public List<ItensPedido> Itens {  get; set; }
+        public List<ItensPedido>? Itens {  get; set; }
 
         /// <summary>
         /// Propriedade para identificar que registro é novo ou não
@@ -86,8 +86,9 @@ namespace BlazorClientes.Shared.Entities
         /// <param name="dataEmissao">Data de emissão do pedido</param>
         /// <param name="dataEntrega">Data de entrega do pedido</param>
         /// <param name="status">Status do Pedido</param>
+        /// <param name="itensPedidos">Itens do Pedido</param>
         /// <param name="_idPedido">Id do Pedido</param>
-        public Pedidos(string _idCliente, string _idVendedor, decimal? _vComissao, int? _pComissao, decimal? valorTotal, DateTime dataEmissao, DateTime dataEntrega, string status, string? _idPedido = null)
+        public Pedidos(string _idCliente, string _idVendedor, decimal? _vComissao, int? _pComissao, decimal? valorTotal, DateTime dataEmissao, DateTime dataEntrega, string status, List<ItensPedido> itensPedidos, string? _idPedido = null)
         {
             if(_idPedido != null)
             {
@@ -109,8 +110,8 @@ namespace BlazorClientes.Shared.Entities
             DataEmissao = dataEmissao;
             DataEntrega = dataEntrega;
             Status = status;
+            Itens = itensPedidos;
             ETag = HashMD5.Hash(JsonSerializer.Serialize(this));
-            Itens = new List<ItensPedido>();
         }
 
         /// <summary>
@@ -124,8 +125,9 @@ namespace BlazorClientes.Shared.Entities
         /// <param name="dataEntrega">Data de entrega do pedido</param>
         /// <param name="status">Status do Pedido</param>
         /// <param name="_Etag">Etag do registro</param>
+        /// <param name="itensPedidos">Itens do Pedido</param>
         /// <param name="_idPedido">Id do Pedido</param>
-        public Pedidos(string _idCliente, string _idVendedor, decimal? _vComissao, int? _pComissao, decimal? valorTotal, DateTime dataEmissao, DateTime dataEntrega, string status, string? _Etag, string? _idPedido = null)
+        public Pedidos(string _idCliente, string _idVendedor, decimal? _vComissao, int? _pComissao, decimal? valorTotal, DateTime dataEmissao, DateTime dataEntrega, string status, string? _Etag, List<ItensPedido>? itensPedidos, string? _idPedido = null)
         {
             if (_idPedido != null)
             {
@@ -148,7 +150,7 @@ namespace BlazorClientes.Shared.Entities
             DataEntrega = dataEntrega;
             Status = status;
             ETag = _Etag;
-            Itens = new List<ItensPedido>();
+            Itens = itensPedidos;
         }
 
         /// <summary>
@@ -190,8 +192,9 @@ namespace BlazorClientes.Shared.Entities
         /// <param name="dataEntrega">Data de entrega do pedido</param>
         /// <param name="status">Status do Pedido</param>
         /// <param name="_Etag">Etag do registro</param>
+        /// <param name="itensPedido">Itens do Pedido</param>
         /// <param name="_idPedido">Id do Pedido</param>
-        public PedidosDTO(string _idCliente, string _idVendedor, decimal? _vComissao, int? _pComissao, decimal? valorTotal, DateTime dataEmissao, DateTime dataEntrega, string status, string? _Etag, string? _idPedido = null)
+        public PedidosDTO(string _idCliente, string _idVendedor, decimal? _vComissao, int? _pComissao, decimal? valorTotal, DateTime dataEmissao, DateTime dataEntrega, string status, string? _Etag, List<ItensPedido>? itensPedido, string? _idPedido = null)
         {
             if (_idPedido != null)
             {
@@ -214,7 +217,7 @@ namespace BlazorClientes.Shared.Entities
             DataEntrega = dataEntrega;
             Status = status;
             ETag = _Etag;
-            Itens = new List<ItensPedido>();
+            Itens = itensPedido;
         }
 
         /// <summary>
@@ -222,7 +225,6 @@ namespace BlazorClientes.Shared.Entities
         /// </summary>
         public PedidosDTO()
         {
-            Itens = new List<ItensPedido>();
         }
     }
 }

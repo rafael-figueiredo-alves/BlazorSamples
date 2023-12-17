@@ -26,7 +26,7 @@ namespace WebApiClientes.Services.Interfaces
         /// </summary>
         /// <param name="Pedido">Pedido</param>
         /// <returns>Retorna Pedido criado</returns>
-        public Task<Pedidos> PostPedido(Pedidos Pedido);
+        public Task<Pedidos?> PostPedido(Pedidos Pedido);
 
         /// <summary>
         /// Altera dados de um Pedido
@@ -34,7 +34,7 @@ namespace WebApiClientes.Services.Interfaces
         /// <param name="Pedido">Pedido</param>
         /// <param name="ID">Id do Pedido</param> 
         /// <returns>Retorna o Pedido alterado</returns>
-        public Task<Pedidos> PutPedido(Pedidos Pedido, string ID);
+        public Task<Pedidos?> PutPedido(Pedidos Pedido, string ID);
 
         /// <summary>
         /// Apaga Pedido
@@ -49,7 +49,7 @@ namespace WebApiClientes.Services.Interfaces
         /// <param name="ID">Id do Pedido</param>
         /// <param name="PedidoStatus">Novo Status</param>
         /// <returns>Pedido atualizado</returns>
-        public Task<Pedidos> SetPedidoStatus(string ID, string PedidoStatus);
+        public Task<Pedidos?> SetPedidoStatus(string ID, string PedidoStatus);
 
         /// <summary>
         /// Retorna lista de pedidos por filtro igual

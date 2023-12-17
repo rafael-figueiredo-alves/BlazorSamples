@@ -218,7 +218,7 @@ namespace WebApiClientes.Services
         /// <param name="pedido"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public async Task<Pedidos> PostPedido(Pedidos pedido)
+        public async Task<Pedidos?> PostPedido(Pedidos pedido)
         {
             MySqlConnection? conn = null;
             try
@@ -270,7 +270,7 @@ namespace WebApiClientes.Services
         /// <param name="ID"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public async Task<Pedidos> PutPedido(Pedidos pedido, string ID)
+        public async Task<Pedidos?> PutPedido(Pedidos pedido, string ID)
         {
             MySqlConnection? conn = null;
             try
@@ -336,7 +336,7 @@ namespace WebApiClientes.Services
         /// <param name="ID">Id do Pedido</param>
         /// <param name="PedidoStatus">Novo Status</param>
         /// <returns>Pedido atualizado</returns>
-        public async Task<Pedidos> SetPedidoStatus(string ID, string PedidoStatus)
+        public async Task<Pedidos?> SetPedidoStatus(string ID, string PedidoStatus)
         {
             MySqlConnection? conn = null;
             try
