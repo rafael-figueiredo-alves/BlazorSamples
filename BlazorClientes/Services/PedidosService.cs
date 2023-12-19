@@ -6,6 +6,7 @@ using Blazored.Toast.Services;
 using Microsoft.AspNetCore.Components;
 using System.Net;
 using System.Text.Json;
+using System.Net.Http.Json;
 
 namespace BlazorClientes.Services
 {
@@ -72,7 +73,7 @@ namespace BlazorClientes.Services
                         ListaPedidos = new();
                         foreach (var pedido in jsonResult)
                         {
-                            ListaPedidos.Add(new Pedidos(pedido.idCliente!, pedido.idVendedor!, pedido.vComissao, pedido.pComissao, pedido.ValorTotal, pedido.DataEmissao, pedido.DataEntrega, pedido.Status, pedido.idPedido));
+                            ListaPedidos.Add(new Pedidos(pedido.idCliente!, pedido.idVendedor!, pedido.vComissao, pedido.pComissao, pedido.ValorTotal, pedido.DataEmissao, pedido.DataEntrega, pedido.Status, pedido.Itens, pedido.idPedido));
                         }
                     }
 
@@ -83,7 +84,7 @@ namespace BlazorClientes.Services
                         PageResult.Pedidos = new();
                         foreach (var pedido in ListaPedidos)
                         {
-                            PageResult.Pedidos.Add(new PedidosDTO(pedido.idCliente!, pedido.idVendedor!, pedido.vComissao, pedido.pComissao, pedido.ValorTotal, pedido.DataEmissao, pedido.DataEntrega, pedido.Status, pedido.idPedido)));
+                            PageResult.Pedidos.Add(new PedidosDTO(pedido.idCliente!, pedido.idVendedor!, pedido.vComissao, pedido.pComissao, pedido.ValorTotal, pedido.DataEmissao, pedido.DataEntrega, pedido.Status, pedido.ETag, pedido.Itens,  pedido.idPedido));
                         }
                     }
 
@@ -95,19 +96,19 @@ namespace BlazorClientes.Services
                     PageResult.ETag = httpResponse.Headers.GetValues("ETag").First();
                     PageResult.Endpoint = Endpoint;
 
-                    if (UserData!.UserDB().Clientes!.Where(x => x.Endpoint == Endpoint).Any())
+                    if (UserData!.UserDB().Pedidos!.Where(x => x.Endpoint == Endpoint).Any())
                     {
-                        UserData!.UserDB().Clientes!.Remove(UserData!.UserDB().Clientes!.Where(x => x.Endpoint == Endpoint).First());
+                        UserData!.UserDB().Pedidos!.Remove(UserData!.UserDB().Pedidos!.Where(x => x.Endpoint == Endpoint).First());
                     }
 
-                    UserData!.UserDB().Clientes!.Add(PageResult);
+                    UserData!.UserDB().Pedidos!.Add(PageResult);
                     await UserData!.SaveData();
 
                     return PageResult;
                 }
                 else if (httpResponse.StatusCode == HttpStatusCode.NotModified)
                 {
-                    PageClientes? PageResult = UserData!.UserDB().Clientes!.Where(x => x.Endpoint == Endpoint).First();
+                    PagePedidos? PageResult = UserData!.UserDB().Pedidos!.Where(x => x.Endpoint == Endpoint).First();
 
                     PageResult.Pagina = Pagina;
                     var TotalPages = httpResponse.Headers.GetValues("TotalPages").First() ?? "0";
@@ -134,17 +135,231 @@ namespace BlazorClientes.Services
 
         public async Task<PagePedidos?> GetPedidosPorPeriodo(int? Pagina = 1, int? QtdRegistrosPorPagina = 10, FiltrosPedido? FiltrarPor = null, string? De = null, string? Ate = null)
         {
-            throw new NotImplementedException();
+            Http!.DefaultRequestHeaders.Remove("If-None-Match");
+
+            string Endpoint = "api/v1/Pedidos?Pagina=" + Pagina.ToString() + "&QtdRegistrosPorPagina=" + QtdRegistrosPorPagina.ToString();
+
+            if ((FiltrarPor != null) && (!string.IsNullOrEmpty(De)) && (!string.IsNullOrEmpty(Ate)))
+            {
+                Endpoint += "&FiltrarPor=" + FiltrarPor + "&Termo1=" + De + "&Termo2=" + Ate;
+            }
+
+            try
+            {
+                Http!.DefaultRequestHeaders.Add("Access-Control-Allow-Headers", "*");
+
+                if (UserData.UserDB().Pedidos != null)
+                {
+                    if (UserData!.UserDB().Pedidos!.Where(x => x.Endpoint == Endpoint).Any())
+                    {
+                        var ETag = UserData!.UserDB().Pedidos!.Where(x => x.Endpoint == Endpoint).First().ETag;
+                        Http!.DefaultRequestHeaders.Remove("If-None-Match");
+                        Http!.DefaultRequestHeaders.TryAddWithoutValidation("If-None-Match", ETag);
+                    }
+                }
+                else
+                {
+                    UserData.UserDB().Pedidos = new();
+                }
+
+                var httpResponse = await Http!.GetAsync(Endpoint, HttpCompletionOption.ResponseHeadersRead);
+
+                if (httpResponse.IsSuccessStatusCode)
+                {
+                    var ResponseString = await httpResponse.Content.ReadAsStringAsync();
+
+                    var jsonResult = JsonSerializer.Deserialize<List<PedidosDTO>?>(ResponseString, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+                    List<Pedidos>? ListaPedidos = null;
+
+                    if (jsonResult != null)
+                    {
+                        ListaPedidos = new();
+                        foreach (var pedido in jsonResult)
+                        {
+                            ListaPedidos.Add(new Pedidos(pedido.idCliente!, pedido.idVendedor!, pedido.vComissao, pedido.pComissao, pedido.ValorTotal, pedido.DataEmissao, pedido.DataEntrega, pedido.Status, pedido.Itens, pedido.idPedido));
+                        }
+                    }
+
+                    PagePedidos? PageResult = new();
+
+                    if (ListaPedidos != null)
+                    {
+                        PageResult.Pedidos = new();
+                        foreach (var pedido in ListaPedidos)
+                        {
+                            PageResult.Pedidos.Add(new PedidosDTO(pedido.idCliente!, pedido.idVendedor!, pedido.vComissao, pedido.pComissao, pedido.ValorTotal, pedido.DataEmissao, pedido.DataEntrega, pedido.Status, pedido.ETag, pedido.Itens, pedido.idPedido));
+                        }
+                    }
+
+                    PageResult.Pagina = Pagina;
+                    var TotalPages = httpResponse.Headers.GetValues("TotalPages").First() ?? "0";
+                    var TotalRecords = httpResponse.Headers.GetValues("TotalRecords").First() ?? "0";
+                    PageResult.TotalPaginas = Convert.ToInt32(TotalPages);
+                    PageResult.TotalRecords = Convert.ToInt32(TotalRecords);
+                    PageResult.ETag = httpResponse.Headers.GetValues("ETag").First();
+                    PageResult.Endpoint = Endpoint;
+
+                    if (UserData!.UserDB().Pedidos!.Where(x => x.Endpoint == Endpoint).Any())
+                    {
+                        UserData!.UserDB().Pedidos!.Remove(UserData!.UserDB().Pedidos!.Where(x => x.Endpoint == Endpoint).First());
+                    }
+
+                    UserData!.UserDB().Pedidos!.Add(PageResult);
+                    await UserData!.SaveData();
+
+                    return PageResult;
+                }
+                else if (httpResponse.StatusCode == HttpStatusCode.NotModified)
+                {
+                    PagePedidos? PageResult = UserData!.UserDB().Pedidos!.Where(x => x.Endpoint == Endpoint).First();
+
+                    PageResult.Pagina = Pagina;
+                    var TotalPages = httpResponse.Headers.GetValues("TotalPages").First() ?? "0";
+                    var TotalRecords = httpResponse.Headers.GetValues("TotalRecords").First() ?? "0";
+                    PageResult.TotalPaginas = Convert.ToInt32(TotalPages);
+                    PageResult.TotalRecords = Convert.ToInt32(TotalRecords);
+                    PageResult.ETag = httpResponse.Headers.GetValues("ETag").First();
+                    PageResult.Endpoint = Endpoint;
+
+                    return PageResult;
+                }
+                else
+                {
+                    var ResponseString = await httpResponse.Content.ReadAsStringAsync();
+                    var jsonResult = JsonSerializer.Deserialize<Erro>(ResponseString, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                    throw new Exception(jsonResult!.Info);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Ocorreu um erro inesperado! Tente novamente. Detalhes: " + ex.Message);
+            }
         }
 
         public async Task<Pedidos?> InsertOrUpdatePedido(Pedidos Pedido)
         {
-            throw new NotImplementedException();
+            if (Pedido.isNewRecord)
+            {
+                Http!.DefaultRequestHeaders.Remove("If-Match");
+
+                string Endpoint = "api/v1/Pedidos";
+
+                try
+                {
+                    Http!.DefaultRequestHeaders.Add("Access-Control-Allow-Headers", "*");
+
+                    var httpResponse = await Http!.PostAsJsonAsync(Endpoint, Pedido);
+
+                    if (httpResponse.IsSuccessStatusCode)
+                    {
+                        Toast!.ShowSuccess("Novo pedido cadastrado com sucesso!");
+                        Nav!.NavigateTo("orders");
+                        return await httpResponse.Content.ReadFromJsonAsync<Pedidos>();
+                    }
+                    else
+                    {
+                        var ResponseString = await httpResponse.Content.ReadAsStringAsync();
+                        var jsonResult = JsonSerializer.Deserialize<Erro>(ResponseString, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                        Toast!.ShowError("Ocorreu um erro inesperado! Informações: " + jsonResult!.Info);
+                        Nav!.NavigateTo("orders");
+                        return null;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Toast!.ShowError("Ocorreu um erro inesperado! Informações: " + ex.Message);
+                    Nav!.NavigateTo("orders");
+                    return null;
+                }
+            }
+            else
+            {
+                Http!.DefaultRequestHeaders.Remove("If-Match");
+
+                string Endpoint = "api/v1/Pedidos/" + Pedido.idPedido;
+
+                try
+                {
+                    Http!.DefaultRequestHeaders.Add("Access-Control-Allow-Headers", "*");
+
+                    Http!.DefaultRequestHeaders.Remove("If-Match");
+                    Http!.DefaultRequestHeaders.TryAddWithoutValidation("If-Match", Pedido.ETag);
+
+                    var httpResponse = await Http!.PutAsJsonAsync(Endpoint, Pedido);
+
+                    if (httpResponse.IsSuccessStatusCode)
+                    {
+                        Toast!.ShowSuccess("Alterações das informações do pedido foram salvas com sucesso!");
+                        Nav!.NavigateTo("orders");
+                        return await httpResponse.Content.ReadFromJsonAsync<Pedidos>();
+                    }
+                    else if ((httpResponse.StatusCode == HttpStatusCode.BadRequest) || (httpResponse.StatusCode == HttpStatusCode.PreconditionFailed))
+                    {
+                        Toast!.ShowWarning("Não foi possível salvar as alterações do pedido informado pois registro não foi encontrado ou ele não corresponde com o registrado na base de dados.");
+                        Nav!.NavigateTo("orders");
+                        return null;
+                    }
+                    else
+                    {
+                        var ResponseString = await httpResponse.Content.ReadAsStringAsync();
+                        var jsonResult = JsonSerializer.Deserialize<Erro>(ResponseString, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                        Toast!.ShowError("Ocorreu um erro inesperado! Informações: " + jsonResult!.Info);
+                        Nav!.NavigateTo("orders");
+                        return null;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Toast!.ShowError("Ocorreu um erro inesperado! Informações: " + ex.Message);
+                    Nav!.NavigateTo("orders");
+                    return null;
+                }
+            }
         }
 
-        public async Task<Pedidos?> SetStatusPedido(int? Pedido, StatusPedido? Status)
+        public async Task<Pedidos?> SetStatusPedido(Pedidos Pedido, StatusPedido? Status)
         {
-            throw new NotImplementedException();
+            Http!.DefaultRequestHeaders.Remove("If-Match");
+
+            string Endpoint = "api/v1/Pedidos?id=" + Pedido.idPedido + "&pedidoStatus=" + Status.ToString();
+
+            try
+            {
+                Http!.DefaultRequestHeaders.Add("Access-Control-Allow-Headers", "*");
+
+                Http!.DefaultRequestHeaders.Remove("If-Match");
+                Http!.DefaultRequestHeaders.TryAddWithoutValidation("If-Match", Pedido.ETag);
+
+                var httpResponse = await Http!.PutAsJsonAsync(Endpoint, Pedido);
+
+                if (httpResponse.IsSuccessStatusCode)
+                {
+                    Toast!.ShowSuccess("Status do pedido foi alterado e salvo com sucesso!");
+                    Nav!.NavigateTo("orders");
+                    return await httpResponse.Content.ReadFromJsonAsync<Pedidos>();
+                }
+                else if ((httpResponse.StatusCode == HttpStatusCode.BadRequest) || (httpResponse.StatusCode == HttpStatusCode.PreconditionFailed))
+                {
+                    Toast!.ShowWarning("Não foi possível salvar as alterações do pedido informado pois registro não foi encontrado ou ele não corresponde com o registrado na base de dados.");
+                    Nav!.NavigateTo("orders");
+                    return null;
+                }
+                else
+                {
+                    var ResponseString = await httpResponse.Content.ReadAsStringAsync();
+                    var jsonResult = JsonSerializer.Deserialize<Erro>(ResponseString, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                    Toast!.ShowError("Ocorreu um erro inesperado! Informações: " + jsonResult!.Info);
+                    Nav!.NavigateTo("orders");
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                Toast!.ShowError("Ocorreu um erro inesperado! Informações: " + ex.Message);
+                Nav!.NavigateTo("orders");
+                return null;
+            }
         }
 
         public async Task<bool> DeletePedido(Pedidos Pedido)

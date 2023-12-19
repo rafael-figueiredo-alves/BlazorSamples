@@ -1,5 +1,7 @@
 ﻿using BlazorClientes.Shared.Entities;
+using BlazorClientes.Shared.Utils;
 using MySql.Data.MySqlClient;
+using System.Text.Json;
 using WebApiClientes.Services.Interfaces;
 
 namespace WebApiClientes.Services
@@ -98,7 +100,7 @@ namespace WebApiClientes.Services
                     var reader_itens = await cmd.ExecuteReaderAsync();
                     while (await reader_itens.ReadAsync())
                     {
-                        pedido.Itens.Add(new ItensPedido(
+                        pedido.Itens!.Add(new ItensPedido(
                                                         Convert.ToInt32(reader_itens["Indice"].ToString()!),
                                                         reader_itens["idPedido"].ToString()!,
                                                         reader_itens["idProduto"].ToString()!,
@@ -110,6 +112,9 @@ namespace WebApiClientes.Services
                             ));
                     }
                 }
+                
+                if (pedido != null)
+                    pedido.ETag = HashMD5.Hash(JsonSerializer.Serialize(pedido));
 
                 return pedido;
             }
@@ -192,7 +197,10 @@ namespace WebApiClientes.Services
                             ));
                     }
 
-                    pedidos.Add(pedido);
+                    if (pedido != null)
+                        pedido.ETag = HashMD5.Hash(JsonSerializer.Serialize(pedido));
+
+                    pedidos.Add(pedido!);
                 }
 
                 return pedidos;
@@ -446,6 +454,9 @@ namespace WebApiClientes.Services
                             ));
                     }
 
+                    if (pedido != null)
+                        pedido.ETag = HashMD5.Hash(JsonSerializer.Serialize(pedido));
+
                     pedidos.Add(pedido);
                 }
 
@@ -536,6 +547,9 @@ namespace WebApiClientes.Services
                                                         Convert.ToDecimal(reader_itens["Valor"].ToString()!)
                             ));
                     }
+
+                    if (pedido != null)
+                        pedido.ETag = HashMD5.Hash(JsonSerializer.Serialize(pedido));
 
                     pedidos.Add(pedido);
                 }
@@ -628,6 +642,9 @@ namespace WebApiClientes.Services
                                                         Convert.ToDecimal(reader_itens["Valor"].ToString()!)
                             ));
                     }
+
+                    if (pedido != null)
+                        pedido.ETag = HashMD5.Hash(JsonSerializer.Serialize(pedido));
 
                     pedidos.Add(pedido);
                 }

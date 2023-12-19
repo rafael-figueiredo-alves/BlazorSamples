@@ -373,7 +373,7 @@ namespace WebApiClientes.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status412PreconditionFailed)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<Pedidos>> PutPedido([FromQuery] string id, string pedidoStatus)
+        public async Task<ActionResult<Pedidos>> PutPedido([FromQuery] string id, [FromQuery] string pedidoStatus)
         {
             if (!string.IsNullOrEmpty(Request.Headers.IfMatch))
             {
