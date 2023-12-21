@@ -37,5 +37,6 @@ builder.Services.AddSingleton<IUserData,  UserData>();
 builder.Services.AddScoped<IClientes, ClientesService>();
 builder.Services.AddScoped<IVendedores, VendedoresService>();
 builder.Services.AddScoped<IProdutos, ProdutosService>();
+builder.Services.AddScoped<IPedidos, PedidosService>();
 
 await builder.Build().RunAsync();
