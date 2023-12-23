@@ -81,3 +81,11 @@ CREATE TABLE IF NOT EXISTS `itenspedido` (
   CONSTRAINT `Pedidos_FK` FOREIGN KEY (`idPedido`) REFERENCES `pedidos` (`IdPedido`),
   CONSTRAINT `Produtos_FK` FOREIGN KEY (`idProduto`) REFERENCES `produtos` (`idProduto`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+/* Adicionar campo Codigo a tabela Clientes */
+ALTER TABLE `clientes` 
+ADD COLUMN `Codigo` INT(8) ZEROFILL UNSIGNED NOT NULL AUTO_INCREMENT AFTER `Email`;
+
+/* Adicionar campo Codigo a tabela Vendedores */
+ALTER TABLE `vendedores` 
+ADD COLUMN `Codigo` INT(8) ZEROFILL UNSIGNED NOT NULL AUTO_INCREMENT AFTER `pComissao`;

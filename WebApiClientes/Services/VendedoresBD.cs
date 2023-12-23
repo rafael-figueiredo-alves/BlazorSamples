@@ -79,6 +79,7 @@ namespace WebApiClientes.Services
                     vendedor = new Vendedores(
                                             reader["Vendedor"].ToString()!,
                                             Convert.ToInt32(reader["pComissao"].ToString()!),
+                                            Convert.ToUInt32(reader["Codigo"]),
                                             reader["idVendedor"].ToString());
                 }
 
@@ -133,6 +134,7 @@ namespace WebApiClientes.Services
                     vendedores.Add(new Vendedores(
                                               reader["Vendedor"].ToString()!,
                                               Convert.ToInt32(reader["pComissao"].ToString()!),
+                                              Convert.ToUInt32(reader["Codigo"]),
                                               reader["idVendedor"].ToString()));
                 }
 
@@ -179,6 +181,7 @@ namespace WebApiClientes.Services
                         return new Vendedores(
                                               reader["Vendedor"].ToString()!,
                                               Convert.ToInt32(reader["pComissao"].ToString()!),
+                                              Convert.ToUInt32(reader["Codigo"]),
                                               reader["idVendedor"].ToString());
                     }
                     else
@@ -232,6 +235,7 @@ namespace WebApiClientes.Services
                         return new Vendedores(
                                               reader["Vendedor"].ToString()!,
                                               Convert.ToInt32(reader["pComissao"].ToString()!),
+                                              Convert.ToUInt32(reader["Codigo"]),
                                               reader["idVendedor"].ToString());
                     }
                     else
@@ -289,6 +293,10 @@ namespace WebApiClientes.Services
                         sql = "select * from vendedores where Vendedor like '%" + TermoBusca + "%'";
                         sql_counter = "select Count(*) AS Total from vendedores where Vendedor like '%" + TermoBusca + "%'";
                         break;
+                    case FiltroVendedor.PorCodigo:
+                        sql = "select * from vendedores where Codigo like '%" + TermoBusca + "%'";
+                        sql_counter = "select Count(*) AS Total from vendedores where Codigo like '%" + TermoBusca + "%'";
+                        break;
                     default:
                         sql = "select * from vendedores";
                         sql_counter = "select Count(*) AS Total from vendedores";
@@ -316,6 +324,7 @@ namespace WebApiClientes.Services
                     vendedores.Add(new Vendedores(
                                               reader["Vendedor"].ToString()!,
                                               Convert.ToInt32(reader["pComissao"].ToString()!),
+                                              Convert.ToUInt32(reader["Codigo"]),
                                               reader["idVendedor"].ToString()));
                 }
 
@@ -354,6 +363,7 @@ namespace WebApiClientes.Services
                     vendedores.Add(new Vendedores(
                                               reader["Vendedor"].ToString()!,
                                               Convert.ToInt32(reader["pComissao"].ToString()!),
+                                              Convert.ToUInt32(reader["Codigo"]),
                                               reader["idVendedor"].ToString()));
                 }
 

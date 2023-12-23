@@ -27,6 +27,11 @@ namespace BlazorClientes.Shared.Entities
         public int pComissao { get; set; } = 5;
 
         /// <summary>
+        /// %Campo Código do Vendedor
+        /// </summary>
+        public uint? Codigo { get; set; }
+
+        /// <summary>
         /// Propriedade para identificar que registro é novo ou não
         /// </summary>
         public bool isNewRecord { get; set; } = true;
@@ -39,7 +44,7 @@ namespace BlazorClientes.Shared.Entities
         /// <param name="vendedor">Nome do vendedor</param>
         /// <param name="_pComissao">% de Comissão</param>
         /// <param name="_idVendedor">Opcional - ID do vendedor</param>
-        public Vendedores(string? vendedor, int _pComissao, string? _idVendedor = null)
+        public Vendedores(string? vendedor, int _pComissao, uint? codigo, string? _idVendedor = null)
         {
             if(idVendedor != null)
             {
@@ -53,10 +58,11 @@ namespace BlazorClientes.Shared.Entities
 
             Vendedor = vendedor;
             pComissao = _pComissao;
+            Codigo = codigo;
             ETag = HashMD5.Hash(JsonSerializer.Serialize(this));
         }
 
-        public Vendedores(string? vendedor, int _pComissao, string? _Etag = null, string? _idVendedor = null)
+        public Vendedores(string? vendedor, int _pComissao, string? _Etag = null, uint? codigo, string? _idVendedor = null)
         {
             if (idVendedor != null)
             {
@@ -70,6 +76,7 @@ namespace BlazorClientes.Shared.Entities
 
             Vendedor = vendedor;
             pComissao = _pComissao;
+            Codigo = codigo;
             ETag = _Etag;
         }
 
@@ -84,7 +91,8 @@ namespace BlazorClientes.Shared.Entities
 
     public enum FiltroVendedor
     {
-        PorNome
+        PorNome,
+        PorCodigo
     }
 
     public class VendedoresDTO : Vendedores
@@ -96,7 +104,7 @@ namespace BlazorClientes.Shared.Entities
 
         public VendedoresDTO() { }
 
-        public VendedoresDTO(string? vendedor, int _pComissao, string? _Etag = null, string? _idVendedor = null)
+        public VendedoresDTO(string? vendedor, int _pComissao, string? _Etag = null, uint? codigo, string? _idVendedor = null)
         {
             if (idVendedor != null)
             {
@@ -110,6 +118,7 @@ namespace BlazorClientes.Shared.Entities
 
             Vendedor = vendedor;
             pComissao = _pComissao;
+            Codigo = codigo;
             ETag = _Etag;
         }
     }

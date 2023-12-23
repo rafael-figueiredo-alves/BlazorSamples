@@ -49,6 +49,11 @@ namespace BlazorClientes.Shared.Entities
         public string? Email { get; set; }
 
         /// <summary>
+        /// Campo Código do cliente
+        /// </summary>
+        public uint? Codigo { get; set; }
+
+        /// <summary>
         /// Propriedade para identificar que registro é novo ou não
         /// </summary>
         public bool isNewRecord { get; set; } = true;
@@ -63,7 +68,7 @@ namespace BlazorClientes.Shared.Entities
         /// <param name="_telefone"></param>
         /// <param name="_celular"></param>
         /// <param name="_email"></param>
-        public Clientes(string _nome,  string _endereco, string _telefone, string _celular, string _email, string? id = null)
+        public Clientes(string _nome,  string _endereco, string _telefone, string _celular, string _email, uint? codigo, string? id = null)
         {
             if(id != null)
             {
@@ -80,10 +85,11 @@ namespace BlazorClientes.Shared.Entities
             Telefone = _telefone;
             Celular = _celular;
             Email = _email;
+            Codigo = codigo;
             ETag = HashMD5.Hash(JsonSerializer.Serialize(this));
         }
 
-        public Clientes(string _nome, string _endereco, string _telefone, string _celular, string _email, string? _Etag = null, string? id = null)
+        public Clientes(string _nome, string _endereco, string _telefone, string _celular, string _email, string? _Etag = null, uint? codigo, string? id = null)
         {
             if (id != null)
             {
@@ -100,6 +106,7 @@ namespace BlazorClientes.Shared.Entities
             Telefone = _telefone;
             Celular = _celular;
             Email = _email;
+            Codigo = codigo;
             ETag = _Etag;
         }
 
@@ -115,7 +122,8 @@ namespace BlazorClientes.Shared.Entities
     public enum FiltrosCliente
     {
         PorNome,
-        PorEndereco
+        PorEndereco,
+        PorCodigo
     }
 
     public class ClientesDTO : Clientes
@@ -127,7 +135,7 @@ namespace BlazorClientes.Shared.Entities
 
         public ClientesDTO() { }
 
-        public ClientesDTO(string _nome, string _endereco, string _telefone, string _celular, string _email, string? _Etag = null, string? id = null)
+        public ClientesDTO(string _nome, string _endereco, string _telefone, string _celular, string _email, string? _Etag = null, uint? codigo, string? id = null)
         {
             if (id != null)
             {
@@ -144,6 +152,7 @@ namespace BlazorClientes.Shared.Entities
             Telefone = _telefone;
             Celular = _celular;
             Email = _email;
+            Codigo = codigo;
             ETag = _Etag;
         }
     }

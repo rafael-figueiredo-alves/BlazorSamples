@@ -1,5 +1,6 @@
 ﻿using BlazorClientes.Shared.Entities;
 using MySql.Data.MySqlClient;
+using MySqlX.XDevAPI;
 using WebApiClientes.Services.Interfaces;
 
 namespace WebApiClientes.Services
@@ -80,7 +81,8 @@ namespace WebApiClientes.Services
                                             reader["Telefone"].ToString()!,
                                             reader["Celular"].ToString()!,
                                             reader["Email"].ToString()!,
-                                            reader["idCliente"].ToString());
+                                            Convert.ToUInt32(reader["Codigo"]),
+                                            reader["idCliente"].ToString()) ;
                 }
 
                 return clientes;
@@ -138,6 +140,7 @@ namespace WebApiClientes.Services
                                               reader["Telefone"].ToString()!,
                                               reader["Celular"].ToString()!,
                                               reader["Email"].ToString()!,
+                                              Convert.ToUInt32(reader["Codigo"]),
                                               reader["idCliente"].ToString()));
                 }
 
@@ -167,7 +170,7 @@ namespace WebApiClientes.Services
             {
                 conn = new MySqlConnection(Conn);
                 conn.Open();
-                string sql = "insert into clientes (IdCliente, Nome, Endereco, Telefone, Celular, Email) values (@id, @nome, @endereco, @telefone, @celular, @email)";
+                string sql = "insert into clientes (IdCliente, Nome, Endereco, Telefone, Celular, Email, Codigo) values (@id, @nome, @endereco, @telefone, @celular, @email, @codigo)";
                 var cmd = new MySqlCommand(sql, conn);
                 cmd.Parameters.Add(new MySqlParameter("id", cliente.idCliente));
                 cmd.Parameters.Add(new MySqlParameter("nome", cliente.Nome));
@@ -175,6 +178,7 @@ namespace WebApiClientes.Services
                 cmd.Parameters.Add(new MySqlParameter("telefone", cliente.Telefone));
                 cmd.Parameters.Add(new MySqlParameter("celular", cliente.Celular));
                 cmd.Parameters.Add(new MySqlParameter("email", cliente.Email));
+                cmd.Parameters.Add(new MySqlParameter("codigo", GetCodigo()));
                 await cmd.ExecuteNonQueryAsync();
                 sql = "select * from Clientes where (idCliente = @id)";
                 cmd.CommandText = sql;
@@ -190,6 +194,7 @@ namespace WebApiClientes.Services
                                               reader["Telefone"].ToString()!,
                                               reader["Celular"].ToString()!,
                                               reader["Email"].ToString()!,
+                                              Convert.ToUInt32(reader["Codigo"]),
                                               reader["idCliente"].ToString());
                     }
                     else
@@ -203,6 +208,37 @@ namespace WebApiClientes.Services
                 }
             }
             catch (Exception ex) 
+            {
+                throw new Exception(ex.Message);
+            }
+            finally
+            {
+                conn?.Close();
+            }
+        }
+
+        private async Task<uint?> GetCodigo()
+        {
+            uint codigo = 0;
+
+            MySqlConnection? conn = null;
+            try
+            {
+                conn = new MySqlConnection(Conn);
+                conn.Open();
+
+                var sql = "select Max(Codigo) AS Cod from clientes";
+                var cmd = new MySqlCommand(sql, conn);
+                var reader = await cmd.ExecuteReaderAsync();
+                while (await reader.ReadAsync())
+                {
+                    codigo = Convert.ToUInt32(reader["Cod"]);
+                }
+
+                return codigo++;
+
+            }
+            catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }
@@ -249,6 +285,7 @@ namespace WebApiClientes.Services
                                               reader["Telefone"].ToString()!,
                                               reader["Celular"].ToString()!,
                                               reader["Email"].ToString()!,
+                                              Convert.ToUInt32(reader["Codigo"]),
                                               reader["idCliente"].ToString());
                     }
                     else
@@ -311,6 +348,10 @@ namespace WebApiClientes.Services
                         sql = "select * from clientes where Endereco like '%" + TermoBusca + "%'";
                         sql_counter = "select Count(*) AS Total from clientes where Endereco like '%" + TermoBusca + "%'";
                         break;
+                    case FiltrosCliente.PorCodigo:
+                        sql = "select * from clientes where Codigo like '%" + TermoBusca + "%'";
+                        sql_counter = "select Count(*) AS Total from clientes where Codigo like '%" + TermoBusca + "%'";
+                        break;
                     default:
                         sql = "select * from clientes";
                         sql_counter = "select Count(*) from clientes";
@@ -341,6 +382,7 @@ namespace WebApiClientes.Services
                                               reader["Telefone"].ToString()!,
                                               reader["Celular"].ToString()!,
                                               reader["Email"].ToString()!,
+                                              Convert.ToUInt32(reader["Codigo"]),
                                               reader["idCliente"].ToString()));
                 }
 
@@ -383,6 +425,7 @@ namespace WebApiClientes.Services
                                               reader["Telefone"].ToString()!,
                                               reader["Celular"].ToString()!,
                                               reader["Email"].ToString()!,
+                                              Convert.ToUInt32(reader["Codigo"]),
                                               reader["idCliente"].ToString()));
                 }
 
