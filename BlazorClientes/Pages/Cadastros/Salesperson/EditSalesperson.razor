@@ -40,8 +40,8 @@
             @if (!Vendedor!.isNewRecord)
             {
                 <div class="form-group p-3">
-                    <label for="IDVendedor">ID do Vendedor</label>
-                    <p><strong>@Vendedor!.idVendedor</strong></p>
+                    <label for="IDVendedor">Código do Vendedor</label>
+                    <p><strong>@Vendedor!.Codigo.ToString()!.PadLeft(8, '0')</strong></p>
                 </div>
             }
 

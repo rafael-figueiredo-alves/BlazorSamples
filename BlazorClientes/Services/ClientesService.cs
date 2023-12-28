@@ -113,7 +113,7 @@ namespace BlazorClientes.Services
                         ListaClientes = new();
                         foreach (var cliente in jsonResult)
                         {
-                            ListaClientes.Add(new Clientes(cliente.Nome!, cliente.Endereco!, cliente.Telefone!, cliente.Celular!, cliente.Email!, cliente.ETag, cliente.idCliente));
+                            ListaClientes.Add(new Clientes(cliente.Nome!, cliente.Endereco!, cliente.Telefone!, cliente.Celular!, cliente.Email!, cliente.ETag, cliente.Codigo, cliente.idCliente));
                         }
                     }
 
@@ -124,7 +124,7 @@ namespace BlazorClientes.Services
                         PageResult.Clientes = new();
                         foreach (var cliente in ListaClientes)
                         {
-                            PageResult.Clientes.Add(new ClientesDTO(cliente.Nome!, cliente.Endereco!, cliente.Telefone!, cliente.Celular!, cliente.Email!, cliente.ETag, cliente.idCliente));
+                            PageResult.Clientes.Add(new ClientesDTO(cliente.Nome!, cliente.Endereco!, cliente.Telefone!, cliente.Celular!, cliente.Email!, cliente.ETag, cliente.Codigo, cliente.idCliente));
                         }
                     }
 
@@ -279,7 +279,7 @@ namespace BlazorClientes.Services
                         ListaClientes = new();
                         foreach (var cliente in jsonResult)
                         {
-                            ListaClientes.Add(new Clientes(cliente.Nome!, cliente.Endereco!, cliente.Telefone!, cliente.Celular!, cliente.Email!, cliente.ETag, cliente.idCliente));
+                            ListaClientes.Add(new Clientes(cliente.Nome!, cliente.Endereco!, cliente.Telefone!, cliente.Celular!, cliente.Email!, cliente.ETag, cliente.Codigo, cliente.idCliente));
                         }
                     }
 

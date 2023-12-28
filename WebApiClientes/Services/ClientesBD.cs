@@ -178,7 +178,7 @@ namespace WebApiClientes.Services
                 cmd.Parameters.Add(new MySqlParameter("telefone", cliente.Telefone));
                 cmd.Parameters.Add(new MySqlParameter("celular", cliente.Celular));
                 cmd.Parameters.Add(new MySqlParameter("email", cliente.Email));
-                cmd.Parameters.Add(new MySqlParameter("codigo", GetCodigo()));
+                cmd.Parameters.Add(new MySqlParameter("codigo", await GetCodigo()));
                 await cmd.ExecuteNonQueryAsync();
                 sql = "select * from Clientes where (idCliente = @id)";
                 cmd.CommandText = sql;
@@ -235,7 +235,9 @@ namespace WebApiClientes.Services
                     codigo = Convert.ToUInt32(reader["Cod"]);
                 }
 
-                return codigo++;
+                codigo += 1;
+
+                return codigo;
 
             }
             catch (Exception ex)

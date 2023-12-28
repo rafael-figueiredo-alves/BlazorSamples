@@ -46,7 +46,7 @@ namespace BlazorClientes.Shared.Entities
         /// <param name="_idVendedor">Opcional - ID do vendedor</param>
         public Vendedores(string? vendedor, int _pComissao, uint? codigo, string? _idVendedor = null)
         {
-            if(idVendedor != null)
+            if(_idVendedor != null)
             {
                 idVendedor = _idVendedor!;
                 isNewRecord = false;
@@ -62,9 +62,9 @@ namespace BlazorClientes.Shared.Entities
             ETag = HashMD5.Hash(JsonSerializer.Serialize(this));
         }
 
-        public Vendedores(string? vendedor, int _pComissao, string? _Etag = null, uint? codigo, string? _idVendedor = null)
+        public Vendedores(string? vendedor, int _pComissao, string? _Etag = null, uint? codigo = null, string? _idVendedor = null)
         {
-            if (idVendedor != null)
+            if (_idVendedor != null)
             {
                 idVendedor = _idVendedor!;
                 isNewRecord = false;
@@ -100,13 +100,13 @@ namespace BlazorClientes.Shared.Entities
         /// <summary>
         /// Campo Id do tipo GUID
         /// </summary>
-        public new string? idVendedor { get; private set; }
+        public new string? idVendedor { get; set; }
 
         public VendedoresDTO() { }
 
-        public VendedoresDTO(string? vendedor, int _pComissao, string? _Etag = null, uint? codigo, string? _idVendedor = null)
+        public VendedoresDTO(string? vendedor, int _pComissao, string? _Etag = null, uint? codigo = null, string? _idVendedor = null)
         {
-            if (idVendedor != null)
+            if (_idVendedor != null)
             {
                 idVendedor = _idVendedor!;
                 isNewRecord = false;

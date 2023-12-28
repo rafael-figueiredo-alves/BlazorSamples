@@ -89,7 +89,7 @@ namespace BlazorClientes.Shared.Entities
             ETag = HashMD5.Hash(JsonSerializer.Serialize(this));
         }
 
-        public Clientes(string _nome, string _endereco, string _telefone, string _celular, string _email, string? _Etag = null, uint? codigo, string? id = null)
+        public Clientes(string _nome, string _endereco, string _telefone, string _celular, string _email, string? _Etag = null, uint? codigo = null, string? id = null)
         {
             if (id != null)
             {
@@ -135,7 +135,7 @@ namespace BlazorClientes.Shared.Entities
 
         public ClientesDTO() { }
 
-        public ClientesDTO(string _nome, string _endereco, string _telefone, string _celular, string _email, string? _Etag = null, uint? codigo, string? id = null)
+        public ClientesDTO(string _nome, string _endereco, string _telefone, string _celular, string _email, string? _Etag = null, uint? codigo = null, string? id = null)
         {
             if (id != null)
             {

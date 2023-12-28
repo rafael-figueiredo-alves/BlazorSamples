@@ -113,7 +113,7 @@ namespace BlazorClientes.Services
                         ListaVendedores = new();
                         foreach (var vendedor in jsonResult)
                         {
-                            ListaVendedores.Add(new Vendedores(vendedor.Vendedor, vendedor.pComissao, vendedor.ETag, vendedor.idVendedor));
+                            ListaVendedores.Add(new Vendedores(vendedor.Vendedor, vendedor.pComissao, vendedor.ETag, vendedor.Codigo, vendedor.idVendedor));
                         }
                     }
 
@@ -124,7 +124,7 @@ namespace BlazorClientes.Services
                         PageResult.Vendedores = new();
                         foreach (var vendedor in ListaVendedores)
                         {
-                            PageResult.Vendedores.Add(new VendedoresDTO(vendedor.Vendedor, vendedor.pComissao, vendedor.ETag, vendedor.idVendedor));
+                            PageResult.Vendedores.Add(new VendedoresDTO(vendedor.Vendedor, vendedor.pComissao, vendedor.ETag, vendedor.Codigo, vendedor.idVendedor));
                         }
                     }
 
@@ -279,7 +279,7 @@ namespace BlazorClientes.Services
                         ListaVendedores = new();
                         foreach (var vendedor in jsonResult)
                         {
-                            ListaVendedores.Add(new Vendedores(vendedor.Vendedor!, vendedor.pComissao!, vendedor.ETag!, vendedor.idVendedor!));
+                            ListaVendedores.Add(new Vendedores(vendedor.Vendedor!, vendedor.pComissao!, vendedor.ETag!, vendedor.Codigo, vendedor.idVendedor!));
                         }
                     }
 

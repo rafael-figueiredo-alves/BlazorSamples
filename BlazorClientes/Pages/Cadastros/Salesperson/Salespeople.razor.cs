@@ -39,7 +39,8 @@ namespace BlazorClientes.Pages.Cadastros.Salesperson
         {
             Filtros = new()
             {
-                { "Nome", 0 }
+                { "Nome", 0 },
+                { "Código", 1 }
             };
             FiltroSelecionado = ("Nome", 0);
             GetPage(PaginaAtual);
@@ -124,7 +125,7 @@ namespace BlazorClientes.Pages.Cadastros.Salesperson
                 Lista = new();
                 foreach (var vendedor in Pagina!.Vendedores)
                 {
-                    Lista.Add(new Vendedores(vendedor.Vendedor!, vendedor.pComissao!, vendedor.ETag!, vendedor.idVendedor!));
+                    Lista.Add(new Vendedores(vendedor.Vendedor!, vendedor.pComissao!, vendedor.ETag!, vendedor.Codigo, vendedor.idVendedor!));
                 }
             }
             else

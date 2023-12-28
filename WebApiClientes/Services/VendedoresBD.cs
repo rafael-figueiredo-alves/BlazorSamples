@@ -164,11 +164,12 @@ namespace WebApiClientes.Services
             {
                 conn = new MySqlConnection(Conn);
                 conn.Open();
-                string sql = "insert into vendedores (IdVendedor, Vendedor, pComissao) values (@id, @vendedor, @pcomissao)";
+                string sql = "insert into vendedores (IdVendedor, Vendedor, pComissao, Codigo) values (@id, @vendedor, @pcomissao, @codigo)";
                 var cmd = new MySqlCommand(sql, conn);
                 cmd.Parameters.Add(new MySqlParameter("id", vendedor.idVendedor));
                 cmd.Parameters.Add(new MySqlParameter("vendedor", vendedor.Vendedor));
                 cmd.Parameters.Add(new MySqlParameter("pcomissao", vendedor.pComissao));
+                cmd.Parameters.Add(new MySqlParameter("codigo", await GetCodigo()));
                 await cmd.ExecuteNonQueryAsync();
                 sql = "select * from vendedores where (idVendedor = @id)";
                 cmd.CommandText = sql;
@@ -193,6 +194,39 @@ namespace WebApiClientes.Services
                 {
                     return null!;
                 }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            finally
+            {
+                conn?.Close();
+            }
+        }
+
+        private async Task<uint?> GetCodigo()
+        {
+            uint codigo = 0;
+
+            MySqlConnection? conn = null;
+            try
+            {
+                conn = new MySqlConnection(Conn);
+                conn.Open();
+
+                var sql = "select Max(Codigo) AS Cod from vendedores";
+                var cmd = new MySqlCommand(sql, conn);
+                var reader = await cmd.ExecuteReaderAsync();
+                while (await reader.ReadAsync())
+                {
+                    codigo = Convert.ToUInt32(reader["Cod"]);
+                }
+
+                codigo += 1;
+
+                return codigo;
+
             }
             catch (Exception ex)
             {

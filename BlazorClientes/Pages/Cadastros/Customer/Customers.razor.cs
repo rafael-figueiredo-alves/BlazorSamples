@@ -41,7 +41,8 @@ namespace BlazorClientes.Pages.Cadastros
             Filtros = new()
             {
                 { "Nome", 0 },
-                { "Endereço", 1 }
+                { "Endereço", 1 },
+                { "Código", 2 }
             };
             FiltroSelecionado = ("Nome", 0);
             GetPage(PaginaAtual);
@@ -126,7 +127,7 @@ namespace BlazorClientes.Pages.Cadastros
                 Lista = new();
                 foreach (var cliente in Pagina!.Clientes)
                 {
-                    Lista.Add(new Clientes(cliente.Nome!, cliente.Endereco!, cliente.Telefone!, cliente.Celular!, cliente.Email!, cliente.ETag, cliente.idCliente));
+                    Lista.Add(new Clientes(cliente.Nome!, cliente.Endereco!, cliente.Telefone!, cliente.Celular!, cliente.Email!, cliente.ETag, cliente.Codigo, cliente.idCliente));
                 }
             }
             else
