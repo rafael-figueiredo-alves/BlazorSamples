@@ -1,0 +1,42 @@
+﻿@inherits ChooseDlgBase
+
+@if (Exibir)
+{
+    <div class="modal-backdrop show"></div>
+
+    <div class="modal" tabindex="-1" role="dialog"
+         aria-hidden="true" style="display:block;">
+        <div class="modal-dialog modal-xl modal-dialog-centered @Theme!.ColorClass" role="document">
+            <div class="modal-content">
+                <div class="modal-header @Theme!.ColorClass">
+                    <h5 class="modal-title">@Titulo</h5>
+                    @if (Theme.IsDark)
+                    {
+                        <button @onclick="Oculta" type="button" class="btn-close"
+                                data-dismiss="modal" aria-label="Fechar">
+                            <span aria-hidden="true"></span>
+                        </button>
+                    }
+                    else
+                    {
+                        <button @onclick="Oculta" type="button" class="btn-close"
+                                data-dismiss="modal" aria-label="Fechar">
+                            <span aria-hidden="true"></span>
+                        </button>
+                    }
+                </div>
+                <div class="modal-body @Theme!.ColorClass">
+                    <SearchInput Filtros="Filtros" FiltroSelecionado="FiltroSelecionado" SearchClick="SearchClick">
+                        <h3>@Title</h3>
+                    </SearchInput>
+                </div>
+                <div class="modal-footer @Theme!.ColorClass">
+                    <button @onclick="@((value) => OnSelectClick.InvokeAsync(value))" type="button"
+                            class="btn btn-success">
+                        Sim
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+}

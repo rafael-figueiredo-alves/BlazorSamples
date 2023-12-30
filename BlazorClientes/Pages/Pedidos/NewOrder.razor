@@ -64,3 +64,6 @@
         </div>
     </div>
 </EditForm>
+
+<button @onclick="@(() => ChooseCliente!.Exibe(ChooseType.Customers))" />
+<ChooseDlg Titulo="Selecionar Cliente" @ref="ChooseCliente" />

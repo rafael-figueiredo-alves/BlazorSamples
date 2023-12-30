@@ -1,6 +1,7 @@
 ﻿using BlazorClientes.Services.Interfaces;
 using Microsoft.AspNetCore.Components;
 using BlazorClientes.Shared.Entities;
+using BlazorClientes.Shared.Components;
 
 namespace BlazorClientes.Pages.Pedidos
 {
@@ -29,6 +30,8 @@ namespace BlazorClientes.Pages.Pedidos
         protected List<Vendedores>? ListVendedores { get; set; }
         protected Vendedores? SelectedVendedor { get; set; }
         #endregion
+
+        protected ChooseDlg? ChooseCliente { get; set; }
 
         protected override void OnInitialized()
         {
