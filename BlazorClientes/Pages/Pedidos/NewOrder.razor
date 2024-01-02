@@ -66,4 +66,8 @@
 </EditForm>
 
 <button @onclick="@(() => ChooseCliente!.Exibe(ChooseType.Customers))" />
-<ChooseDlg Titulo="Selecionar Cliente" @ref="ChooseCliente" />
+<button @onclick="@(() => ChooseProduto!.Exibe(ChooseType.Products))" />
+<button @onclick="@(() => ChooseVendedor!.Exibe(ChooseType.Salespeople))" />
+<ChooseDlg @ref="ChooseCliente" OnSelectClick="GetCliente" />
+<ChooseDlg @ref="ChooseProduto" OnSelectClick="GetProduto" />
+<ChooseDlg @ref="ChooseVendedor" OnSelectClick="GetVendedor" />

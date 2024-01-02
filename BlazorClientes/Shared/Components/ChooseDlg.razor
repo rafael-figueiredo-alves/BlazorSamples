@@ -29,12 +29,122 @@
                     <SearchInput Filtros="Filtros" FiltroSelecionado="FiltroSelecionado" SearchClick="SearchClick">
                         <h3>@Title</h3>
                     </SearchInput>
-                </div>
-                <div class="modal-footer @Theme!.ColorClass">
-                    <button @onclick="@((value) => OnSelectClick.InvokeAsync(value))" type="button"
-                            class="btn btn-success">
-                        Sim
-                    </button>
+
+                    @if (Kind == ChooseType.Customers)
+                    {
+                        @if (ListaClientes == null)
+                        {
+                            <p>Carregando clientes...</p>
+                        }
+                        else
+                        if (!ListaClientes.Any())
+                        {
+                            <p>Sem clientes para listar</p>
+                        }
+                        else
+                        {
+                            <div style="height:60vh;overflow:auto;">
+                                <table class="table table-hover @Theme!.ColorClass" style="color: @Theme!.ColorFontStyle" data-bs-theme="@Theme.DataBsTheme">
+                                    <thead style="position: sticky;z-index: 10;top: 0;">
+                                        <tr>
+                                            <th scope="col" style="position: sticky;z-index: 10;"></th>
+                                            <th scope="col" style="position: sticky;z-index: 10;">Código</th>
+                                            <th scope="col" style="position: sticky;z-index: 10;">Cliente</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (Clientes cliente in ListaClientes!)
+                                        {
+                                            <tr>
+                                                <td class="col-1 col-md-1 align-middle" style="color: @Theme!.ColorFontStyle!" data-bs-theme="@Theme.DataBsTheme"><a class="btn btn-primary rounded-circle" @onclick="@(()=> GetChecked(cliente))"><span class="oi oi-check" /></a></td>
+                                                <td class="col-2 col-md-2 align-middle" style="color: @Theme!.ColorFontStyle!" data-bs-theme="@Theme.DataBsTheme">@cliente.Codigo.ToString().PadLeft(8, '0')</td>
+                                                <td class="col-9 col-md-9 align-middle" style="color: @Theme!.ColorFontStyle" data-bs-theme="@Theme.DataBsTheme">@cliente.Nome</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        }
+                    }
+
+                    @if (Kind == ChooseType.Salespeople)
+                    {
+                        @if (ListaVendedores == null)
+                        {
+                            <p>Carregando vendedores...</p>
+                        }
+                        else
+                       if (!ListaVendedores.Any())
+                        {
+                            <p>Sem vendedores para listar</p>
+                        }
+                        else
+                        {
+                            <div style="height:60vh;overflow:auto;">
+                                <table class="table table-hover @Theme!.ColorClass" style="color: @Theme!.ColorFontStyle" data-bs-theme="@Theme.DataBsTheme">
+                                    <thead style="position: sticky;z-index: 10;top: 0;">
+                                        <tr>
+                                            <th scope="col" style="position: sticky;z-index: 10;"></th>
+                                            <th scope="col" style="position: sticky;z-index: 10;">Código</th>
+                                            <th scope="col" style="position: sticky;z-index: 10;">Vendedor</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (Vendedores Vendedor in ListaVendedores!)
+                                        {
+                                            <tr>
+                                                <td class="col-1 col-md-1 align-middle" style="color: @Theme!.ColorFontStyle!" data-bs-theme="@Theme.DataBsTheme"><a class="btn btn-primary rounded-circle" @onclick="@(()=> GetChecked(Vendedor))"><span class="oi oi-check" /></a></td>
+                                                <td class="col-2 col-md-2 align-middle" style="color: @Theme!.ColorFontStyle!" data-bs-theme="@Theme.DataBsTheme">@Vendedor.Codigo.ToString().PadLeft(8, '0')</td>
+                                                <td class="col-9 col-md-9 align-middle" style="color: @Theme!.ColorFontStyle" data-bs-theme="@Theme.DataBsTheme">@Vendedor.Vendedor</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        }
+                    }
+
+                    @if (Kind == ChooseType.Products)
+                    {
+                        @if (ListaProdutos == null)
+                        {
+                            <p>Carregando produtos...</p>
+                        }
+                        else
+                       if (!ListaProdutos.Any())
+                        {
+                            <p>Sem produtos para listar</p>
+                        }
+                        else
+                        {
+                            <div style="height:60vh;overflow:auto;">
+                                <table class="table table-hover @Theme!.ColorClass" style="color: @Theme!.ColorFontStyle" data-bs-theme="@Theme.DataBsTheme">
+                                    <thead style="position: sticky;z-index: 10;top: 0;">
+                                        <tr>
+                                            <th scope="col" style="position: sticky;z-index: 10;"></th>
+                                            <th scope="col" style="position: sticky;z-index: 10;">Barcode</th>
+                                            <th scope="col" style="position: sticky;z-index: 10;">Produto</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (Produtos Produto in ListaProdutos!)
+                                        {
+                                            <tr>
+                                                <td class="col-1 col-md-1 align-middle" style="color: @Theme!.ColorFontStyle!" data-bs-theme="@Theme.DataBsTheme"><a class="btn btn-primary rounded-circle" @onclick="@(()=> GetChecked(Produto))"><span class="oi oi-check" /></a></td>
+                                                <td class="col-3 col-md-3 align-middle" style="color: @Theme!.ColorFontStyle!" data-bs-theme="@Theme.DataBsTheme">@Produto.Barcode</td>
+                                                <td class="col-9 col-md-9 align-middle" style="color: @Theme!.ColorFontStyle" data-bs-theme="@Theme.DataBsTheme">@Produto.Produto</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        }
+                    }
+
+                    <Paginacao QuantidadeTotalPaginas="QuantidadeTotalPaginas" PaginaAtual="PaginaAtual"
+                               Raio="2" PaginaSelecionadaClick="GetPageClick" QtdItensPorPagina="ItensPorPagina"
+                               OnChangeQtdItensPorPagina="OnChangeQtdItensPorPagina" />
+
                 </div>
             </div>
         </div>

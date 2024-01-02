@@ -32,6 +32,8 @@ namespace BlazorClientes.Pages.Pedidos
         #endregion
 
         protected ChooseDlg? ChooseCliente { get; set; }
+        protected ChooseDlg? ChooseProduto { get; set; }
+        protected ChooseDlg? ChooseVendedor { get; set; }
 
         protected override void OnInitialized()
         {
@@ -46,6 +48,30 @@ namespace BlazorClientes.Pages.Pedidos
         protected async Task SubmitOrder()
         {
             await Orders!.InsertOrUpdatePedido(Pedido!);
+        }
+
+        protected void GetCliente(object? Value)
+        {
+            if(Value != null)
+            {
+                Console.WriteLine(Value);
+            }
+        }
+
+        protected void GetProduto(object? Value)
+        {
+            if (Value != null)
+            {
+                Console.WriteLine(Value);
+            }
+        }
+
+        protected void GetVendedor(object? Value)
+        {
+            if (Value != null)
+            {
+                Console.WriteLine(Value);
+            }
         }
     }
 }
