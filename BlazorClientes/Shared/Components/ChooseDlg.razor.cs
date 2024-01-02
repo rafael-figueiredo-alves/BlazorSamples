@@ -7,18 +7,24 @@ namespace BlazorClientes.Shared.Components
 {
     public class ChooseDlgBase : ComponentBase
     {
+        #region Injeções de Dependência
         [Inject] protected IClientes? Clientes { get; set; }
         [Inject] protected IVendedores? Vendedores { get; set; }
         [Inject] protected IProdutos? ProdutosService { get; set; }
+        #endregion
 
         protected bool Exibir { get; set; } = false;
         protected ChooseType Kind { get; set; } = ChooseType.Customers;
+
+        #region Parameters
         [Parameter] public string? Titulo { get; set; }
         [Parameter] public RenderFragment? ChildContent { get; set; }
         [Parameter] public EventCallback<object?> OnSelectClick { get; set; }
         [CascadingParameter] public UITheming? Theme { get; set; }
+        #endregion
 
 
+        #region Variables
         protected (string? Filtro, int? FiltroIndice) FiltroSelecionado { get; set; }
         protected Dictionary<string, int>? Filtros { get; set; }
         protected int PaginaAtual { get; set; } = 1;
@@ -30,6 +36,7 @@ namespace BlazorClientes.Shared.Components
         protected List<Produtos>? ListaProdutos { get; set; } = null;
         protected string? Title { get; set; } = "Procurar Cliente";
         protected string? TermoBusca { get; set; } = null;
+        #endregion
 
         public void Exibe(ChooseType Choose)
         {

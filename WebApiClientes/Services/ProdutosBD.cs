@@ -65,7 +65,7 @@ namespace WebApiClientes.Services
 
                 conn = new MySqlConnection(Conn);
                 conn.Open();
-                string sql = "select * from produtos where idProduto = @id";
+                string sql = "select * from produtos where barcode = @id";
                 var cmd = new MySqlCommand(sql, conn);
                 cmd.Parameters.Add(new MySqlParameter("id", id));
                 var reader = await cmd.ExecuteReaderAsync();

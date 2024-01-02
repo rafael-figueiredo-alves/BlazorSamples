@@ -64,7 +64,7 @@ namespace WebApiClientes.Services
 
                 conn = new MySqlConnection(Conn);
                 conn.Open();
-                string sql = "select * from clientes where idCliente = @id";
+                string sql = "select * from clientes where Codigo = @id";
                 var cmd = new MySqlCommand(sql, conn);
                 cmd.Parameters.Add(new MySqlParameter("id", id));
                 var reader = await cmd.ExecuteReaderAsync();

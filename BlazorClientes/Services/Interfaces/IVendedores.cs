@@ -9,5 +9,6 @@ namespace BlazorClientes.Services.Interfaces
         Task<Vendedores?> InsertOrUpdateVendedor(Vendedores Vendedor);
         Task<bool> DeleteVendedor(Vendedores Vendedor);
         Task<List<Vendedores>?> GetAllVendedoresToPrint();
+        Task<Vendedores?> GetVendedor(string Codigo);
     }
 }

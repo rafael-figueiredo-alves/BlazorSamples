@@ -31,41 +31,31 @@
             </div>
         </div>
         <div class="card-body">
-@*             <div class="form-group p-3">
-                <label for="NomeCliente">Nome do Cliente</label>
-                <InputText class="form-control" id="NomeCliente" aria-describedby="Nome do Cliente" placeholder="informe o nome do cliente" @bind-Value="@Cliente.Nome" />
-                <ValidationMessage For="@(() => Cliente.Nome)" />
+            <div class="row">
+                <div class="col-5">
+            <div class="input-group mb-3">
+                <input type="text" class="form-control @Theme!.ColorClass" style="color: @Theme.ColorFontStyle" placeholder="Código Cliente..." aria-label="Pesquisar" aria-describedby="Pesquisar" />
+                <button class="btn btn-primary" type="button" id="button-addon2" @onclick="@(() => ChooseCliente!.Exibe(ChooseType.Customers))">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                        <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
+                    </svg>
+                </button>
+                <button class="btn btn-danger" type="button" id="button-addon2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">
+                        <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z" />
+                    </svg>
+                </button>
             </div>
-
-            <div class="form-group p-3">
-                <label for="EnderecoCliente">Endereço Físico do Cliente</label>
-                <InputText class="form-control" id="EnderecoCliente" aria-describedby="Endereço do Cliente" placeholder="Informe o endereço físico do cliente" @bind-Value="@Cliente.Endereco" />
-                <ValidationMessage For="@(() => Cliente.Endereco)" />
             </div>
-
-            <div class="form-group p-3">
-                <label for="EmailCliente">Endereço de email do cliente</label>
-                <InputText type="email" class="form-control" id="EmailCliente" aria-describedby="Email do Cliente" placeholder="Informe o email do cliente" @bind-Value="@Cliente.Email" />
-                <ValidationMessage For="@(() => Cliente.Email)" />
+                <div class="col">
+                    <h1>@(SelectedCliente != null ? SelectedCliente.Nome : "")</h1>
+                </div>
             </div>
-
-            <div class="form-group p-3">
-                <label for="FoneCliente">Telefone Fixo do Cliente</label>
-                <InputText class="form-control" id="FoneCliente" aria-describedby="Telefone do Cliente" placeholder="Informe o telefone fixo do cliente" @bind-Value="@Cliente.Telefone" data-mask="(00) 0000-0000" />
-                <ValidationMessage For="@(() => Cliente.Telefone)" />
-            </div>
-
-            <div class="form-group p-3">
-                <label for="CelularCliente">Celular do Cliente</label>
-                <InputText class="form-control" id="CelularCliente" aria-describedby="Celular do Cliente" placeholder="Informe o celular do cliente" @bind-Value="@Cliente.Celular" />
-                <ValidationMessage For="@(() => Cliente.Celular)" />
-            </div> *@
 
         </div>
     </div>
 </EditForm>
 
-<button @onclick="@(() => ChooseCliente!.Exibe(ChooseType.Customers))" />
 <button @onclick="@(() => ChooseProduto!.Exibe(ChooseType.Products))" />
 <button @onclick="@(() => ChooseVendedor!.Exibe(ChooseType.Salespeople))" />
 <ChooseDlg @ref="ChooseCliente" OnSelectClick="GetCliente" />

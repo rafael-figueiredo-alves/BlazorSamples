@@ -5,6 +5,7 @@ using Blazored.Toast.Services;
 using Microsoft.AspNetCore.Components;
 using System.Net;
 using System.Net.Http.Json;
+using System.Runtime.CompilerServices;
 using System.Text.Json;
 
 namespace BlazorClientes.Services
@@ -159,6 +160,50 @@ namespace BlazorClientes.Services
                     PageResult.Endpoint = Endpoint;
 
                     return PageResult;
+                }
+                else
+                {
+                    var ResponseString = await httpResponse.Content.ReadAsStringAsync();
+                    var jsonResult = JsonSerializer.Deserialize<Erro>(ResponseString, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                    throw new Exception(jsonResult!.Info);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Ocorreu um erro inesperado! Tente novamente. Detalhes: " + ex.Message);
+            }
+        }
+
+        public async Task<Clientes?> GetCliente(string Codigo)
+        {
+            Http!.DefaultRequestHeaders.Remove("If-None-Match");
+
+            string Endpoint = "api/v1/Clientes/" + Codigo;
+
+            try
+            {
+                Http!.DefaultRequestHeaders.Add("Access-Control-Allow-Headers", "*");
+
+                var httpResponse = await Http!.GetAsync(Endpoint, HttpCompletionOption.ResponseHeadersRead);
+
+                if (httpResponse.IsSuccessStatusCode)
+                {
+                    var ResponseString = await httpResponse.Content.ReadAsStringAsync();
+
+                    var jsonResult = JsonSerializer.Deserialize<List<ClientesDTO>?>(ResponseString, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+                    List<Clientes>? ListaClientes = null;
+
+                    if (jsonResult != null)
+                    {
+                        ListaClientes = new();
+                        foreach (var cliente in jsonResult)
+                        {
+                            ListaClientes.Add(new Clientes(cliente.Nome!, cliente.Endereco!, cliente.Telefone!, cliente.Celular!, cliente.Email!, cliente.ETag, cliente.Codigo, cliente.idCliente));
+                        }
+                    }
+
+                    return jsonResult == null ? null : ListaClientes!.FirstOrDefault();
                 }
                 else
                 {

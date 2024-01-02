@@ -69,6 +69,50 @@ namespace BlazorClientes.Services
             }
         }
 
+        public async Task<Produtos?> GetProduto(string Codigo)
+        {
+            Http!.DefaultRequestHeaders.Remove("If-None-Match");
+
+            string Endpoint = "api/v1/Produtos/" + Codigo;
+
+            try
+            {
+                Http!.DefaultRequestHeaders.Add("Access-Control-Allow-Headers", "*");
+
+                var httpResponse = await Http!.GetAsync(Endpoint, HttpCompletionOption.ResponseHeadersRead);
+
+                if (httpResponse.IsSuccessStatusCode)
+                {
+                    var ResponseString = await httpResponse.Content.ReadAsStringAsync();
+
+                    var jsonResult = JsonSerializer.Deserialize<List<ProdutosDTO>?>(ResponseString, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+                    List<Produtos>? ListaProdutos = null;
+
+                    if (jsonResult != null)
+                    {
+                        ListaProdutos = new();
+                        foreach (var produto in jsonResult)
+                        {
+                            ListaProdutos.Add(new Produtos(produto.Produto, produto.Descricao, produto.Valor, produto.Barcode, produto.ETag, produto.idProduto));
+                        }
+                    }
+
+                    return jsonResult == null ? null : ListaProdutos!.FirstOrDefault();
+                }
+                else
+                {
+                    var ResponseString = await httpResponse.Content.ReadAsStringAsync();
+                    var jsonResult = JsonSerializer.Deserialize<Erro>(ResponseString, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                    throw new Exception(jsonResult!.Info);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Ocorreu um erro inesperado! Tente novamente. Detalhes: " + ex.Message);
+            }
+        }
+
         public async Task<PageProdutos?> GetProdutos(int? Pagina = 1, int? QtdRegistrosPorPagina = 10, FiltroProdutos? FiltrarPor = null, string? Termo = null)
         {
             Http!.DefaultRequestHeaders.Remove("If-None-Match");

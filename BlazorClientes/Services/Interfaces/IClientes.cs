@@ -9,5 +9,6 @@ namespace BlazorClientes.Services.Interfaces
         Task<Clientes?> InsertOrUpdateCliente(Clientes cliente);
         Task<bool> DeleteCliente(Clientes Cliente);
         Task<List<Clientes>?> GetAllClientesToPrint();
+        Task<Clientes?> GetCliente(string Codigo);
     }
 }

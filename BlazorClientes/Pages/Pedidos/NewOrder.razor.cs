@@ -23,11 +23,8 @@ namespace BlazorClientes.Pages.Pedidos
         #region Variables
         protected Shared.Entities.Pedidos Pedido { get; set; } = new();
         protected string TituloPagina { get; set; } = string.Empty;
-        protected List<Clientes>? ListClientes {  get; set; }
         protected Clientes? SelectedCliente { get; set; }
-        protected List<Produtos>? ListProdutos { get; set; }
         protected Produtos? SelectedProduto { get; set; }
-        protected List<Vendedores>? ListVendedores { get; set; }
         protected Vendedores? SelectedVendedor { get; set; }
         #endregion
 
@@ -54,7 +51,7 @@ namespace BlazorClientes.Pages.Pedidos
         {
             if(Value != null)
             {
-                Console.WriteLine(Value);
+                SelectedCliente = (Clientes)Value;
             }
         }
 
@@ -62,7 +59,7 @@ namespace BlazorClientes.Pages.Pedidos
         {
             if (Value != null)
             {
-                Console.WriteLine(Value);
+                SelectedProduto = (Produtos)Value;
             }
         }
 
@@ -70,7 +67,7 @@ namespace BlazorClientes.Pages.Pedidos
         {
             if (Value != null)
             {
-                Console.WriteLine(Value);
+                SelectedVendedor = (Vendedores)Value;
             }
         }
     }

@@ -9,5 +9,6 @@ namespace BlazorClientes.Services.Interfaces
         Task<Produtos?> InsertOrUpdateProduto(Produtos Produto);
         Task<bool> DeleteProduto(Produtos Produto);
         Task<List<Produtos>?> GetAllProdutosToPrint();
+        Task<Produtos?> GetProduto(string Codigo);
     }
 }

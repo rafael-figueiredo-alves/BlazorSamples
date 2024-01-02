@@ -69,6 +69,50 @@ namespace BlazorClientes.Services
             }
         }
 
+        public async Task<Vendedores?> GetVendedor(string Codigo)
+        {
+            Http!.DefaultRequestHeaders.Remove("If-None-Match");
+
+            string Endpoint = "api/v1/Vendedores/" + Codigo;
+
+            try
+            {
+                Http!.DefaultRequestHeaders.Add("Access-Control-Allow-Headers", "*");
+
+                var httpResponse = await Http!.GetAsync(Endpoint, HttpCompletionOption.ResponseHeadersRead);
+
+                if (httpResponse.IsSuccessStatusCode)
+                {
+                    var ResponseString = await httpResponse.Content.ReadAsStringAsync();
+
+                    var jsonResult = JsonSerializer.Deserialize<List<VendedoresDTO>?>(ResponseString, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+                    List<Vendedores>? ListaVendedores = null;
+
+                    if (jsonResult != null)
+                    {
+                        ListaVendedores = new();
+                        foreach (var vendedor in jsonResult)
+                        {
+                            ListaVendedores.Add(new Vendedores(vendedor.Vendedor, vendedor.pComissao, vendedor.ETag, vendedor.Codigo, vendedor.idVendedor));
+                        }
+                    }
+
+                    return jsonResult == null ? null : ListaVendedores!.FirstOrDefault();
+                }
+                else
+                {
+                    var ResponseString = await httpResponse.Content.ReadAsStringAsync();
+                    var jsonResult = JsonSerializer.Deserialize<Erro>(ResponseString, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                    throw new Exception(jsonResult!.Info);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Ocorreu um erro inesperado! Tente novamente. Detalhes: " + ex.Message);
+            }
+        }
+
         public async Task<PageVendedores?> GetVendedores(int? Pagina = 1, int? QtdRegistrosPorPagina = 10, FiltroVendedor? FiltrarPor = null, string? Termo = null)
         {
             Http!.DefaultRequestHeaders.Remove("If-None-Match");
