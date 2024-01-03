@@ -190,26 +190,21 @@ namespace BlazorClientes.Services
                 {
                     var ResponseString = await httpResponse.Content.ReadAsStringAsync();
 
-                    var jsonResult = JsonSerializer.Deserialize<List<ClientesDTO>?>(ResponseString, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                    var jsonResult = JsonSerializer.Deserialize<ClientesDTO?>(ResponseString, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
                     List<Clientes>? ListaClientes = null;
 
                     if (jsonResult != null)
                     {
                         ListaClientes = new();
-                        foreach (var cliente in jsonResult)
-                        {
-                            ListaClientes.Add(new Clientes(cliente.Nome!, cliente.Endereco!, cliente.Telefone!, cliente.Celular!, cliente.Email!, cliente.ETag, cliente.Codigo, cliente.idCliente));
-                        }
+                        ListaClientes.Add(new Clientes(jsonResult.Nome!, jsonResult.Endereco!, jsonResult.Telefone!, jsonResult.Celular!, jsonResult.Email!, jsonResult.ETag, jsonResult.Codigo, jsonResult.idCliente));
                     }
 
                     return jsonResult == null ? null : ListaClientes!.FirstOrDefault();
                 }
                 else
                 {
-                    var ResponseString = await httpResponse.Content.ReadAsStringAsync();
-                    var jsonResult = JsonSerializer.Deserialize<Erro>(ResponseString, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-                    throw new Exception(jsonResult!.Info);
+                    return null;
                 }
             }
             catch (Exception ex)

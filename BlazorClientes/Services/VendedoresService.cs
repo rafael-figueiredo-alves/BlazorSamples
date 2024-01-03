@@ -102,9 +102,7 @@ namespace BlazorClientes.Services
                 }
                 else
                 {
-                    var ResponseString = await httpResponse.Content.ReadAsStringAsync();
-                    var jsonResult = JsonSerializer.Deserialize<Erro>(ResponseString, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-                    throw new Exception(jsonResult!.Info);
+                    return null;
                 }
             }
             catch (Exception ex)

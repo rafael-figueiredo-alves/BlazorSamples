@@ -74,6 +74,24 @@
             }
         }
 
+        public ItensPedido(string? _idPedido, string? _idProduto, string? _Descricao, int quantidade, decimal valorUnitario, int _pDesconto, decimal? valor = null)
+        {
+            idPedido = _idPedido;
+            idProduto = _idProduto;
+            Descricao = _Descricao;
+            Quantidade = quantidade;
+            ValorUnitario = valorUnitario;
+            pDesconto = _pDesconto;
+            if (valor != null)
+            {
+                Valor = (decimal)valor!;
+            }
+            else
+            {
+                Valor = CalculaTotal();
+            }
+        }
+
         private decimal CalculaTotal()
         {
             return (ValorUnitario * Quantidade) * (1 - (pDesconto / 100));

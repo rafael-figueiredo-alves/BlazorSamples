@@ -31,16 +31,19 @@
             </div>
         </div>
         <div class="card-body">
+
+
+            <label for="IdCliente"><strong>Cliente:</strong></label>
             <div class="row">
-                <div class="col-5">
-            <div class="input-group mb-3">
-                <input type="text" class="form-control @Theme!.ColorClass" style="color: @Theme.ColorFontStyle" placeholder="Código Cliente..." aria-label="Pesquisar" aria-describedby="Pesquisar" />
+                <div class="col-3">
+            <div class="input-group">
+                        <input type="text" @bind-value="@ClienteID" class="form-control @Theme!.ColorClass" style="color: @Theme.ColorFontStyle" placeholder="Código Cliente..." aria-label="Cliente" aria-describedby="Cliente" @onkeyup="@OnKeyUpCliente" @onkeypress:preventDefault />
                 <button class="btn btn-primary" type="button" id="button-addon2" @onclick="@(() => ChooseCliente!.Exibe(ChooseType.Customers))">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
                         <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
                     </svg>
                 </button>
-                <button class="btn btn-danger" type="button" id="button-addon2">
+                        <button class="btn btn-danger" type="button" id="button-addon2" @onclick="@(() => SelectedCliente = null)">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">
                         <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z" />
                     </svg>
@@ -48,7 +51,138 @@
             </div>
             </div>
                 <div class="col">
-                    <h1>@(SelectedCliente != null ? SelectedCliente.Nome : "")</h1>
+                    <h3 style="margin: 3px">@(SelectedCliente != null ? SelectedCliente.Nome : "")</h3>
+                </div>
+            </div>
+
+            <label for="IdVendedor"><strong>Vendedor:</strong></label>
+            <div class="row">
+                <div class="col-3">
+                    <div class="input-group">
+                        <input type="text" @bind-value="@VendedorID" class="form-control @Theme!.ColorClass" style="color: @Theme.ColorFontStyle" placeholder="Código Vendedor..." aria-label="Vendedor" aria-describedby="Vendedor" @onkeyup="@OnKeyUpVendedor" />
+                        <button class="btn btn-primary" type="button" id="button-addon2" @onclick="@(() => ChooseVendedor!.Exibe(ChooseType.Salespeople))">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
+                            </svg>
+                        </button>
+                        <button class="btn btn-danger" type="button" id="button-addon2" @onclick="@(() => SelectedVendedor = null)">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">
+                                <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="col">
+                    <h3 style="margin: 3px">@(SelectedVendedor != null ? SelectedVendedor.Vendedor : "")</h3>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-6">
+                    <label for="IdVendedor"><strong>Data de Emissão:</strong></label>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="input-group">
+                                <input type="date" @bind-value="@Pedido.DataEmissao" class="form-control @Theme!.ColorClass" style="color: @Theme.ColorFontStyle" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <label for="IdVendedor"><strong>Data de Entrega:</strong></label>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="input-group">
+                                <input type="date" @bind-value="@Pedido.DataEntrega" class="form-control @Theme!.ColorClass" style="color: @Theme.ColorFontStyle" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card text-center mt-3">
+                <div class="card-header">
+                    Itens do Pedido
+                </div>
+                <div class="card-body">
+                    <label for="IdVendedor"><strong>Produto:</strong></label>
+                    <div class="row align-middle">
+                        <div class="col-2">
+                            <div class="input-group mt-2">
+                                <input type="text" @bind-value="@VendedorID" class="form-control @Theme!.ColorClass" style="color: @Theme.ColorFontStyle" placeholder="Barcode" aria-label="Produto" aria-describedby="Produto" @onkeyup="@OnKeyUpVendedor" />
+                                <button class="btn btn-primary" type="button" id="button-addon2" @onclick="@(() => ChooseProduto!.Exibe(ChooseType.Products))">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                                        <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
+                                    </svg>
+                                </button>
+                                <button class="btn btn-danger" type="button" id="button-addon2" @onclick="@(() => SelectedProduto = null)">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">
+                                        <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-5 mt-2">
+                            <h3 style="margin: 3px">@(SelectedProduto != null ? SelectedProduto.Produto : "")</h3>
+                        </div>
+                        <div class="col-2">
+                            <div class="form-floating mb-3">
+                                <input type="number" @bind-value="@Quantidade" class="form-control" id="floatingInput" placeholder="Quantidade">
+                                <label for="floatingInput">Quantidade</label>
+                            </div>
+                        </div>
+                        <div class="col-2">
+                            <div class="form-floating mb-3">
+                                <input type="number" @bind-value="@ValorUni" class="form-control" id="floatingInput" placeholder="Preço" step="0.01">
+                                <label for="floatingInput">Preço</label>
+                            </div>
+                        </div>
+                        <div class="col-1 justify-content-end text-end mt-2">
+                            <button class="btn btn-success rounded-circle"><span class="oi oi-plus" @onclick="AddItem" /></button>
+                        </div>
+
+                        @if (Pedido.Itens == null)
+                        {
+                            <p>Carregando itens do pedido...</p>
+                        }
+                        else
+                        if (!Pedido.Itens.Any())
+                        {
+                            <p>Nenhum item adicionado. Adicione itens ao pedido</p>
+                        }
+                        else
+                        {
+                            <div style="height:30vh;overflow:auto;">
+                                <table class="table table-hover @Theme!.ColorClass" style="color: @Theme!.ColorFontStyle" data-bs-theme="@Theme.DataBsTheme">
+                                    <thead style="position: sticky;z-index: 10;top: 0;">
+                                        <tr>                                            
+                                            <th scope="col" style="position: sticky;z-index: 10;">Produto</th>
+                                            <th scope="col" style="position: sticky;z-index: 10;">Valor Unitário</th>
+                                            <th scope="col" style="position: sticky;z-index: 10;">Quantidade</th>
+                                            <th scope="col" style="position: sticky;z-index: 10;">Total</th>
+                                            <th scope="col" style="position: sticky;z-index: 10;"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (ItensPedido itens in Pedido.Itens!)
+                                        {
+                                            <tr>                                                
+                                                <td class="col-5 col-md-5 align-middle text-start" style="color: @Theme!.ColorFontStyle!" data-bs-theme="@Theme.DataBsTheme">@itens.Descricao</td>
+                                                <td class="col-2 col-md-2 align-middle" style="color: @Theme!.ColorFontStyle" data-bs-theme="@Theme.DataBsTheme">@(string.Format("{0:c}", itens.ValorUnitario))</td>
+                                                <td class="col-2 col-md-2 align-middle" style="color: @Theme!.ColorFontStyle" data-bs-theme="@Theme.DataBsTheme">@itens.Quantidade</td>
+                                                <td class="col-2 col-md-2 align-middle" style="color: @Theme!.ColorFontStyle" data-bs-theme="@Theme.DataBsTheme">@(string.Format("{0:c}", itens.Valor))</td>
+                                                <td class="col-1 col-md-1 align-middle" style="color: @Theme!.ColorFontStyle!" data-bs-theme="@Theme.DataBsTheme"><a class="btn btn-danger rounded-circle" @onclick="@(() => RemoveItem(itens))"><span class="oi oi-trash" /></a></td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        }
+                    </div>
+                </div>
+                <div class="card-footer text-body-secondary text-end">
+                    Valor da Comissão: <strong>@(string.Format("{0:c}", ValorComissao))</strong><br />
+                    Total do Pedido: <strong>@(string.Format("{0:c}", ValorTotalPedido))</strong>
                 </div>
             </div>
 
@@ -56,8 +190,6 @@
     </div>
 </EditForm>
 
-<button @onclick="@(() => ChooseProduto!.Exibe(ChooseType.Products))" />
-<button @onclick="@(() => ChooseVendedor!.Exibe(ChooseType.Salespeople))" />
 <ChooseDlg @ref="ChooseCliente" OnSelectClick="GetCliente" />
 <ChooseDlg @ref="ChooseProduto" OnSelectClick="GetProduto" />
 <ChooseDlg @ref="ChooseVendedor" OnSelectClick="GetVendedor" />
