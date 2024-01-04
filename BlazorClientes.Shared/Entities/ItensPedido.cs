@@ -94,7 +94,7 @@
 
         private decimal CalculaTotal()
         {
-            return (ValorUnitario * Quantidade) * (1 - (pDesconto / 100));
+            return (ValorUnitario * Quantidade) * (1 - (pDesconto / 100M));
         }
     }
 }

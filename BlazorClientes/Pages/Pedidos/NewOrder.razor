@@ -24,8 +24,8 @@
                         </h3>
                     </div>
                     <div class="col-4 col-md-6 justify-content-end text-end">
-                        <button class="btn btn-success d-none d-sm-inline" style="width: 120px;" type="submit"><span class="oi oi-check" />  Salvar</button>
-                        <button class="btn btn-success d-sm-none rounded-circle" type="submit"><span class="oi oi-check" /></button>
+                        <button class="btn btn-success d-none d-sm-inline" style="width: 120px;" type="button" @onclick=@Teste><span class="oi oi-check" />  Salvar</button>
+                        <button class="btn btn-success d-sm-none rounded-circle" type="button" @onclick=@Teste><span class="oi oi-check" /></button>
                     </div>
                 </div>
             </div>
@@ -109,7 +109,7 @@
                     <div class="row align-middle">
                         <div class="col-2">
                             <div class="input-group mt-2">
-                                <input type="text" @bind-value="@VendedorID" class="form-control @Theme!.ColorClass" style="color: @Theme.ColorFontStyle" placeholder="Barcode" aria-label="Produto" aria-describedby="Produto" @onkeyup="@OnKeyUpVendedor" />
+                                <input type="text" @bind-value="@ProdutoID" class="form-control @Theme!.ColorClass" style="color: @Theme.ColorFontStyle" placeholder="Barcode" aria-label="Produto" aria-describedby="Produto" @onkeyup="@OnKeyUpProduto" />
                                 <button class="btn btn-primary" type="button" id="button-addon2" @onclick="@(() => ChooseProduto!.Exibe(ChooseType.Products))">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
                                         <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
@@ -122,7 +122,7 @@
                                 </button>
                             </div>
                         </div>
-                        <div class="col-5 mt-2">
+                        <div class="col-3 mt-2">
                             <h3 style="margin: 3px">@(SelectedProduto != null ? SelectedProduto.Produto : "")</h3>
                         </div>
                         <div class="col-2">
@@ -135,6 +135,12 @@
                             <div class="form-floating mb-3">
                                 <input type="number" @bind-value="@ValorUni" class="form-control" id="floatingInput" placeholder="Preço" step="0.01">
                                 <label for="floatingInput">Preço</label>
+                            </div>
+                        </div>
+                        <div class="col-2">
+                            <div class="form-floating mb-3">
+                                <input type="number" @bind-value="@Desconto" class="form-control" id="floatingInput" placeholder="Desconto">
+                                <label for="floatingInput">Desconto</label>
                             </div>
                         </div>
                         <div class="col-1 justify-content-end text-end mt-2">
@@ -159,6 +165,7 @@
                                             <th scope="col" style="position: sticky;z-index: 10;">Produto</th>
                                             <th scope="col" style="position: sticky;z-index: 10;">Valor Unitário</th>
                                             <th scope="col" style="position: sticky;z-index: 10;">Quantidade</th>
+                                            <th scope="col" style="position: sticky;z-index: 10;">% Desconto</th>
                                             <th scope="col" style="position: sticky;z-index: 10;">Total</th>
                                             <th scope="col" style="position: sticky;z-index: 10;"></th>
                                         </tr>
@@ -167,9 +174,10 @@
                                         @foreach (ItensPedido itens in Pedido.Itens!)
                                         {
                                             <tr>                                                
-                                                <td class="col-5 col-md-5 align-middle text-start" style="color: @Theme!.ColorFontStyle!" data-bs-theme="@Theme.DataBsTheme">@itens.Descricao</td>
+                                                <td class="col-3 col-md-3 align-middle text-start" style="color: @Theme!.ColorFontStyle!" data-bs-theme="@Theme.DataBsTheme">@itens.Descricao</td>
                                                 <td class="col-2 col-md-2 align-middle" style="color: @Theme!.ColorFontStyle" data-bs-theme="@Theme.DataBsTheme">@(string.Format("{0:c}", itens.ValorUnitario))</td>
                                                 <td class="col-2 col-md-2 align-middle" style="color: @Theme!.ColorFontStyle" data-bs-theme="@Theme.DataBsTheme">@itens.Quantidade</td>
+                                                <td class="col-2 col-md-2 align-middle" style="color: @Theme!.ColorFontStyle" data-bs-theme="@Theme.DataBsTheme">@(itens.pDesconto.ToString() + " %")</td>
                                                 <td class="col-2 col-md-2 align-middle" style="color: @Theme!.ColorFontStyle" data-bs-theme="@Theme.DataBsTheme">@(string.Format("{0:c}", itens.Valor))</td>
                                                 <td class="col-1 col-md-1 align-middle" style="color: @Theme!.ColorFontStyle!" data-bs-theme="@Theme.DataBsTheme"><a class="btn btn-danger rounded-circle" @onclick="@(() => RemoveItem(itens))"><span class="oi oi-trash" /></a></td>
                                             </tr>

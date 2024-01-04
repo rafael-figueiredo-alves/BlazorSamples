@@ -4,6 +4,7 @@ using BlazorClientes.Shared.Entities;
 using BlazorClientes.Shared.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Blazored.Toast.Services;
+using BlazorClientes.Shared.Enums;
 
 namespace BlazorClientes.Pages.Pedidos
 {
@@ -16,6 +17,7 @@ namespace BlazorClientes.Pages.Pedidos
         #region Injeções de Dependência
         [Inject] protected IParamService? ParamService { get; set; }
         [Inject] protected NavigationManager? Nav { get; set; }
+        [Inject] protected IToastService? Toast { get; set; }
         [Inject] protected IPedidos? Orders { get; set; }
         [Inject] protected IProdutos? Produtos { get; set; }
         [Inject] protected IClientes? Clientes { get; set; }
@@ -43,6 +45,9 @@ namespace BlazorClientes.Pages.Pedidos
 
         protected decimal ValorTotalPedido { get; set; } = (decimal)0.00;
         protected decimal ValorComissao { get; set; } = (decimal)0.00;
+        protected int Desconto { get; set; } = 0;
+
+        protected bool ShouldSubmit { get; set; } = false;
 
         protected override void OnInitialized()
         {
@@ -54,9 +59,60 @@ namespace BlazorClientes.Pages.Pedidos
             Nav!.NavigateTo("orders");
         }
 
+        protected void PreencherDadosPedido()
+        {
+            if(SelectedCliente != null)
+            {
+                Pedido.idCliente = SelectedCliente.idCliente;
+                Pedido.Cliente   = SelectedCliente.Nome;
+            }
+            else
+            {
+                throw new Exception("Não é possível emitir um pedido sem ter um cliente associado ao mesmo.");
+            }
+
+            if (SelectedVendedor != null)
+            {
+                Pedido.idVendedor = SelectedVendedor.idVendedor;
+                Pedido.Vendedor = SelectedVendedor.Vendedor;
+            }
+            else
+            {
+                throw new Exception("Não é possível emitir um pedido sem ter um vendedor associado ao mesmo.");
+            }
+
+            if (Pedido.DataEmissao > Pedido.DataEntrega)
+            {
+                throw new Exception("Não é possível emitir um pedido com uma data de entrega inferior a data de sua emissão.");
+            }
+
+            if (ValorTotalPedido > 0)
+            {
+                Pedido.ValorTotal = ValorTotalPedido;
+            }
+            else
+            {
+                throw new Exception("Não é possível emitir um pedido com valor financeiro igual a ZERO.");
+            }
+
+            Pedido.vComissao = ValorComissao;
+            Pedido.Status = StatusPedido.Emitido.ToString();
+        }
+
         protected async Task SubmitOrder()
         {
-           // await Orders!.InsertOrUpdatePedido(Pedido!);
+            if(ShouldSubmit)
+            {
+                try
+                {
+                    PreencherDadosPedido();
+                    await Orders!.InsertOrUpdatePedido(Pedido!);
+                }
+                catch (Exception ex)
+                {
+                    Toast!.ShowWarning(ex.Message);
+                }
+            }
         }
 
         protected void GetCliente(object? Value)
@@ -88,6 +144,12 @@ namespace BlazorClientes.Pages.Pedidos
             {
                 SelectedVendedor = (Vendedores)Value;
             }
+        }
+
+        protected async Task Teste()
+        {
+            ShouldSubmit = true;
+            await SubmitOrder();
         }
 
         protected async Task OnKeyUpCliente(KeyboardEventArgs args)
@@ -123,9 +185,10 @@ namespace BlazorClientes.Pages.Pedidos
         {
             if(SelectedProduto != null)
             {
-                Pedido.Itens!.Add(new ItensPedido(Pedido.idPedido, SelectedProduto.idProduto, SelectedProduto.Produto, Quantidade, ValorUni, 0));
+                Pedido.Itens!.Add(new ItensPedido(Pedido.idPedido, SelectedProduto.idProduto, SelectedProduto.Produto, Quantidade, ValorUni, Desconto));
                 SelectedProduto = null;
                 Quantidade = 1;
+                Desconto = 0;
                 ValorUni = (decimal)0.00;
                 ProdutoID = null;
                 CalcularPedido();
@@ -143,11 +206,18 @@ namespace BlazorClientes.Pages.Pedidos
                     ValorTotalPedido += item.Valor;
                 }
 
-                if(SelectedVendedor != null)
+                decimal vTotalSemDesconto = decimal.Zero;
+                foreach (var item in Pedido.Itens!)
+                {
+                    vTotalSemDesconto += item.ValorUnitario * item.Quantidade;
+                }
+
+
+                if (SelectedVendedor != null)
                 {
                     if(SelectedVendedor.pComissao > 0)
                     {
-                        ValorComissao = (ValorTotalPedido * SelectedVendedor.pComissao) / 100;
+                        ValorComissao = (vTotalSemDesconto * SelectedVendedor.pComissao) / 100;
                     }
                 }
             }

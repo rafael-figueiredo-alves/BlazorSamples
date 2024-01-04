@@ -85,17 +85,15 @@ namespace BlazorClientes.Services
                 {
                     var ResponseString = await httpResponse.Content.ReadAsStringAsync();
 
-                    var jsonResult = JsonSerializer.Deserialize<List<VendedoresDTO>?>(ResponseString, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                    var jsonResult = JsonSerializer.Deserialize<VendedoresDTO?>(ResponseString, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
                     List<Vendedores>? ListaVendedores = null;
 
                     if (jsonResult != null)
                     {
                         ListaVendedores = new();
-                        foreach (var vendedor in jsonResult)
-                        {
-                            ListaVendedores.Add(new Vendedores(vendedor.Vendedor, vendedor.pComissao, vendedor.ETag, vendedor.Codigo, vendedor.idVendedor));
-                        }
+                        ListaVendedores.Add(new Vendedores(jsonResult.Vendedor, jsonResult.pComissao, jsonResult.ETag, jsonResult.Codigo, jsonResult.idVendedor));
+
                     }
 
                     return jsonResult == null ? null : ListaVendedores!.FirstOrDefault();
