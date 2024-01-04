@@ -63,12 +63,15 @@ namespace WebApiClientes.Services
         public async Task<Pedidos?> GetPedido(string id)
         {
             MySqlConnection? conn = null;
+            MySqlConnection? conn2 = null;
             try
             {
                 Pedidos? pedido;
 
                 conn = new MySqlConnection(Conn);
                 conn.Open();
+                conn2 = new MySqlConnection(Conn);
+                conn2.Open();
                 string sql = "select pedidos.*, clientes.Nome AS Cliente, vendedores.Vendedor, vendedores.pComissao from pedidos Inner Join clientes ON (clientes.idCliente = pedidos.idCliente) INNER JOIN vendedores on (vendedores.idVendedor = pedidos.idVendedor)  where idPedido = @id";
                 var cmd = new MySqlCommand(sql, conn);
                 cmd.Parameters.Add(new MySqlParameter("id", id));
@@ -94,10 +97,10 @@ namespace WebApiClientes.Services
                         Cliente = reader["Cliente"].ToString()!,
                         Vendedor = reader["Vendedor"].ToString()!
                     };
-                    string sql_itens = "select itenspedido.*, produtos.Descricao from itenspedido where idPedido = @id";
-                    var cmd_itens = new MySqlCommand(sql_itens, conn);
+                    string sql_itens = "select itenspedido.*, produtos.Descricao from itenspedido inner join Produtos on (produtos.idProduto = itenspedido.idProduto) where idPedido = @id";
+                    var cmd_itens = new MySqlCommand(sql_itens, conn2);
                     cmd_itens.Parameters.Add(new MySqlParameter("id", id));
-                    var reader_itens = await cmd.ExecuteReaderAsync();
+                    var reader_itens = await cmd_itens.ExecuteReaderAsync();
                     while (await reader_itens.ReadAsync())
                     {
                         pedido.Itens!.Add(new ItensPedido(
@@ -234,7 +237,7 @@ namespace WebApiClientes.Services
                 conn = new MySqlConnection(Conn);
                 conn.Open();
                 
-                string sql = "insert into pedidos (IdPedido, IdCliente, DataEmissao, DataEntrega, IdVendedor, vComissao, ValorTotal, Status) values (@idPedido, @idCliente, @dataEmissao, @dataEntrega, @idVendedor, @vcomissao, @valorTotal, Sstatus)";
+                string sql = "insert into pedidos (IdPedido, IdCliente, DataEmissao, DataEntrega, IdVendedor, vComissao, ValorTotal, Status) values (@idPedido, @idCliente, @dataEmissao, @dataEntrega, @idVendedor, @vcomissao, @valorTotal, @status)";
                 var cmd = new MySqlCommand(sql, conn);
                 cmd.Parameters.Add(new MySqlParameter("idPedido", pedido.idPedido));
                 cmd.Parameters.Add(new MySqlParameter("idCliente", pedido.idCliente));
@@ -250,7 +253,7 @@ namespace WebApiClientes.Services
                 {
                     cmd.Parameters.Clear();
                     cmd.CommandText = "insert into itenspedido (IdPedido, IdProduto, Quantidade, ValorUnitario, pDesconto, Valor) values (@idPedido, @idProduto, @quantidade, @valorUnitario, @pdesconto, @valor)";
-                    cmd.Parameters.Add(new MySqlParameter("idPedido", item.idPedido));
+                    cmd.Parameters.Add(new MySqlParameter("idPedido", pedido.idPedido));
                     cmd.Parameters.Add(new MySqlParameter("idProduto", item.idProduto));
                     cmd.Parameters.Add(new MySqlParameter("quantidade", item.Quantidade));
                     cmd.Parameters.Add(new MySqlParameter("valorUnitario", item.ValorUnitario));
@@ -259,7 +262,7 @@ namespace WebApiClientes.Services
                     await cmd.ExecuteNonQueryAsync();
                 }
                 
-                return await GetPedido(pedido.idCliente!);
+                return await GetPedido(pedido.idPedido!);
             }
             catch (Exception ex)
             {

@@ -111,6 +111,7 @@ namespace BlazorClientes.Pages.Pedidos
                 catch (Exception ex)
                 {
                     Toast!.ShowWarning(ex.Message);
+                    ShouldSubmit = false;
                 }
             }
         }

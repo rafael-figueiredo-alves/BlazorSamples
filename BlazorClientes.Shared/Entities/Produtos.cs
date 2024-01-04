@@ -121,7 +121,7 @@ namespace BlazorClientes.Shared.Entities
 
     public class ProdutosDTO : Produtos
     {
-        public new string? idProduto { get; private set; }
+        public new string? idProduto { get; set; }
 
         public ProdutosDTO()
         {

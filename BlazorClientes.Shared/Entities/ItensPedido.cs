@@ -96,5 +96,10 @@
         {
             return (ValorUnitario * Quantidade) * (1 - (pDesconto / 100M));
         }
+
+        public ItensPedido()
+        {
+
+        }
     }
 }
