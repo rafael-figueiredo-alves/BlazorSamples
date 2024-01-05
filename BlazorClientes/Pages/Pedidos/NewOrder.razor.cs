@@ -32,10 +32,13 @@ namespace BlazorClientes.Pages.Pedidos
         protected Vendedores? SelectedVendedor { get; set; }
         #endregion
 
+        #region Reference Variables
         protected ChooseDlg? ChooseCliente { get; set; }
         protected ChooseDlg? ChooseProduto { get; set; }
         protected ChooseDlg? ChooseVendedor { get; set; }
+        #endregion
 
+        #region Helper Variables
         protected string? ClienteID {  get; set; }
         protected string? VendedorID { get; set; }
         protected string? ProdutoID { get; set; }
@@ -46,9 +49,11 @@ namespace BlazorClientes.Pages.Pedidos
         protected decimal ValorTotalPedido { get; set; } = (decimal)0.00;
         protected decimal ValorComissao { get; set; } = (decimal)0.00;
         protected int Desconto { get; set; } = 0;
+        #endregion
 
         protected bool ShouldSubmit { get; set; } = false;
 
+        #region Methods
         protected override void OnInitialized()
         {
             TituloPagina = "Novo Pedido";
@@ -59,6 +64,13 @@ namespace BlazorClientes.Pages.Pedidos
             Nav!.NavigateTo("orders");
         }
 
+        protected async Task SubmitButtonClick()
+        {
+            ShouldSubmit = true;
+            await SubmitOrder();
+        }
+
+        #region Methods related to submit order
         protected void PreencherDadosPedido()
         {
             if(SelectedCliente != null)
@@ -115,7 +127,9 @@ namespace BlazorClientes.Pages.Pedidos
                 }
             }
         }
+        #endregion
 
+        #region Methods to get objects(Customers, Salespeople, Products)
         protected void GetCliente(object? Value)
         {
             if(Value != null)
@@ -133,26 +147,39 @@ namespace BlazorClientes.Pages.Pedidos
             }
         }
 
+        protected void GetVendedor(object? Value)
+        {
+            if (Value != null)
+            {
+                SelectedVendedor = (Vendedores)Value;
+                CalcularPedido();
+            }
+        }
+        #endregion
+
+        #region Methods related to Itens
         protected void RemoveItem(ItensPedido Value)
         {
             Pedido.Itens!.Remove(Value);
             CalcularPedido();
         }
 
-        protected void GetVendedor(object? Value)
+        protected void AddItem()
         {
-            if (Value != null)
+            if (SelectedProduto != null)
             {
-                SelectedVendedor = (Vendedores)Value;
+                Pedido.Itens!.Add(new ItensPedido(Pedido.idPedido, SelectedProduto.idProduto, SelectedProduto.Descricao, Quantidade, ValorUni, Desconto));
+                SelectedProduto = null;
+                Quantidade = 1;
+                Desconto = 0;
+                ValorUni = (decimal)0.00;
+                ProdutoID = null;
+                CalcularPedido();
             }
         }
+        #endregion
 
-        protected async Task Teste()
-        {
-            ShouldSubmit = true;
-            await SubmitOrder();
-        }
-
+        #region Methods related to Keyboard
         protected async Task OnKeyUpCliente(KeyboardEventArgs args)
         {
             if (args.Key == "Enter")
@@ -179,53 +206,6 @@ namespace BlazorClientes.Pages.Pedidos
                 {
                     ChooseCliente!.Exibe(ChooseType.Customers);
                 }
-            }
-        }
-
-        protected void AddItem()
-        {
-            if(SelectedProduto != null)
-            {
-                Pedido.Itens!.Add(new ItensPedido(Pedido.idPedido, SelectedProduto.idProduto, SelectedProduto.Produto, Quantidade, ValorUni, Desconto));
-                SelectedProduto = null;
-                Quantidade = 1;
-                Desconto = 0;
-                ValorUni = (decimal)0.00;
-                ProdutoID = null;
-                CalcularPedido();
-            }
-        }
-
-        protected void CalcularPedido()
-        {
-            if(Pedido.Itens!.Any())
-            {
-                ValorTotalPedido = decimal.Zero;
-                ValorComissao = decimal.Zero;
-                foreach (var item in Pedido.Itens!)
-                {
-                    ValorTotalPedido += item.Valor;
-                }
-
-                decimal vTotalSemDesconto = decimal.Zero;
-                foreach (var item in Pedido.Itens!)
-                {
-                    vTotalSemDesconto += item.ValorUnitario * item.Quantidade;
-                }
-
-
-                if (SelectedVendedor != null)
-                {
-                    if(SelectedVendedor.pComissao > 0)
-                    {
-                        ValorComissao = (vTotalSemDesconto * SelectedVendedor.pComissao) / 100;
-                    }
-                }
-            }
-            else
-            {
-                ValorComissao = (decimal)0.00;
-                ValorTotalPedido = (decimal)0.00;
             }
         }
 
@@ -259,6 +239,7 @@ namespace BlazorClientes.Pages.Pedidos
                     if (result != null)
                     {
                         SelectedVendedor = result;
+                        CalcularPedido();
                     }
                     else
                     {
@@ -267,5 +248,40 @@ namespace BlazorClientes.Pages.Pedidos
                 }
             }
         }
+        #endregion
+
+        protected void CalcularPedido()
+        {
+            if(Pedido.Itens!.Any())
+            {
+                ValorTotalPedido = decimal.Zero;
+                ValorComissao = decimal.Zero;
+                foreach (var item in Pedido.Itens!)
+                {
+                    ValorTotalPedido += item.Valor;
+                }
+
+                decimal vTotalSemDesconto = decimal.Zero;
+                foreach (var item in Pedido.Itens!)
+                {
+                    vTotalSemDesconto += item.ValorUnitario * item.Quantidade;
+                }
+
+
+                if (SelectedVendedor != null)
+                {
+                    if(SelectedVendedor.pComissao > 0)
+                    {
+                        ValorComissao = (vTotalSemDesconto * SelectedVendedor.pComissao) / 100;
+                    }
+                }
+            }
+            else
+            {
+                ValorComissao = (decimal)0.00;
+                ValorTotalPedido = (decimal)0.00;
+            }
+        }
+        #endregion
     }
 }

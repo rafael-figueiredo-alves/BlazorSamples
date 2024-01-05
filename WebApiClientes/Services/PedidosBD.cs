@@ -128,6 +128,7 @@ namespace WebApiClientes.Services
             finally
             {
                 conn?.Close();
+                conn2?.Close();
             }
         }
 
@@ -144,10 +145,13 @@ namespace WebApiClientes.Services
             int TotalRecords;
 
             MySqlConnection? conn = null;
+            MySqlConnection? conn2 = null;
             try
             {
                 conn = new MySqlConnection(Conn);
                 conn.Open();
+                conn2 = new MySqlConnection(Conn);
+                conn2.Open();
                 string sql_counter = "select Count(*) AS Total from pedidos";
                 var cmd_counter = new MySqlCommand(sql_counter, conn);
                 TotalRecords = Convert.ToInt32(await cmd_counter.ExecuteScalarAsync());
@@ -182,10 +186,10 @@ namespace WebApiClientes.Services
                         Cliente = reader["Cliente"].ToString()!,
                         Vendedor = reader["Vendedor"].ToString()!
                     };
-                    string sql_itens = "select itenspedido.*, produtos.Descricao from itenspedido where idPedido = @id";
-                    var cmd_itens = new MySqlCommand(sql_itens, conn);
+                    string sql_itens = "select itenspedido.*, produtos.Descricao from itenspedido inner join produtos ON (Produtos.idProduto = Itenspedido.IdProduto) where idPedido = @id";
+                    var cmd_itens = new MySqlCommand(sql_itens, conn2);
                     cmd_itens.Parameters.Add(new MySqlParameter("id", pedido.idPedido));
-                    var reader_itens = await cmd.ExecuteReaderAsync();
+                    var reader_itens = await cmd_itens.ExecuteReaderAsync();
                     while (await reader_itens.ReadAsync())
                     {
                         pedido.Itens.Add(new ItensPedido(
@@ -220,6 +224,7 @@ namespace WebApiClientes.Services
             finally
             {
                 conn?.Close();
+                conn2?.Close();
             }
         }
 
@@ -397,10 +402,13 @@ namespace WebApiClientes.Services
             int TotalRecords;
 
             MySqlConnection? conn = null;
+            MySqlConnection? conn2 = null;
             try
             {
                 conn = new MySqlConnection(Conn);
                 conn.Open();
+                conn2 = new MySqlConnection(Conn);
+                conn2.Open();
                 string sql_counter = "select Count(*) AS Total from pedidos  WHERE (" + Campo + " >= @de) and (" + Campo + " <= @ate)";
                 var cmd_counter = new MySqlCommand(sql_counter, conn);
                 cmd_counter.Parameters.Add(new MySqlParameter("de", De));
@@ -439,10 +447,10 @@ namespace WebApiClientes.Services
                         Cliente = reader["Cliente"].ToString()!,
                         Vendedor = reader["Vendedor"].ToString()!
                     };
-                    string sql_itens = "select itenspedido.*, produtos.Descricao from itenspedido where idPedido = @id";
-                    var cmd_itens = new MySqlCommand(sql_itens, conn);
+                    string sql_itens = "select itenspedido.*, produtos.Descricao from itenspedido inner join produtos ON (Produtos.idProduto = Itenspedido.IdProduto) where idPedido = @id";
+                    var cmd_itens = new MySqlCommand(sql_itens, conn2);
                     cmd_itens.Parameters.Add(new MySqlParameter("id", pedido.idPedido));
-                    var reader_itens = await cmd.ExecuteReaderAsync();
+                    var reader_itens = await cmd_itens.ExecuteReaderAsync();
                     while (await reader_itens.ReadAsync())
                     {
                         pedido.Itens.Add(new ItensPedido(
@@ -477,6 +485,7 @@ namespace WebApiClientes.Services
             finally
             {
                 conn?.Close();
+                conn2?.Close();
             }
         }
 
@@ -493,10 +502,13 @@ namespace WebApiClientes.Services
             int TotalRecords;
 
             MySqlConnection? conn = null;
+            MySqlConnection? conn2 = null;
             try
             {
                 conn = new MySqlConnection(Conn);
                 conn.Open();
+                conn2 = new MySqlConnection(Conn);
+                conn2.Open();
                 string sql_counter = "select Count(*) AS Total from pedidos WHERE (" + Campo + " LIKE @termo)";
                 var cmd_counter = new MySqlCommand(sql_counter, conn);
                 cmd_counter.Parameters.Add(new MySqlParameter("termo", "%" + Termo + "%"));
@@ -533,10 +545,10 @@ namespace WebApiClientes.Services
                         Cliente = reader["Cliente"].ToString()!,
                         Vendedor = reader["Vendedor"].ToString()!
                     };
-                    string sql_itens = "select itenspedido.*, produtos.Descricao from itenspedido where idPedido = @id";
-                    var cmd_itens = new MySqlCommand(sql_itens, conn);
+                    string sql_itens = "select itenspedido.*, produtos.Descricao from itenspedido inner join produtos ON (Produtos.idProduto = Itenspedido.IdProduto) where idPedido = @id";
+                    var cmd_itens = new MySqlCommand(sql_itens, conn2);
                     cmd_itens.Parameters.Add(new MySqlParameter("id", pedido.idPedido));
-                    var reader_itens = await cmd.ExecuteReaderAsync();
+                    var reader_itens = await cmd_itens.ExecuteReaderAsync();
                     while (await reader_itens.ReadAsync())
                     {
                         pedido.Itens.Add(new ItensPedido(
@@ -571,6 +583,7 @@ namespace WebApiClientes.Services
             finally
             {
                 conn?.Close();
+                conn2?.Close();
             }
         }
 
@@ -587,10 +600,13 @@ namespace WebApiClientes.Services
             int TotalRecords;
 
             MySqlConnection? conn = null;
+            MySqlConnection? conn2 = null;
             try
             {
                 conn = new MySqlConnection(Conn);
                 conn.Open();
+                conn2 = new MySqlConnection(Conn);
+                conn2.Open();
                 string sql_counter = "select Count(*) AS Total from pedidos WHERE (" + Campo + " = @termo)";
                 var cmd_counter = new MySqlCommand(sql_counter, conn);
                 cmd_counter.Parameters.Add(new MySqlParameter("termo", Termo));
@@ -628,10 +644,10 @@ namespace WebApiClientes.Services
                         Cliente = reader["Cliente"].ToString()!,
                         Vendedor = reader["Vendedor"].ToString()!
                     };
-                    string sql_itens = "select itenspedido.*, produtos.Descricao from itenspedido where idPedido = @id";
-                    var cmd_itens = new MySqlCommand(sql_itens, conn);
+                    string sql_itens = "select itenspedido.*, produtos.Descricao from itenspedido inner join produtos ON (Produtos.idProduto = Itenspedido.IdProduto) where idPedido = @id";
+                    var cmd_itens = new MySqlCommand(sql_itens, conn2);
                     cmd_itens.Parameters.Add(new MySqlParameter("id", pedido.idPedido));
-                    var reader_itens = await cmd.ExecuteReaderAsync();
+                    var reader_itens = await cmd_itens.ExecuteReaderAsync();
                     while (await reader_itens.ReadAsync())
                     {
                         pedido.Itens.Add(new ItensPedido(
@@ -666,6 +682,7 @@ namespace WebApiClientes.Services
             finally
             {
                 conn?.Close();
+                conn2?.Close();
             }
         }
     }

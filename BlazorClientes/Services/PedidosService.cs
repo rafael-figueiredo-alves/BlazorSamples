@@ -73,7 +73,7 @@ namespace BlazorClientes.Services
                         ListaPedidos = new();
                         foreach (var pedido in jsonResult)
                         {
-                            ListaPedidos.Add(new Pedidos(pedido.idCliente!, pedido.idVendedor!, pedido.vComissao, pedido.pComissao, pedido.ValorTotal, pedido.DataEmissao, pedido.DataEntrega, pedido.Status, pedido.Itens, pedido.idPedido));
+                            ListaPedidos.Add(new Pedidos(pedido.idCliente!, pedido.idVendedor!, pedido.vComissao, pedido.pComissao, pedido.ValorTotal, pedido.DataEmissao, pedido.DataEntrega, pedido.Status, pedido.ETag, pedido.Itens, pedido.idPedido));
                         }
                     }
 

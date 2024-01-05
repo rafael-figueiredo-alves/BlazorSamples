@@ -24,8 +24,8 @@
                         </h3>
                     </div>
                     <div class="col-4 col-md-6 justify-content-end text-end">
-                        <button class="btn btn-success d-none d-sm-inline" style="width: 120px;" type="button" @onclick=@Teste><span class="oi oi-check" />  Salvar</button>
-                        <button class="btn btn-success d-sm-none rounded-circle" type="button" @onclick=@Teste><span class="oi oi-check" /></button>
+                        <button class="btn btn-success d-none d-sm-inline" style="width: 120px;" type="button" @onclick=SubmitButtonClick><span class="oi oi-check" />  Salvar</button>
+                        <button class="btn btn-success d-sm-none rounded-circle" type="button" @onclick=SubmitButtonClick><span class="oi oi-check" /></button>
                     </div>
                 </div>
             </div>
@@ -123,7 +123,7 @@
                             </div>
                         </div>
                         <div class="col-3 mt-2">
-                            <h3 style="margin: 3px">@(SelectedProduto != null ? SelectedProduto.Produto : "")</h3>
+                            <h3 style="margin: 3px; text-align: justify">@(SelectedProduto != null ? SelectedProduto.Descricao : "")</h3>
                         </div>
                         <div class="col-2">
                             <div class="form-floating mb-3">

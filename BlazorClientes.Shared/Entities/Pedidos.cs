@@ -216,7 +216,7 @@ namespace BlazorClientes.Shared.Entities
         /// <summary>
         /// Campo Id do tipo GUID
         /// </summary>
-        public new string? idPedido { get; private set; }
+        public new string? idPedido { get; set; }
 
         /// <summary>
         /// Método Construtor
