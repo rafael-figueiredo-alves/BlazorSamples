@@ -39,10 +39,10 @@ else
         <table class="table table-hover @Theme!.ColorClass" style="color: @Theme!.ColorFontStyle" data-bs-theme="@Theme.DataBsTheme">
             <thead style="position: sticky;z-index: 10;top: 0;">
                 <tr>
-                    <th scope="col" style="position: sticky;z-index: 10;">Cliente</th>
-                    <th scope="col" style="position: sticky;z-index: 10;">Celular</th>
-                    <th scope="col" class="d-none d-md-table-cell" style="position: sticky;z-index: 10;">Telefone</th>
-                    <th scope="col" class="d-none d-md-table-cell" style="position: sticky;z-index: 10;">E-mail</th>
+                    <th scope="col" style="position: sticky;z-index: 10;">Código Pedido</th>
+                    <th scope="col" style="position: sticky;z-index: 10;">Status</th>
+                    <th scope="col" class="d-none d-md-table-cell" style="position: sticky;z-index: 10;">Comissão</th>
+                    <th scope="col" class="d-none d-md-table-cell" style="position: sticky;z-index: 10;">Valor Total</th>
                     <th scope="col" style="position: sticky;z-index: 10;">Ações</th>
                 </tr>
             </thead>
@@ -52,11 +52,11 @@ else
                     <tr>
                         <td class="col-4 col-md-4 align-middle" style="color: @Theme!.ColorFontStyle!" data-bs-theme="@Theme.DataBsTheme">@pedido.idPedido</td>
                         <td class="col-4 col-md-2 align-middle" style="color: @Theme!.ColorFontStyle" data-bs-theme="@Theme.DataBsTheme">@pedido.Status</td>
-                        <td class="d-none d-md-table-cell col-2 align-middle" style="color: @Theme!.ColorFontStyle!" data-bs-theme="@Theme.DataBsTheme">@pedido.vComissao</td>
-                        <td class="d-none d-md-table-cell col-2 align-middle" style="color: @Theme!.ColorFontStyle!" data-bs-theme="@Theme.DataBsTheme">@pedido.ValorTotal</td>
+                        <td class="d-none d-md-table-cell col-2 align-middle" style="color: @Theme!.ColorFontStyle!" data-bs-theme="@Theme.DataBsTheme">@(string.Format("{0:c}", pedido.vComissao))</td>
+                        <td class="d-none d-md-table-cell col-2 align-middle" style="color: @Theme!.ColorFontStyle!" data-bs-theme="@Theme.DataBsTheme">@(string.Format("{0:c}", pedido.ValorTotal))</td>
                         <td class="col-4 col-md-2">
                             <div class="d-inline align-content-end">
-                                <a class="btn btn-primary rounded-circle" @onclick="@(()=> UpdatePedido(pedido))"><span class="oi oi-pencil" /></a>
+                                <a class="btn btn-primary rounded-circle" @onclick="@(()=> UpdatePedido(pedido))"><span class="oi oi-eye" /></a>
                                 <a class="btn btn-danger rounded-circle" @onclick="@(()=> DeletePedido(pedido))"><span class="oi oi-trash" /></a>
                             </div>
                         </td>
