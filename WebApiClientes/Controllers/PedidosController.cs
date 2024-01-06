@@ -72,8 +72,8 @@ namespace WebApiClientes.Controllers
             {
                 pedidos = FiltrarPor switch
                 {
-                    FiltrosPedido.PorDataEmissao => await fpedidos.GetPedidosPorPerido(Page, "DataEmissao", Convert.ToDateTime(Termo1 ?? DateTime.Now.ToString()), Convert.ToDateTime(Termo2 ?? DateTime.Now.ToString())),
-                    FiltrosPedido.PorDataEntrega => await fpedidos.GetPedidosPorPerido(Page, "DataEntrega", Convert.ToDateTime(Termo1 ?? DateTime.Now.ToString()), Convert.ToDateTime(Termo2 ?? DateTime.Now.ToString())),
+                    FiltrosPedido.PorDataEmissao => await fpedidos.GetPedidosPorPeriodo(Page, "DataEmissao", Convert.ToDateTime(Termo1 ?? DateTime.Now.ToString()), Convert.ToDateTime(Termo2 ?? DateTime.Now.ToString())),
+                    FiltrosPedido.PorDataEntrega => await fpedidos.GetPedidosPorPeriodo(Page, "DataEntrega", Convert.ToDateTime(Termo1 ?? DateTime.Now.ToString()), Convert.ToDateTime(Termo2 ?? DateTime.Now.ToString())),
                     FiltrosPedido.PorClienteID => await fpedidos.GetPedidosFiltroIgual(Page, "idCliente", Termo1 ?? "0"),
                     FiltrosPedido.PorVendedorID => await fpedidos.GetPedidosFiltroIgual(Page, "idVendedor", Termo1 ?? "0"),
                     FiltrosPedido.PorClienteNome => await fpedidos.GetPedidosFiltroLike(Page, "clientes.Nome", Termo1 ?? "%"),

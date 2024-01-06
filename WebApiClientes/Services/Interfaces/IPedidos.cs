@@ -67,6 +67,6 @@ namespace WebApiClientes.Services.Interfaces
         /// Retorna lista de pedidos por período informado
         /// </summary>
         /// <returns>Lista de pedidos</returns>
-        public Task<List<Pedidos>> GetPedidosPorPerido(PageInfo Page, string Campo, DateTime De, DateTime Ate);
+        public Task<List<Pedidos>> GetPedidosPorPeriodo(PageInfo Page, string Campo, DateTime De, DateTime Ate);
     }
 }

@@ -246,8 +246,8 @@ namespace WebApiClientes.Services
                 var cmd = new MySqlCommand(sql, conn);
                 cmd.Parameters.Add(new MySqlParameter("idPedido", pedido.idPedido));
                 cmd.Parameters.Add(new MySqlParameter("idCliente", pedido.idCliente));
-                cmd.Parameters.Add(new MySqlParameter("dataEmissao", pedido.DataEmissao));
-                cmd.Parameters.Add(new MySqlParameter("dataEntrega", pedido.DataEntrega));
+                cmd.Parameters.Add(new MySqlParameter("dataEmissao", pedido.DataEmissao.Date));
+                cmd.Parameters.Add(new MySqlParameter("dataEntrega", pedido.DataEntrega.Date));
                 cmd.Parameters.Add(new MySqlParameter("idVendedor", pedido.idVendedor));
                 cmd.Parameters.Add(new MySqlParameter("vcomissao", pedido.vComissao));
                 cmd.Parameters.Add(new MySqlParameter("valorTotal", pedido.ValorTotal));
@@ -298,8 +298,8 @@ namespace WebApiClientes.Services
                 var cmd = new MySqlCommand(sql, conn);
                 cmd.Parameters.Add(new MySqlParameter("idPedido", pedido.idPedido));
                 cmd.Parameters.Add(new MySqlParameter("idCliente", pedido.idCliente));
-                cmd.Parameters.Add(new MySqlParameter("dataEmissao", pedido.DataEmissao));
-                cmd.Parameters.Add(new MySqlParameter("dataEntrega", pedido.DataEntrega));
+                cmd.Parameters.Add(new MySqlParameter("dataEmissao", pedido.DataEmissao.Date));
+                cmd.Parameters.Add(new MySqlParameter("dataEntrega", pedido.DataEntrega.Date));
                 cmd.Parameters.Add(new MySqlParameter("idVendedor", pedido.idVendedor));
                 cmd.Parameters.Add(new MySqlParameter("vcomissao", pedido.vComissao));
                 cmd.Parameters.Add(new MySqlParameter("valorTotal", pedido.ValorTotal));
@@ -365,7 +365,7 @@ namespace WebApiClientes.Services
                     var cmd = new MySqlCommand(sql, conn);
                     cmd.Parameters.Add(new MySqlParameter("id", ID));
                     cmd.Parameters.Add(new MySqlParameter("status", PedidoStatus));
-                    cmd.Parameters.Add(new MySqlParameter("entregueEm", DateTime.Now));
+                    cmd.Parameters.Add(new MySqlParameter("entregueEm", DateTime.Now.Date));
                     var ResultSet = await cmd.ExecuteNonQueryAsync();
                 }
                 else
@@ -393,7 +393,7 @@ namespace WebApiClientes.Services
         /// Retorna lista de pedidos por período informado
         /// </summary>
         /// <returns>Lista de pedidos</returns>
-        public async Task<List<Pedidos>> GetPedidosPorPerido(PageInfo Page, string Campo, DateTime De, DateTime Ate)
+        public async Task<List<Pedidos>> GetPedidosPorPeriodo(PageInfo Page, string Campo, DateTime De, DateTime Ate)
         {
             var pedidos = new List<Pedidos>();
             var PageNumber = Page.Page ?? 1;
@@ -411,8 +411,8 @@ namespace WebApiClientes.Services
                 conn2.Open();
                 string sql_counter = "select Count(*) AS Total from pedidos  WHERE (" + Campo + " >= @de) and (" + Campo + " <= @ate)";
                 var cmd_counter = new MySqlCommand(sql_counter, conn);
-                cmd_counter.Parameters.Add(new MySqlParameter("de", De));
-                cmd_counter.Parameters.Add(new MySqlParameter("ate", Ate));
+                cmd_counter.Parameters.Add(new MySqlParameter("de", De.Date));
+                cmd_counter.Parameters.Add(new MySqlParameter("ate", Ate.Date));
                 TotalRecords = Convert.ToInt32(await cmd_counter.ExecuteScalarAsync());
 
                 int inicio = (PageNumber - 1) * PageSize;
@@ -509,7 +509,7 @@ namespace WebApiClientes.Services
                 conn.Open();
                 conn2 = new MySqlConnection(Conn);
                 conn2.Open();
-                string sql_counter = "select Count(*) AS Total from pedidos WHERE (" + Campo + " LIKE @termo)";
+                string sql_counter = "select Count(*) AS Total from pedidos Inner Join clientes ON (clientes.idCliente = pedidos.idCliente) INNER JOIN vendedores on (vendedores.idVendedor = pedidos.idVendedor) WHERE (" + Campo + " LIKE @termo)";
                 var cmd_counter = new MySqlCommand(sql_counter, conn);
                 cmd_counter.Parameters.Add(new MySqlParameter("termo", "%" + Termo + "%"));
                 TotalRecords = Convert.ToInt32(await cmd_counter.ExecuteScalarAsync());

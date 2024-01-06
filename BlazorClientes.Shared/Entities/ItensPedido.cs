@@ -8,7 +8,7 @@
         /// <summary>
         /// Campo Id do tipo Auto incremento
         /// </summary>
-        public int Indice { get; }
+        public int Indice { get; set; }
 
         /// <summary>
         /// Campo Id do Pedido

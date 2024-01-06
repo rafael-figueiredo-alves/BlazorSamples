@@ -15,11 +15,11 @@
         <div class="col-6 pt-2 pb-2 justify-content-end text-end">
             @if (Lista!.Any())
             {
-                <button class="btn btn-primary d-none d-sm-inline" style="width: 150px" @onclick="PrintClientes"><span class="oi oi-print" /> Imprimir</button>
-                <button class="btn btn-primary d-sm-none rounded-circle" @onclick="PrintClientes"><span class="oi oi-print" /></button>
+                <button class="btn btn-primary d-none d-sm-inline" style="width: 150px" @onclick="PrintPedidos" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Imprimir relação de Pedidos"><span class="oi oi-print" /> Imprimir</button>
+                <button class="btn btn-primary d-sm-none rounded-circle" @onclick="PrintPedidos" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Imprimir relação de Pedidos"><span class="oi oi-print" /></button>
             }
-            <button class="btn btn-success d-none d-sm-inline" style="width: 150px" @onclick="InsertCliente"><span class="oi oi-plus" /> Novo cliente</button>
-            <button class="btn btn-success d-sm-none rounded-circle" @onclick="InsertCliente"><span class="oi oi-plus" /></button>
+            <button class="btn btn-success d-none d-sm-inline" style="width: 150px" @onclick="InsertPedido" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Gerar novo pedido"><span class="oi oi-plus" /> Novo Pedido</button>
+            <button class="btn btn-success d-sm-none rounded-circle" @onclick="InsertPedido" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Gerar novo pedido"><span class="oi oi-plus" /></button>
         </div>
     </div>
 </div>
@@ -41,8 +41,8 @@ else
                 <tr>
                     <th scope="col" style="position: sticky;z-index: 10;">Código Pedido</th>
                     <th scope="col" style="position: sticky;z-index: 10;">Status</th>
-                    <th scope="col" class="d-none d-md-table-cell" style="position: sticky;z-index: 10;">Comissão</th>
-                    <th scope="col" class="d-none d-md-table-cell" style="position: sticky;z-index: 10;">Valor Total</th>
+                    <th scope="col" style="position: sticky;z-index: 10;">Comissão</th>
+                    <th scope="col" style="position: sticky;z-index: 10;">Valor Total</th>
                     <th scope="col" style="position: sticky;z-index: 10;">Ações</th>
                 </tr>
             </thead>
@@ -50,11 +50,11 @@ else
                 @foreach (BlazorClientes.Shared.Entities.Pedidos pedido in Lista!)
                 {
                     <tr>
-                        <td class="col-4 col-md-4 align-middle" style="color: @Theme!.ColorFontStyle!" data-bs-theme="@Theme.DataBsTheme">@pedido.idPedido</td>
-                        <td class="col-4 col-md-2 align-middle" style="color: @Theme!.ColorFontStyle" data-bs-theme="@Theme.DataBsTheme">@pedido.Status</td>
-                        <td class="d-none d-md-table-cell col-2 align-middle" style="color: @Theme!.ColorFontStyle!" data-bs-theme="@Theme.DataBsTheme">@(string.Format("{0:c}", pedido.vComissao))</td>
-                        <td class="d-none d-md-table-cell col-2 align-middle" style="color: @Theme!.ColorFontStyle!" data-bs-theme="@Theme.DataBsTheme">@(string.Format("{0:c}", pedido.ValorTotal))</td>
-                        <td class="col-4 col-md-2">
+                        <td class="col-5 align-middle" style="color: @Theme!.ColorFontStyle!" data-bs-theme="@Theme.DataBsTheme">@pedido.idPedido</td>
+                        <td class="col-2 align-middle" style="color: @Theme!.ColorFontStyle" data-bs-theme="@Theme.DataBsTheme">@pedido.Status</td>
+                        <td class="col-2 align-middle" style="color: @Theme!.ColorFontStyle!" data-bs-theme="@Theme.DataBsTheme">@(string.Format("{0:c}", pedido.vComissao))</td>
+                        <td class="col-2 align-middle" style="color: @Theme!.ColorFontStyle!" data-bs-theme="@Theme.DataBsTheme">@(string.Format("{0:c}", pedido.ValorTotal))</td>
+                        <td class="col-1 align-right">
                             <div class="d-inline align-content-end">
                                 <a class="btn btn-primary rounded-circle" @onclick="@(()=> UpdatePedido(pedido))"><span class="oi oi-eye" /></a>
                                 <a class="btn btn-danger rounded-circle" @onclick="@(()=> DeletePedido(pedido))"><span class="oi oi-trash" /></a>

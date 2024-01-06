@@ -35,16 +35,19 @@ namespace BlazorClientes.Pages.Pedidos
         #endregion
 
         #region Methods
-        protected override void OnInitialized()
+        protected override async Task OnInitializedAsync()
         {
             Filtros = new()
             {
-                { "Nome", 0 },
-                { "Endereço", 1 },
-                { "Código", 2 }
+                { "Por Data Emissao", 0 },
+                { "Por Data Entrega", 1 },
+                { "Por Cliente", 3 },
+                { "Por Vendedor", 5 },
+                { "Por Status", 6 }
             };
-            FiltroSelecionado = ("Nome", 0);
+            FiltroSelecionado = ("Por Status", 6);
             GetPage(PaginaAtual);
+            await JSRuntime!.InvokeVoidAsync("AtivarToolTips");
         }
 
         protected void GetPageClick(int page)
@@ -59,7 +62,7 @@ namespace BlazorClientes.Pages.Pedidos
             }
         }
 
-        protected void InsertCliente()
+        protected void InsertPedido()
         {
             NavigationManager!.NavigateTo("neworder");
         }
@@ -95,7 +98,7 @@ namespace BlazorClientes.Pages.Pedidos
             }
         }
 
-        protected void PrintClientes()
+        protected void PrintPedidos()
         {
             //Implementar no futuro
         }

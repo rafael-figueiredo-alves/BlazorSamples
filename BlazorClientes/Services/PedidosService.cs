@@ -37,7 +37,12 @@ namespace BlazorClientes.Services
 
             if ((FiltrarPor != null) && (!string.IsNullOrEmpty(Termo)))
             {
-                Endpoint += "&FiltrarPor=" + FiltrarPor + "&Termo1=" + Termo;
+                if(FiltrarPor == FiltrosPedido.PorDataEntrega)
+                {
+                    Endpoint += "&FiltrarPor=" + FiltrarPor + "&Termo2=" + Termo;
+                }
+                else
+                    Endpoint += "&FiltrarPor=" + FiltrarPor + "&Termo1=" + Termo;
             }
 
             try
