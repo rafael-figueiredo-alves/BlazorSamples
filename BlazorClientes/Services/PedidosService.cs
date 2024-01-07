@@ -340,8 +340,9 @@ namespace BlazorClientes.Services
 
                 if (httpResponse.IsSuccessStatusCode)
                 {
-                    Toast!.ShowSuccess("Status do pedido foi alterado e salvo com sucesso!");
+                    Toast!.ShowSuccess(Status == StatusPedido.Cancelado ? "Pedido cancelado com sucesso!" : "Pedido entregue com sucesso!");
                     Nav!.NavigateTo("orders");
+                    
                     return await httpResponse.Content.ReadFromJsonAsync<Pedidos>();
                 }
                 else if ((httpResponse.StatusCode == HttpStatusCode.BadRequest) || (httpResponse.StatusCode == HttpStatusCode.PreconditionFailed))

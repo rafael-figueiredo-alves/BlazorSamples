@@ -1,4 +1,5 @@
 ﻿@page "/orders"
+@using BlazorClientes.Shared.Enums
 @inherits OrdersBase
 
 <PageTitle>BlazorClientes | Pedidos</PageTitle>
@@ -50,13 +51,15 @@ else
                 @foreach (BlazorClientes.Shared.Entities.Pedidos pedido in Lista!)
                 {
                     <tr>
-                        <td class="col-5 align-middle" style="color: @Theme!.ColorFontStyle!" data-bs-theme="@Theme.DataBsTheme">@pedido.idPedido</td>
-                        <td class="col-2 align-middle" style="color: @Theme!.ColorFontStyle" data-bs-theme="@Theme.DataBsTheme">@pedido.Status</td>
+                        <td class="col-4 align-middle" style="color: @Theme!.ColorFontStyle!" data-bs-theme="@Theme.DataBsTheme">@pedido.idPedido</td>
+                        <td class="col-2 align-middle @(pedido.Status != StatusPedido.Emitido.ToString() ? "text-bg-warning" : pedido.Status != StatusPedido.Cancelado.ToString() ? "text-bg-danger" : "text-bg-success")" data-bs-theme="@Theme.DataBsTheme">@pedido.Status</td>
                         <td class="col-2 align-middle" style="color: @Theme!.ColorFontStyle!" data-bs-theme="@Theme.DataBsTheme">@(string.Format("{0:c}", pedido.vComissao))</td>
                         <td class="col-2 align-middle" style="color: @Theme!.ColorFontStyle!" data-bs-theme="@Theme.DataBsTheme">@(string.Format("{0:c}", pedido.ValorTotal))</td>
-                        <td class="col-1 align-right">
+                        <td class="col-3 align-right">
                             <div class="d-inline align-content-end">
                                 <a class="btn btn-primary rounded-circle" @onclick="@(()=> UpdatePedido(pedido))"><span class="oi oi-eye" /></a>
+                                <a class="btn btn-success rounded-circle @(pedido.Status != StatusPedido.Emitido.ToString() ? "disabled" : "")" @onclick="@(()=> EntregarPedido(pedido))"><span class="oi oi-check" /></a>
+                                <a class="btn btn-warning rounded-circle @(pedido.Status != StatusPedido.Emitido.ToString() ? "disabled" : "")" @onclick="@(()=> CancelarPedido(pedido))"><span class="oi oi-x" /></a>
                                 <a class="btn btn-danger rounded-circle" @onclick="@(()=> DeletePedido(pedido))"><span class="oi oi-trash" /></a>
                             </div>
                         </td>
@@ -71,6 +74,16 @@ else
 
 <ConfirmDlg Titulo="Remover pedido?" @ref="MsgDelete" OnYesClick="ConfirmDeleteCliente">
     <p>Deseja realmente apagar os dados do pedido selecionado?</p>
+    <p><strong>Pedido:</strong> @SelectedPedidos!.idPedido</p>
+</ConfirmDlg>
+
+<ConfirmDlg Titulo="Cancelar pedido?" @ref="MsgCancelaPedido" OnYesClick="ConfirmPedidoCancelado">
+    <p>Deseja realmente cancelar o pedido selecionado?</p>
+    <p><strong>Pedido:</strong> @SelectedPedidos!.idPedido</p>
+</ConfirmDlg>
+
+<ConfirmDlg Titulo="Confirma entrega do pedido?" @ref="MsgEntregaPedido" OnYesClick="ConfirmPedidoEntregue">
+    <p>Deseja realmente confirmar a entrega do pedido selecionado?</p>
     <p><strong>Pedido:</strong> @SelectedPedidos!.idPedido</p>
 </ConfirmDlg>
 

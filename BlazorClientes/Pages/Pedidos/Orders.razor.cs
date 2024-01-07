@@ -30,6 +30,8 @@ namespace BlazorClientes.Pages.Pedidos
         protected int TotalDeRegistros { get; set; } = 0;
         protected string InfoPaginasERegistros { get; set; } = string.Empty;
         protected ConfirmDlg? MsgDelete { get; set; }
+        protected ConfirmDlg? MsgCancelaPedido { get; set; }
+        protected ConfirmDlg? MsgEntregaPedido { get; set; }
         protected BlazorClientes.Shared.Entities.Pedidos? SelectedPedidos { get; set; } = null;
         protected string? TermoBusca { get; set; } = null;
         #endregion
@@ -71,6 +73,32 @@ namespace BlazorClientes.Pages.Pedidos
         {
             //ParamService!.setParam(pedido);
             //NavigationManager!.NavigateTo("editcustomer");
+        }
+
+        protected async Task ConfirmPedidoEntregue()
+        {
+            MsgEntregaPedido!.Oculta();
+            await pedidos!.SetStatusPedido(SelectedPedidos!, Shared.Enums.StatusPedido.Entregue);
+            GetPage(PaginaAtual);
+        }
+
+        protected void EntregarPedido(BlazorClientes.Shared.Entities.Pedidos pedido)
+        {
+            SelectedPedidos = pedido;
+            MsgEntregaPedido!.Exibe();
+        }
+
+        protected void CancelarPedido(BlazorClientes.Shared.Entities.Pedidos pedido)
+        {
+            SelectedPedidos = pedido;
+            MsgCancelaPedido!.Exibe();
+        }
+
+        protected async Task ConfirmPedidoCancelado()
+        {
+            MsgCancelaPedido!.Oculta();
+            await pedidos!.SetStatusPedido(SelectedPedidos!, Shared.Enums.StatusPedido.Cancelado);
+            GetPage(PaginaAtual);
         }
 
         protected void DeletePedido(BlazorClientes.Shared.Entities.Pedidos pedido)
