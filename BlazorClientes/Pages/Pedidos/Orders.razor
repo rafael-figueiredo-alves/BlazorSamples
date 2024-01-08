@@ -40,27 +40,31 @@ else
         <table class="table table-hover @Theme!.ColorClass" style="color: @Theme!.ColorFontStyle" data-bs-theme="@Theme.DataBsTheme">
             <thead style="position: sticky;z-index: 10;top: 0;">
                 <tr>
-                    <th scope="col" style="position: sticky;z-index: 10;">Código Pedido</th>
                     <th scope="col" style="position: sticky;z-index: 10;">Status</th>
+                    <th scope="col" style="position: sticky;z-index: 10;">Código Pedido</th>
+                    <th scope="col" style="position: sticky;z-index: 10;">Emissão</th>
+                    <th scope="col" style="position: sticky;z-index: 10;">Entrega</th>
                     <th scope="col" style="position: sticky;z-index: 10;">Comissão</th>
                     <th scope="col" style="position: sticky;z-index: 10;">Valor Total</th>
-                    <th scope="col" style="position: sticky;z-index: 10;">Ações</th>
+                    <th scope="col" class="text-center" style="position: sticky;z-index: 10;">Ações</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach (BlazorClientes.Shared.Entities.Pedidos pedido in Lista!)
                 {
                     <tr>
-                        <td class="col-4 align-middle" style="color: @Theme!.ColorFontStyle!" data-bs-theme="@Theme.DataBsTheme">@pedido.idPedido</td>
-                        <td class="col-2 align-middle @(pedido.Status != StatusPedido.Emitido.ToString() ? "text-bg-warning" : pedido.Status != StatusPedido.Cancelado.ToString() ? "text-bg-danger" : "text-bg-success")" data-bs-theme="@Theme.DataBsTheme">@pedido.Status</td>
+                        <td class="col-1 align-middle @(pedido.Status == StatusPedido.Emitido.ToString() ? "text-bg-warning" : pedido.Status == StatusPedido.Cancelado.ToString() ? "text-bg-danger" : "text-bg-success")" data-bs-theme="@Theme.DataBsTheme">@pedido.Status</td>
+                        <td class="col-3 align-middle" style="color: @Theme!.ColorFontStyle!" data-bs-theme="@Theme.DataBsTheme">@pedido.idCliente</td>
+                        <td class="col-1 align-middle" style="color: @Theme!.ColorFontStyle!" data-bs-theme="@Theme.DataBsTheme">@pedido.DataEmissao.Date.ToShortDateString()</td>
+                        <td class="col-1 align-middle" style="color: @Theme!.ColorFontStyle!" data-bs-theme="@Theme.DataBsTheme">@pedido.DataEntrega.Date.ToShortDateString()</td>
                         <td class="col-2 align-middle" style="color: @Theme!.ColorFontStyle!" data-bs-theme="@Theme.DataBsTheme">@(string.Format("{0:c}", pedido.vComissao))</td>
                         <td class="col-2 align-middle" style="color: @Theme!.ColorFontStyle!" data-bs-theme="@Theme.DataBsTheme">@(string.Format("{0:c}", pedido.ValorTotal))</td>
-                        <td class="col-3 align-right">
+                        <td class="col-2 align-right">
                             <div class="d-inline align-content-end">
-                                <a class="btn btn-primary rounded-circle" @onclick="@(()=> UpdatePedido(pedido))"><span class="oi oi-eye" /></a>
+                                <a class="btn btn-primary rounded-circle" @onclick="@(()=> PreviewPedido(pedido))"><span class="oi oi-eye" /></a>
                                 <a class="btn btn-success rounded-circle @(pedido.Status != StatusPedido.Emitido.ToString() ? "disabled" : "")" @onclick="@(()=> EntregarPedido(pedido))"><span class="oi oi-check" /></a>
                                 <a class="btn btn-warning rounded-circle @(pedido.Status != StatusPedido.Emitido.ToString() ? "disabled" : "")" @onclick="@(()=> CancelarPedido(pedido))"><span class="oi oi-x" /></a>
-                                <a class="btn btn-danger rounded-circle" @onclick="@(()=> DeletePedido(pedido))"><span class="oi oi-trash" /></a>
+                                <a class="btn btn-danger rounded-circle @(pedido.Status != StatusPedido.Emitido.ToString() ? "disabled" : "")" @onclick="@(()=> DeletePedido(pedido))"><span class="oi oi-trash" /></a>
                             </div>
                         </td>
                     </tr>

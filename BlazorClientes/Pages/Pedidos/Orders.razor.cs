@@ -69,10 +69,10 @@ namespace BlazorClientes.Pages.Pedidos
             NavigationManager!.NavigateTo("neworder");
         }
 
-        protected void UpdatePedido(BlazorClientes.Shared.Entities.Pedidos pedido)
+        protected void PreviewPedido(BlazorClientes.Shared.Entities.Pedidos pedido)
         {
-            //ParamService!.setParam(pedido);
-            //NavigationManager!.NavigateTo("editcustomer");
+            ParamService!.setParam(pedido);
+            NavigationManager!.NavigateTo("vieworder");
         }
 
         protected async Task ConfirmPedidoEntregue()
