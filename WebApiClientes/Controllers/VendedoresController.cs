@@ -1,4 +1,5 @@
 ﻿using BlazorClientes.Shared.Entities;
+using BlazorClientes.Shared.Enums;
 using BlazorClientes.Shared.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -186,6 +187,7 @@ namespace WebApiClientes.Controllers
         /// Obtém dados do vendedor que possua o ID informado. Caso informe um ID que não exista cadastro, você receberá mensagem que não foi possível encontrar o vendedor
         /// </remarks>
         /// <param name="id">Informe o ID do vendedor que deseja consultar</param>
+        /// <param name="Kind"></param>
         /// <response code="200">Sucesso ao obter lista de vendedores</response>
         /// <response code="404">Não foram encontrados vendedores</response>
         /// <response code="500">Ocorreu um erro interno no servidor</response>
@@ -194,9 +196,9 @@ namespace WebApiClientes.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<Vendedores>> GetVendedor(string id)
+        public async Task<ActionResult<Vendedores>> GetVendedor(string id, [FromQuery] GetKind Kind = GetKind.PorCodigo)
         {
-            var vendedores = await fvendedores.GetVendedor(id);
+            var vendedores = await fvendedores.GetVendedor(id, Kind);
             try
             {
                 if (vendedores != null)

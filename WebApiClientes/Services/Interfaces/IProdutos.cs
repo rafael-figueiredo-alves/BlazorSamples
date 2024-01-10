@@ -1,4 +1,5 @@
 ﻿using BlazorClientes.Shared.Entities;
+using BlazorClientes.Shared.Enums;
 
 namespace WebApiClientes.Services.Interfaces
 {
@@ -18,8 +19,9 @@ namespace WebApiClientes.Services.Interfaces
         /// Paga Produto por ID
         /// </summary>
         /// <param name="id">id</param>
+        /// <param name="Kind"></param>
         /// <returns>Retorna Produto</returns>
-        public Task<Produtos?> GetProduto(string id);
+        public Task<Produtos?> GetProduto(string id, GetKind Kind = GetKind.PorCodigo);
 
         /// <summary>
         /// Insere novo Produto

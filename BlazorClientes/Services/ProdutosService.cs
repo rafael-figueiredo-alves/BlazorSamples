@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Components;
 using System.Net.Http.Json;
 using System.Net;
 using System.Text.Json;
+using BlazorClientes.Shared.Enums;
 
 namespace BlazorClientes.Services
 {
@@ -69,11 +70,11 @@ namespace BlazorClientes.Services
             }
         }
 
-        public async Task<Produtos?> GetProduto(string Codigo)
+        public async Task<Produtos?> GetProduto(string Codigo, GetKind Kind = GetKind.PorCodigo)
         {
             Http!.DefaultRequestHeaders.Remove("If-None-Match");
 
-            string Endpoint = "api/v1/Produtos/" + Codigo;
+            string Endpoint = "api/v1/Produtos/" + Codigo + "?Kind=" + Kind;
 
             try
             {

@@ -1,5 +1,6 @@
 ﻿using BlazorClientes.Shared.Entities;
 using BlazorClientes.Shared.Entities.PageResults;
+using BlazorClientes.Shared.Enums;
 
 namespace BlazorClientes.Services.Interfaces
 {
@@ -9,6 +10,6 @@ namespace BlazorClientes.Services.Interfaces
         Task<Clientes?> InsertOrUpdateCliente(Clientes cliente);
         Task<bool> DeleteCliente(Clientes Cliente);
         Task<List<Clientes>?> GetAllClientesToPrint();
-        Task<Clientes?> GetCliente(string Codigo);
+        Task<Clientes?> GetCliente(string Codigo, GetKind Kind = GetKind.PorCodigo);
     }
 }

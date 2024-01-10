@@ -1,4 +1,5 @@
 ﻿using BlazorClientes.Shared.Entities;
+using BlazorClientes.Shared.Enums;
 using BlazorClientes.Shared.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -187,6 +188,7 @@ namespace WebApiClientes.Controllers
         /// Obtém dados do cliente que possua o ID informado. Caso informe um ID que não exista cadastro, você receberá mensagem que não foi possível encontrar o cliente
         /// </remarks>
         /// <param name="id">Informe o ID do cliente que deseja consultar</param>
+        /// <param name="Kind">Tipo</param>
         /// <response code="200">Sucesso ao obter lista de clientes</response>
         /// <response code="404">Não foram encontrados clientes</response>
         /// <response code="500">Ocorreu um erro interno no servidor</response>
@@ -196,13 +198,13 @@ namespace WebApiClientes.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status304NotModified)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<Clientes>> GetCliente(string id)
+        public async Task<ActionResult<Clientes>> GetCliente(string id, [FromQuery] GetKind Kind = GetKind.PorCodigo)
         {
             string dataHash;
 
             try
             {
-                var clientes = await fclientes.GetCliente(id);
+                var clientes = await fclientes.GetCliente(id, Kind);
 
                 if(clientes == null)
                 {

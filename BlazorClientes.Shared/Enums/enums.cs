@@ -6,4 +6,10 @@
         Cancelado,
         Entregue
     }
+
+    public enum  GetKind
+    {
+        PorCodigo,
+        PorID
+    }
 }

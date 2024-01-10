@@ -1,15 +1,16 @@
 ﻿@page "/vieworder"
+@using BlazorClientes.Shared.Enums
 @inherits ViewOrderBase
 
 
-<PageTitle>BlazorClientes | @TituloPagina</PageTitle>
+<PageTitle>BlazorClientes | Visualizando Pedido</PageTitle>
 
 
-@*         <div class="card">
+        <div class="card">
             <div class="card-header" style="height: 56.8px;padding-left:4px;padding-right:4px">
                 <div class="container-fluid align-middle">
                     <div class="row">
-                        <div class="col-8 col-md-6 text-start align-middle">
+                        <div class="col-9 col-md-9 text-start align-middle">
                             <svg width="40px" height="40px" viewBox="0 0 24.00 24.00" fill="none" xmlns="http://www.w3.org/2000/svg" style="cursor:pointer;margin-bottom: 8px;" @onclick="GoBack">
                                 <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
                                 <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
@@ -22,51 +23,190 @@
                                 @TituloPagina
                         </h3>
                     </div>
-                    <div class="col-4 col-md-6 justify-content-end text-end">
-                        @if (!Cliente!.isNewRecord)
-                        {
-                            <button class="btn btn-primary d-none d-sm-inline" style="width: 120px;" type="submit"><span class="oi oi-print" />  Imprimir</button>
-                            <button class="btn btn-primary d-sm-none rounded-circle" type="submit"><span class="oi oi-print" /></button>
-                        }
-                        <button class="btn btn-success d-none d-sm-inline" style="width: 120px;" type="submit"><span class="oi oi-check" />  Salvar</button>
-                        <button class="btn btn-success d-sm-none rounded-circle" type="submit"><span class="oi oi-check" /></button>
+                    <div class="col-3 col-md-3 justify-content-end text-end">
+                    <a class="btn btn-success rounded-circle @(Pedido!.Status != StatusPedido.Emitido.ToString() ? "disabled" : "")" @onclick="@(()=> EntregarPedido())"><span class="oi oi-check" /></a>
+                    <a class="btn btn-warning rounded-circle @(Pedido!.Status != StatusPedido.Emitido.ToString() ? "disabled" : "")" @onclick="@(()=> CancelarPedido())"><span class="oi oi-x" /></a>
+                    <a class="btn btn-danger rounded-circle @(Pedido!.Status != StatusPedido.Emitido.ToString() ? "disabled" : "")" @onclick="@(()=> DeletePedido())"><span class="oi oi-trash" /></a>
                     </div>
                 </div>
             </div>
         </div>
         <div class="card-body">
-            @if (!Cliente!.isNewRecord)
-            {
-                <div class="form-group p-3">
-                    <label for="IDCliente">Código do Cliente</label>
-                    <p><strong>@Cliente!.Codigo.ToString()!.PadLeft(8, '0')</strong></p>
+
+        <div class="accordion" id="accordionClientesVendedores">
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                        <strong>Cliente: </strong> @Pedido.Cliente
+                    </button>
+                </h2>
+                <div id="collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                    <div class="accordion-body">
+                        <div class="form-group p-1">
+                            <label for="IDCliente">Código do Cliente</label>
+                            <p><strong>@Cliente!.Codigo.ToString()!.PadLeft(8, '0')</strong></p>
+                        </div>
+
+                        <div class="form-group p-1">
+                            <label for="NomeCliente">Nome do Cliente</label>
+                            <p><strong>@Cliente.Nome</strong></p>
+                        </div>
+
+                        <div class="form-group p-1">
+                            <label for="EnderecoCliente">Endereço Físico do Cliente</label>
+                            <p><strong>@Cliente.Endereco</strong></p>
+                        </div>
+
+                        <div class="form-group p-1">
+                            <label for="EmailCliente">Endereço de email do cliente</label>
+                            <p><strong>@Cliente.Email</strong></p>
+                        </div>
+
+                        <div class="form-group p-1">
+                            <label for="FoneCliente">Telefone Fixo do Cliente</label>
+                            <p><strong>@Cliente.Telefone</strong></p>
+                        </div>
+
+                        <div class="form-group p-1">
+                            <label for="CelularCliente">Celular do Cliente</label>
+                            <p><strong>@Cliente.Celular</strong></p>
+                        </div>
+                    </div>
                 </div>
-            }
-
-            <div class="form-group p-3">
-                <label for="NomeCliente">Nome do Cliente</label>
-                <InputText class="form-control" id="NomeCliente" aria-describedby="Nome do Cliente" placeholder="informe o nome do cliente" @bind-Value="@Cliente.Nome" />
             </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                        <strong>Vendedor:</strong>@Pedido.Vendedor
+                    </button>
+                </h2>
+                <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                    <div class="accordion-body">
+                        <div class="form-group p-1">
+                            <label for="IDVendedor">Código do Vendedor</label>
+                            <p><strong>@Vendedor!.Codigo.ToString()!.PadLeft(8, '0')</strong></p>
+                        </div>
 
-            <div class="form-group p-3">
-                <label for="EnderecoCliente">Endereço Físico do Cliente</label>
-                <InputText class="form-control" id="EnderecoCliente" aria-describedby="Endereço do Cliente" placeholder="Informe o endereço físico do cliente" @bind-Value="@Cliente.Endereco" />
+                        <div class="form-group p-1">
+                            <label for="NomeVendedor">Nome do Vendedor</label>
+                            <p><strong>@Vendedor.Vendedor</strong></p>
+                        </div>
+
+                        <div class="form-group p-1">
+                            <label for="PercentualDeComissão">% de Comissão</label>
+                            <p><strong>@(Vendedor.pComissao + " %")</strong></p>
+                        </div>
+                    </div>
+                </div>
             </div>
-
-            <div class="form-group p-3">
-                <label for="EmailCliente">Endereço de email do cliente</label>
-                <InputText type="email" class="form-control" id="EmailCliente" aria-describedby="Email do Cliente" placeholder="Informe o email do cliente" @bind-Value="@Cliente.Email" />
-            </div>
-
-            <div class="form-group p-3">
-                <label for="FoneCliente">Telefone Fixo do Cliente</label>
-                <InputText class="form-control" id="FoneCliente" aria-describedby="Telefone do Cliente" placeholder="Informe o telefone fixo do cliente" @bind-Value="@Cliente.Telefone" data-mask="(00) 0000-0000" />
-            </div>
-
-            <div class="form-group p-3">
-                <label for="CelularCliente">Celular do Cliente</label>
-                <InputText class="form-control" id="CelularCliente" aria-describedby="Celular do Cliente" placeholder="Informe o celular do cliente" @bind-Value="@Cliente.Celular" />
-            </div>
-
         </div>
-    </div> *@
+
+        <div class="row p-1 mt-2">
+            <div class="col-3">
+                <label for="IdVendedor">Data de Emissão:</label>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="input-group">
+                            <p><strong>@(Pedido.DataEmissao.ToLongDateString())</strong></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-3">
+                <label for="IdVendedor">Data de Entrega:</label>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="input-group">
+                            <p><strong>@(Pedido.DataEntrega.ToLongDateString())</strong></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-3">
+                <label for="pComissao">% de Comissão do Vendedor:</label>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="input-group">
+                            <p><strong>@(Pedido.pComissao + " %")</strong></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-3">
+                <label for="pComissao">Status do Pedido:</label>
+                <div class="row">
+                    <div class="col-12 text-center align-content-center">
+                        <div class="input-group @(Pedido.Status == StatusPedido.Emitido.ToString() ? "text-bg-warning" : Pedido.Status == StatusPedido.Cancelado.ToString() ? "text-bg-danger" : "text-bg-success")">
+                            <p><strong>@Pedido.Status</strong></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card text-center mt-3">
+            <div class="card-header">
+                Itens do Pedido
+            </div>
+            <div class="card-body">
+
+                    @if (Pedido.Itens == null)
+                    {
+                        <p>Carregando itens do pedido...</p>
+                    }
+                    else
+                    if (!Pedido.Itens.Any())
+                    {
+                        <p>Nenhum item adicionado. Adicione itens ao pedido</p>
+                    }
+                    else
+                    {
+                        <div style="height:30vh;overflow:auto;">
+                            <table class="table table-hover @Theme!.ColorClass" style="color: @Theme!.ColorFontStyle" data-bs-theme="@Theme.DataBsTheme">
+                                <thead style="position: sticky;z-index: 10;top: 0;">
+                                    <tr>
+                                        <th scope="col" style="position: sticky;z-index: 10;">Produto</th>
+                                        <th scope="col" style="position: sticky;z-index: 10;">Valor Unitário</th>
+                                        <th scope="col" style="position: sticky;z-index: 10;">Quantidade</th>
+                                        <th scope="col" style="position: sticky;z-index: 10;">% Desconto</th>
+                                        <th scope="col" style="position: sticky;z-index: 10;">Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (ItensPedido itens in Pedido.Itens!)
+                                    {
+                                        <tr>
+                                            <td class="col-4 col-md-4 align-middle text-start" style="color: @Theme!.ColorFontStyle!" data-bs-theme="@Theme.DataBsTheme">@itens.Descricao</td>
+                                            <td class="col-2 col-md-2 align-middle" style="color: @Theme!.ColorFontStyle" data-bs-theme="@Theme.DataBsTheme">@(string.Format("{0:c}", itens.ValorUnitario))</td>
+                                            <td class="col-2 col-md-2 align-middle" style="color: @Theme!.ColorFontStyle" data-bs-theme="@Theme.DataBsTheme">@itens.Quantidade</td>
+                                            <td class="col-2 col-md-2 align-middle" style="color: @Theme!.ColorFontStyle" data-bs-theme="@Theme.DataBsTheme">@(itens.pDesconto.ToString() + " %")</td>
+                                            <td class="col-2 col-md-2 align-middle" style="color: @Theme!.ColorFontStyle" data-bs-theme="@Theme.DataBsTheme">@(string.Format("{0:c}", itens.Valor))</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                </div>
+            </div>
+            <div class="card-footer text-body-secondary text-end">
+                Valor da Comissão: <strong>@(string.Format("{0:c}", Pedido.vComissao))</strong><br />
+                Total do Pedido: <strong>@(string.Format("{0:c}", Pedido.ValorTotal))</strong>
+            </div>
+        </div>
+    </div>
+
+<ConfirmDlg Titulo="Remover pedido?" @ref="MsgDelete" OnYesClick="ConfirmDeleteCliente">
+    <p>Deseja realmente apagar os dados do pedido selecionado?</p>
+    <p><strong>Pedido:</strong> @Pedido!.idPedido</p>
+</ConfirmDlg>
+
+<ConfirmDlg Titulo="Cancelar pedido?" @ref="MsgCancelaPedido" OnYesClick="ConfirmPedidoCancelado">
+    <p>Deseja realmente cancelar o pedido selecionado?</p>
+    <p><strong>Pedido:</strong> @Pedido!.idPedido</p>
+</ConfirmDlg>
+
+<ConfirmDlg Titulo="Confirma entrega do pedido?" @ref="MsgEntregaPedido" OnYesClick="ConfirmPedidoEntregue">
+    <p>Deseja realmente confirmar a entrega do pedido selecionado?</p>
+    <p><strong>Pedido:</strong> @Pedido!.idPedido</p>
+</ConfirmDlg>

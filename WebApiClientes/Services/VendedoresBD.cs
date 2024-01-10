@@ -2,6 +2,7 @@
 using BlazorClientes.Shared.Entities;
 using WebApiClientes.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using BlazorClientes.Shared.Enums;
 
 namespace WebApiClientes.Services
 {
@@ -55,9 +56,12 @@ namespace WebApiClientes.Services
         /// Pega Cliente pelo ID
         /// </summary>
         /// <param name="id"></param>
+        /// <param name="Kind"></param>
         /// <returns>Cliente</returns>
-        public async Task<Vendedores?> GetVendedor(string id)
+        public async Task<Vendedores?> GetVendedor(string id, GetKind Kind = GetKind.PorCodigo)
         {
+            string Campo = Kind == GetKind.PorCodigo ? "Codigo" : "idVendedor";
+
             MySqlConnection? conn = null;
             try
             {
@@ -65,7 +69,7 @@ namespace WebApiClientes.Services
 
                 conn = new MySqlConnection(Conn);
                 conn.Open();
-                string sql = "select * from vendedores where Codigo = @id";
+                string sql = "select * from vendedores where " + Campo + " = @id";
                 var cmd = new MySqlCommand(sql, conn);
                 cmd.Parameters.Add(new MySqlParameter("id", id));
                 var reader = await cmd.ExecuteReaderAsync();

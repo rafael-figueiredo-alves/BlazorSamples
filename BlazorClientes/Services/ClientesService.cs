@@ -1,6 +1,7 @@
 ﻿using BlazorClientes.Services.Interfaces;
 using BlazorClientes.Shared.Entities;
 using BlazorClientes.Shared.Entities.PageResults;
+using BlazorClientes.Shared.Enums;
 using Blazored.Toast.Services;
 using Microsoft.AspNetCore.Components;
 using System.Net;
@@ -174,11 +175,11 @@ namespace BlazorClientes.Services
             }
         }
 
-        public async Task<Clientes?> GetCliente(string Codigo)
+        public async Task<Clientes?> GetCliente(string Codigo, GetKind Kind = GetKind.PorCodigo)
         {
             Http!.DefaultRequestHeaders.Remove("If-None-Match");
 
-            string Endpoint = "api/v1/Clientes/" + Codigo;
+            string Endpoint = "api/v1/Clientes/" + Codigo + "?Kind=" + Kind;
 
             try
             {

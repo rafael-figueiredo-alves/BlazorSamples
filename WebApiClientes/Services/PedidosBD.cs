@@ -208,6 +208,8 @@ namespace WebApiClientes.Services
                         pedido.ETag = HashMD5.Hash(JsonSerializer.Serialize(pedido));
 
                     pedidos.Add(pedido!);
+                    conn2?.Close();
+                    conn2!.Open();
                 }
 
                 return pedidos;
