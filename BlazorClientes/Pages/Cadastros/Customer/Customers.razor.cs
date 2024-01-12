@@ -98,9 +98,9 @@ namespace BlazorClientes.Pages.Cadastros
             }
         }
 
-        protected void PrintClientes()
+        protected async void PrintClientes()
         {
-            //Implementar no futuro
+            await JSRuntime!.InvokeVoidAsync("printComponent", "#ListaClientes");
         }
 
         protected void OnChangeQtdItensPorPagina(ChangeEventArgs args)

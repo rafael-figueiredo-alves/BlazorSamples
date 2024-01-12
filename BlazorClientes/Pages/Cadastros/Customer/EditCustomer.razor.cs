@@ -1,6 +1,7 @@
 ﻿using BlazorClientes.Services.Interfaces;
 using BlazorClientes.Shared.Entities;
 using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
 
 namespace BlazorClientes.Pages.Cadastros.Customer
 {
@@ -13,6 +14,7 @@ namespace BlazorClientes.Pages.Cadastros.Customer
         [Inject] protected IParamService? ParamService { get; set; }
         [Inject] protected NavigationManager? Nav {  get; set; }
         [Inject] protected IClientes? Clientes { get; set; }
+        [Inject] protected IJSRuntime? JSRuntime { get; set; }
         protected Clientes? Cliente { get; set; }
         protected string TituloPagina { get; set; } = string.Empty;
 
@@ -34,6 +36,11 @@ namespace BlazorClientes.Pages.Cadastros.Customer
                     TituloPagina = "Editando Cliente";
                 }
             }
+        }
+
+        protected async Task PrintCliente()
+        {
+            await JSRuntime!.InvokeVoidAsync("printComponent", "#FichaCliente");
         }
 
         protected void GoBack()

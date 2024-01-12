@@ -27,8 +27,8 @@
                     <div class="col-4 col-md-6 justify-content-end text-end">
                             @if(!Cliente!.isNewRecord)
                             {
-                                <button class="btn btn-primary d-none d-sm-inline" style="width: 120px;" type="submit"><span class="oi oi-print" />  Imprimir</button>
-                                <button class="btn btn-primary d-sm-none rounded-circle" type="submit"><span class="oi oi-print" /></button>
+                            <button class="btn btn-primary d-none d-sm-inline" style="width: 120px;" type="button" @onclick="@PrintCliente"><span class="oi oi-print" />  Imprimir</button>
+                                <button class="btn btn-primary d-sm-none rounded-circle" type="button" @onclick="@PrintCliente"><span class="oi oi-print" /></button>
                             }
                             <button class="btn btn-success d-none d-sm-inline" style="width: 120px;" type="submit"><span class="oi oi-check" />  Salvar</button>
                             <button class="btn btn-success d-sm-none rounded-circle" type="submit"><span class="oi oi-check" /></button>
@@ -36,7 +36,7 @@
                 </div>
             </div>
         </div>
-        <div class="card-body">
+        <div class="card-body" id="FichaCliente">
             @if (!Cliente!.isNewRecord)
             {
                 <div class="form-group p-3">
