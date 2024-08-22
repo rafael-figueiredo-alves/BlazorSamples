@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using WebApiClientes.Services.Interfaces;
+using WebApiClientes.Middlewares;
+using WebApiClientes;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -83,6 +85,8 @@ builder.Services.AddSwaggerGen(options =>
     //Configurações para inserir comments que são usados no Swagger
     var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+
+    options.OperationFilter<ApiKeyHeaderSwaggerAttribute>();
 });
 
 //Usado para personalizar mensagem de erro do BadRequest por validation error
@@ -135,6 +139,7 @@ app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseApiKeyMiddleware();
 
 app.MapControllers();
 
