@@ -18,8 +18,4 @@
     <ProjectReference Include="..\BlazorClientes.Shared\BlazorClientes.Shared.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Attributes\" />
-  </ItemGroup>
-
 </Project>

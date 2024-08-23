@@ -1,7 +1,7 @@
 ﻿using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace WebApiClientes
+namespace WebApiClientes.Attributes
 {
     public class ApiKeyHeaderSwaggerAttribute : IOperationFilter
     {

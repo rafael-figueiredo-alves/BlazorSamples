@@ -8,7 +8,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using WebApiClientes.Services.Interfaces;
 using WebApiClientes.Middlewares;
-using WebApiClientes;
+using WebApiClientes.Attributes;
 
 var builder = WebApplication.CreateBuilder(args);
 

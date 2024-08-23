@@ -9,7 +9,7 @@ namespace WebApiClientes.Services.Interfaces
     public interface IClientes
     {
         /// <summary>
-        /// Método ´para pegar lista de clientes
+        /// Método para pegar lista de clientes
         /// </summary>
         /// <param name="Page">Informações para paginação</param>
         /// <returns>Lista de clientes</returns>
