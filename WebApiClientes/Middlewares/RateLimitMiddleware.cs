@@ -3,10 +3,13 @@ using WebApiClientes.Services;
 using Microsoft.Extensions.Caching.Distributed;
 using System.Text;
 using System.Text.Json;
-using BlazorClientes.Shared.Entities
+using BlazorClientes.Shared.Entities;
 
 namespace WebApiClientes.Middlewares
 {
+    /// <summary>
+    /// Middleware para controlar limite de requesições por segundo
+    /// </summary>
     public class RateLimitMiddleware
     {
         private readonly RequestDelegate _next;
@@ -15,12 +18,22 @@ namespace WebApiClientes.Middlewares
         private readonly IApiKeys fapiKeys = new ApiKeysBD();
         private readonly IDistributedCache _cache;
 
+        /// <summary>
+        /// Construtor do Middleware
+        /// </summary>
+        /// <param name="next">Próximo middleware</param>
+        /// <param name="cache">Serviço de Cache</param>
         public RateLimitMiddleware(RequestDelegate next, IDistributedCache cache)
         {
             _next = next;
             _cache = cache;
         }
 
+        /// <summary>
+        /// Método de execução do middleware
+        /// </summary>
+        /// <param name="context">HttpContext</param>
+        /// <returns>Nada</returns>
         public async Task InvokeAsync(HttpContext context)
         {
             if (context.Request.Headers.TryGetValue(APIKEY, out var key))
