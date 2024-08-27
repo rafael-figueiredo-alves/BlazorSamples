@@ -1,4 +1,5 @@
 ﻿using BlazorClientes.Shared.Entities;
+using Microsoft.AspNetCore.DataProtection.KeyManagement;
 using Microsoft.Extensions.Caching.Distributed;
 using System.Text.Json;
 
@@ -25,6 +26,18 @@ namespace WebApiClientes.Helpers
             return JsonSerializer.Deserialize<DadosConsumo>(Result);
         }
 
-        public static async Task SaveDados
+        /// <summary>
+        /// Função para salvar no cache os dados do consumo atualizado
+        /// </summary>
+        /// <param name="cache">Serviço IDistributed cache</param>
+        /// <param name="Key">API Key</param>
+        /// <param name="dadosConsumo">Dados de Consumo</param>
+        /// <param name="cancellation">Token de cancelamento</param>
+        /// <returns>Nada</returns>
+        public static async Task SaveDadosConsumoAsync(this IDistributedCache cache, string Key, DadosConsumo? dadosConsumo, CancellationToken cancellation = default)
+        {
+            dadosConsumo ??= new DadosConsumo(DateTime.UtcNow, 1);
+            await cache.SetStringAsync(Key, JsonSerializer.Serialize(dadosConsumo), cancellation);
+        }
     }
 }

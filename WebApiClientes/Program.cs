@@ -9,6 +9,7 @@ using System.Text;
 using WebApiClientes.Services.Interfaces;
 using WebApiClientes.Middlewares;
 using WebApiClientes.Attributes;
+using Microsoft.Extensions.Caching.Distributed;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -140,6 +141,7 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseApiKeyMiddleware();
+app.UseRateLimitMiddleware();
 
 app.MapControllers();
 

@@ -24,9 +24,9 @@ namespace WebApiClientes.Services
         /// </summary>
         /// <param name="apiKey">Chave de API</param>
         /// <returns>Retorna quantidade de requesições permitidas por segundo. Zero representa que não há limite</returns>
-        public async Task<int> GetRequestLimit(string? apiKey)
+        public async Task<RequestLimits> GetRequestLimit(string? apiKey)
         {
-            int Limite = 0;
+            RequestLimits Limite = new RequestLimits();
 
             MySqlConnection? conn = null;
             try
@@ -34,7 +34,7 @@ namespace WebApiClientes.Services
                 conn = new MySqlConnection(Conn);
                 conn.Open();
 
-                var sql = "SELECT RequestLimit FROM apikeys WHERE APIKey = @key";
+                var sql = "SELECT RequestLimit, RequestTimeLimit FROM apikeys WHERE APIKey = @key";
                 var cmd = new MySqlCommand(sql, conn);
                 cmd.Parameters.Add(new MySqlParameter("key", apiKey));
                 
@@ -42,7 +42,8 @@ namespace WebApiClientes.Services
                 
                 while (await reader.ReadAsync())
                 {
-                    Limite = Convert.ToInt32(reader["RequestLimit"]);
+                    Limite.MaxRequests = Convert.ToInt32(reader["RequestLimit"]);
+                    Limite.TimeWindowInSeconds = Convert.ToInt32(reader["RequestTimeLimit"]);
                 }
 
                 return Limite;

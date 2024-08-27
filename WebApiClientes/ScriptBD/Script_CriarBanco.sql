@@ -91,9 +91,10 @@ ALTER TABLE `vendedores`
 ADD COLUMN `Codigo` INT(8) ZEROFILL UNSIGNED NOT NULL AUTO_INCREMENT AFTER `pComissao`;
 
 /* Criar Tabela gerenciadora de API Keys no sistema */
-CREATE TABLE `myerp`.`apikeys` (
-  `APIKey` VARCHAR(300) NOT NULL,
-  `RequestLimit` INT NOT NULL DEFAULT 0,
+CREATE TABLE IF NOT EXISTS `apikeys` (
+  `APIKey` varchar(300) NOT NULL,
+  `RequestLimit` int NOT NULL DEFAULT '0',
+  `RequestTimeLimit` int NOT NULL DEFAULT '0',
   PRIMARY KEY (`APIKey`),
-  UNIQUE INDEX `APIKey_UNIQUE` (`APIKey` ASC) VISIBLE)
-COMMENT = 'Tabela para gerenciar as API Keys aceitáveis pelo sistema';
+  UNIQUE KEY `API-Key_UNIQUE` (`APIKey`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='Tabela para gerenciar as API Keys aceitáveis pelo sistema';

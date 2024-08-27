@@ -1,6 +1,22 @@
 ﻿namespace WebApiClientes.Services.Interfaces
 {
     /// <summary>
+    /// Request Limitations
+    /// </summary>
+    public struct RequestLimits
+    {
+        /// <summary>
+        /// Requesições máximas
+        /// </summary>
+        public int MaxRequests { get; set; }
+
+        /// <summary>
+        /// Intervalo em segundos
+        /// </summary>
+        public int TimeWindowInSeconds { get; set; }
+    }
+
+    /// <summary>
     /// Interface para funções referentes a tabela APIKeys
     /// </summary>
     public interface IApiKeys
@@ -17,6 +33,6 @@
         /// </summary>
         /// <param name="apiKey">Chave de API</param>
         /// <returns>Retorna quantidade de requesições permitidas por segundo. Zero representa que não há limite</returns>
-        public Task<int> GetRequestLimit(string? apiKey);
+        public Task<RequestLimits> GetRequestLimit(string? apiKey);
     }
 }
