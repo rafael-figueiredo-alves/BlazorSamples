@@ -142,6 +142,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.UseApiKeyMiddleware();
 app.UseRateLimitMiddleware();
+app.UseContentSecurityPolicyMiddleware();
 
 app.MapControllers();
 
